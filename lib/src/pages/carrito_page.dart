@@ -1,4 +1,4 @@
-import 'package:domicilios_cali/src/widgets/productos/lista_productos_widget.dart';
+import 'package:domicilios_cali/src/widgets/productos/productos_widget.dart';
 import 'package:flutter/material.dart';
 
 class CarritoPage extends StatefulWidget {
@@ -53,7 +53,7 @@ class _CarritoPageState extends State<CarritoPage> {
                   )
                 ]
               ),
-              child: ListaProductosWidget(
+              child: ProductosWidget(
                 scrollable: false,
                 widthPercent: 0.75,
                 horizontalMarginPercent: 0.0,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:badges/badges.dart';
+import 'package:badges/badges.dart';
 //Importaciones locales
 import 'package:domicilios_cali/src/models/productos_model.dart';
 import 'package:domicilios_cali/src/pages/producto_detail_page.dart';
@@ -21,9 +21,9 @@ class ProductoCardWidget extends StatelessWidget {
     FadeInImage fadeInImage;
     try{
        fadeInImage = FadeInImage(
-                  //fit: BoxFit.fill,
+        fit: BoxFit.fill,
         image: NetworkImage(producto.imagenUrl),
-        placeholder: AssetImage('assets/placeholder_images/domicilio_icono.png'),
+        placeholder: AssetImage('assets/placeholder_images/domicilio_icono_2.jpg'),
       );
     }catch(err){
       print('error: $err');
@@ -38,7 +38,7 @@ class ProductoCardWidget extends StatelessWidget {
             Container(
               height: size.height * 0.12,
               width: size.width * 0.27,
-              child: fadeInImage??Container(),
+              child: fadeInImage??Container(height: 0.05,),
             ),
             
             SizedBox(
@@ -59,6 +59,32 @@ class ProductoCardWidget extends StatelessWidget {
             '${producto.categoria.toString()}',
               style: TextStyle(
                 fontSize: size.width * 0.035,  
+              ),
+            ),
+            Container(
+              width: size.width * 0.102,
+              child: Center(
+                child: Badge(
+                  shape: BadgeShape.square,
+                  badgeColor: Colors.grey,
+                  borderRadius: size.width * 0.012,
+                  badgeContent: Row(
+                    children: [
+                      Text(
+                        '${producto.calificacion}',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: size.width * 0.027
+                        ),
+                      ),
+                      Icon(
+                        Icons.star,
+                        size: size.width * 0.029,
+                        color: Colors.orange,
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
                

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class MenuCategorias{
   final categorias = [
     {
-      'nombre':'comida',
+      'nombre':'comida preparada',
       'icono':Icons.fastfood,
       'color':Colors.orangeAccent,
     },

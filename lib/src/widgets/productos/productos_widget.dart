@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 //Importaciones
 import 'package:domicilios_cali/src/widgets/productos/producto_card_widget.dart';
 
-class ListaProductosWidget extends StatefulWidget {
+class ProductosWidget extends StatefulWidget {
   //lista estática de productos ingresada desde clase padre, en caso de que se quiera desplegar esa lista especifica de elementos.
 
   double horizontalMarginPercent;
@@ -12,7 +12,7 @@ class ListaProductosWidget extends StatefulWidget {
   double widthPercent;
   bool scrollable;
 
-  ListaProductosWidget({
+  ProductosWidget({
     this.horizontalMarginPercent = 0.015,
     this.horizontalPaddinghPercent = 0.0,
     this.heightPercent,
@@ -21,24 +21,26 @@ class ListaProductosWidget extends StatefulWidget {
   });
 
   @override
-  _ListaProductosWidgetState createState() => _ListaProductosWidgetState();
+  _ProductosWidgetState createState() => _ProductosWidgetState();
 }
 
-class _ListaProductosWidgetState extends State<ListaProductosWidget> {
+class _ProductosWidgetState extends State<ProductosWidget> {
+  ProductosModel _productosModel;
+  List<ProductoModel> _productosAMostrar;
+  @override
+  void initState() { 
+    super.initState();
+    _productosModel = new ProductosModel.prueba();
+    _productosAMostrar = _productosModel.productosPrueba;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
-    ProductosModel productosModel = new ProductosModel.fromJsonList(null);
-    List<ProductoModel> productosAMostrar;
-
-    //si se ingresaron productosIngresaron, esa será la lista. Si no, se pedirá la lista al lugar determinado.
-    productosAMostrar = productosModel.getCatalogoProductosPrueba().toList();
-
     return Container(
       margin: EdgeInsets.symmetric(horizontal: size.width * widget.horizontalMarginPercent),
       //0.18 es el porcentaje de width de pantalla que tiene cada card (?).
-      height: size.height * 0.8,
+      height: size.height * 0.75,
       width: size.width,     
       decoration: BoxDecoration(
         color: Colors.white70,
@@ -47,13 +49,11 @@ class _ListaProductosWidgetState extends State<ListaProductosWidget> {
        * En 2 casos lo necesito scrollable, en 1 no
        */
       child: GridView.count(
-        
           crossAxisCount: 3,
           mainAxisSpacing: size.width * 0.028,
           crossAxisSpacing: size.height * 0.03,
-          childAspectRatio: 0.655,
-          children: productosAMostrar.map((producto) => ProductoCardWidget(producto: producto,)).toList(),
-        
+          childAspectRatio: 0.62,
+          children: _productosAMostrar.map((producto) => ProductoCardWidget(producto: producto,)).toList(),
       ),
     );
   }

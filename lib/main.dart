@@ -1,4 +1,5 @@
 import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/pages/cuenta_page.dart';
 import 'package:domicilios_cali/src/pages/mapa_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_crear_tienda_page.dart';
 import 'package:domicilios_cali/src/pages/perfil_page.dart';
@@ -30,14 +31,16 @@ class MyApp extends StatelessWidget {
     return Provider(
       child: MaterialApp(
         title: 'Domicilios',
-        initialRoute: RegisterPage.route,
+        initialRoute: PasosCrearTiendaPage.route,
         routes: {
           LoginPage.route:(BuildContext context)=>LoginPage(),
           RegisterPage.route:(BuildContext context)=>RegisterPage(),
+          HomePage.route:(BuildContext context)=>HomePage(),
+          CuentaPage.route:(BuildContext context)=>CuentaPage(),
+          PerfilPage.route:(BuildContext context)=>PerfilPage(),
           PasosCrearTiendaPage.route:(BuildContext context)=>PasosCrearTiendaPage(),
           TiendaCreatePage.route:(BuildContext context)=>TiendaCreatePage(),
-          HomePage.route:(BuildContext context)=>HomePage(),
-          PerfilPage.route:(BuildContext context)=>PerfilPage(),
+          
           ProductosCatalogoPage.route:(BuildContext context)=>ProductosCatalogoPage(),
           ProductoDetailPage.route:(BuildContext context)=>ProductoDetailPage(),
           ProductosTiendaPage.route:(BuildContext context)=>ProductosTiendaPage(),
@@ -48,7 +51,7 @@ class MyApp extends StatelessWidget {
           //backgroundColor: Color.fromRGBO(50, 196, 171, 1),//verde azulado
           //backgroundColor: Color.fromRGBO(240, 200, 102, 1),
           primaryColor: Color.fromRGBO(13, 162, 158, 1),
-          backgroundColor: Color.fromRGBO(235, 235, 235, 1),   
+          backgroundColor: Color.fromRGBO(255, 255, 255, 1),   
           secondaryHeaderColor: Color.fromRGBO(0, 150, 136, 1),
           //primaryColor: Colors.white,
           //secondaryHeaderColor: Color.fromRGBO(134, 174, 188, 1),//azul grisaseo

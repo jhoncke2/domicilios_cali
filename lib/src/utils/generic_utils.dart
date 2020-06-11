@@ -12,8 +12,11 @@ Future<void> tomarFotoDialog(BuildContext context, Size size, Map<String, File> 
     context: context,
      builder: (BuildContext buildContext){
       return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(size.width * 0.035)
+        ),
         child: Container(
-          color: Colors.grey.withOpacity(0.35),
+          color: Colors.grey.withOpacity(0.15),
           padding: EdgeInsets.symmetric(vertical:0.0),
           height: size.height * 0.24,
           width: size.width * 0.8,
@@ -22,7 +25,15 @@ Future<void> tomarFotoDialog(BuildContext context, Size size, Map<String, File> 
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                color: Colors.grey.withOpacity(0.35),
+                
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.35),
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.black.withOpacity(0.65)
+                    )
+                  )
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   //crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -56,6 +67,10 @@ Future<void> tomarFotoDialog(BuildContext context, Size size, Map<String, File> 
                   imagenMap['imagen'] = imagen;
                   Navigator.of(context).pop(imagen);
                 }
+              ),
+              Container(
+                color: Colors.black.withOpacity(0.3),
+                height: size.height * 0.001,
               ),
               CupertinoButton(
                 borderRadius: BorderRadius.all(Radius.circular(0.0)),

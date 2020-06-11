@@ -73,69 +73,54 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
         Container(
           width: double.infinity,
           
-          child: Row(
+          child: Column(
             children: [
               Container(
                 padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
+                margin: EdgeInsets.symmetric(horizontal: size.width * 0.02),
                 decoration: BoxDecoration(
-                  border: Border(
-                    right: BorderSide(
-                      color: Colors.black,
-                      width: 0.3,
-                    ),
-                     bottom: BorderSide(
-                      color: Colors.black,
-                      width: 0.3,
+                  color: Colors.white.withOpacity(0.85),
+                  border: Border.all(
+                    width: 1.0,
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                  borderRadius: BorderRadius.circular(size.width * 0.04),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.8),
+                      blurRadius: size.width * 0.01,
+                      spreadRadius: size.width * 0.01,
+                      offset: Offset(
+                        1.0,
+                        1.0
+                      ),
                     )
-                  )
+                  ]
                 ),
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        RaisedButton(
-                          color: Colors.white.withOpacity(0.75),
-                          child: Text(
-                            'desde las ${horario.horaInicial.hour}:${horario.horaInicial.minute}',
-                            style: TextStyle(
-                              fontSize: size.width * 0.04
-                            ),
-                          ),
-                          onPressed: (){
-                            _mostrarTimePicker(context, horario, 1);
-                          },
-                        ),
-                        SizedBox(
-                          width: size.width * 0.05,
-                        ),
-                        RaisedButton(
-                          color: Colors.white.withOpacity(0.75),
-                          child: Text(
-                            'hasta las ${horario.horaFinal.hour}:${horario.horaFinal.minute}',
-                            style: TextStyle(
-                              fontSize: size.width * 0.035
-                            ),
-                          ),
-                          onPressed: (){
-                            _mostrarTimePicker(context, horario, 2);
-                          },
-                        ),
-                        
-                      ],
+                    SizedBox(
+                      height: size.height * 0.02,
                     ),
+                    _crearElementosTimePickers(size, horario),
                     _crearElementosDiasDeHorario(size, horario, elementos),
                   ],
                 ),
               ),
               Container(
                 width: size.width * 0.12,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CloseButton(
-                    ),
-                  ],
-                ),
+                child: ((_horarios.length > 0)?
+                IconButton(
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.redAccent.withOpacity(0.9),
+                  ),
+                  onPressed: (){
+                    if(_horarios.length > 0)
+                      _eliminarModuloHorario(horario);
+                  },
+                )
+                :Container()),
               )
             ],
           ),
@@ -145,6 +130,64 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
     elementos.add(SizedBox(height: size.height * 0.035,));
     elementos.add(_crearBotonNuevoHorario(size));
     elementos.add(SizedBox(height: size.height * 0.13,));
+  }
+
+  void _eliminarModuloHorario(HorarioModel horario){
+    _horarios.remove(horario);
+    _diasSeleccionados.removeWhere((dia)=>horario.dias.contains(dia));
+    setState(() {
+      
+    });
+  }
+
+  Widget _crearElementosTimePickers(Size size, HorarioModel horario){
+    return Column(
+      children: <Widget>[
+        Text(
+          'Rango de horas',
+          style: TextStyle(
+            fontSize: size.width * 0.062,
+            color: Colors.black.withOpacity(0.65)
+          ),
+        ),
+        SizedBox(
+          height: size.height * 0.012,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RaisedButton(
+              color: Colors.white.withOpacity(0.75),
+              child: Text(
+                'desde las ${horario.horaInicial.hour}:${horario.horaInicial.minute}',
+                style: TextStyle(
+                  fontSize: size.width * 0.04
+                ),
+              ),
+              onPressed: (){
+                _mostrarTimePicker(context, horario, 1);
+              },
+            ),
+            SizedBox(
+              width: size.width * 0.05,
+            ),
+            RaisedButton(
+              color: Colors.white.withOpacity(0.75),
+              child: Text(
+                'hasta las ${horario.horaFinal.hour}:${horario.horaFinal.minute}',
+                style: TextStyle(
+                  fontSize: size.width * 0.035
+                ),
+              ),
+              onPressed: (){
+                _mostrarTimePicker(context, horario, 2);
+              },
+            ),
+            
+          ],
+        ),
+      ],
+    );
   }
 
   Widget _crearElementosDiasDeHorario(Size size, HorarioModel horario, List<Widget> elementos){    
@@ -231,9 +274,14 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
   }
 
   Widget _crearBotonNuevoHorario(Size size){
-    return Container(
-      width: size.width * 0.5,
+    return Center(
+      //width: size.width * 0.25,
       child: RaisedButton(
+        padding: EdgeInsets.symmetric(horizontal: size.width * 0.08, vertical: size.height * 0.01),
+        color: Colors.blueGrey.withOpacity(0.6),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(size.width * 0.045)
+        ),
         child: Text(
           'Nuevo horario',
           style: TextStyle(
@@ -245,34 +293,4 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
       ),
     );
   }
-
-  /*
-    for(int i = 0; i < _horarios.length; i++){
-      HorarioModel horario = _horarios[i];
-      elementos.add(
-        Container(
-          child: Row(
-            children: [
-              Column(
-                children: [
-                  Text('titulo'),
-                  Row()
-                ],
-              ),
-              Column(
-                children: [
-                  CloseButton(
-                    color: Colors.redAccent,
-                    onPressed: (){
-                      
-                    },
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      );
-    }
-    */
 }

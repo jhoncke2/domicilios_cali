@@ -20,158 +20,134 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
 
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          _crearFondo(context),
-          _crearLoginForm(context, usuarioBloc),
-        ],
-      ),
+      body: _crearElementos(context, size, usuarioBloc),
       backgroundColor: Theme.of(context).backgroundColor,
     );
   }
 
-  Widget _crearFondo(BuildContext context){
-    final size = MediaQuery.of(context).size;
-    final fondoAzul = Container(
-      height: size.height * 0.55,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: <Color>[
-            Theme.of(context).primaryColor,
-            Theme.of(context).secondaryHeaderColor,
-          ]
-        ),
-      ),
-    );
-
-    return Stack(
-      children: <Widget>[
-        fondoAzul,
-        _crearCirculoLogo(context, size),
-      ],
-    );
-  }
-
-  Widget _crearCirculoLogo(BuildContext context, Size size){
-    return Positioned(
-      top: size.height * 0.05,
-      left: size.width * 0.31,
-      child: Container(
-        width: size.width * 0.4,
-        height: size.height * 0.23,
-        decoration: BoxDecoration(
-          color: Colors.white70,
-          //color: Theme.of(context).secondaryHeaderColor,
-          borderRadius: BorderRadius.circular(180.0),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-              color: Colors.black45,
-              blurRadius: 2.0,
-              spreadRadius: 1.5,
-              offset: Offset(
-                2.0,
-                2.0
-              )
-            )
-          ],
-        ),
-        child: Center(
-          child: Text(
-            'Logo',
-            style: TextStyle(
-              fontSize: 30.0,
-              color: Color.fromRGBO(80, 80, 80, 1),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _crearLoginForm(BuildContext context, UsuarioBloc usuarioBloc){
-    final size = MediaQuery.of(context).size;
-    //para poder hacer scroll a todo lo que haya dentro.
-    return SingleChildScrollView(
-      
-      child: Column(
+  Widget _crearElementos(BuildContext context, Size size, UsuarioBloc usuarioBloc){
+    return Container(
+      //padding: EdgeInsets.symmetric(horizontal:size.width * 0.15),
+      child: ListView(
         children: <Widget>[
-          SafeArea(
-            child: Container(
-              height: size.height * 0.18,
+          SizedBox(
+            height: size.height * 0.1,
+          ),
+          _crearImgLogo(size),
+          SizedBox(
+            height: size.height * 0.075,
+          ),
+          Center(
+            child: Text(
+              'Ingreso',
+              style: TextStyle(
+                fontSize: size.width * 0.07,
+                color: Colors.black.withOpacity(0.75),
+              ),
             ),
           ),
-          /**
-           * El SingleCHildScrollView: Para que cuando salga el teclado no salga un 
-           * error de overflow verticalmente.
-           */
-          SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: size.width * 0.10),
-            child: Container(
-              width: size.width * 0.85,
-              margin: EdgeInsets.symmetric(vertical: 65.0),
-              padding: EdgeInsets.symmetric(vertical: 20.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(5.0),
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 3.0,
-                    spreadRadius: 3.0,
-                    offset: Offset(
-                      5.0, 
-                      5.0
-                    ),            
-                  ),
-                ],
-              ),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: size.height * 0.008,),
-                  Text('Ingresar', style: TextStyle(fontSize: 21.0)),
-                  SizedBox(height: 50.0,),
-                  _crearInputEmail(),
-                  SizedBox(height: 50.0,),
-                  _crearInputPassword(),
-                  SizedBox(height: 50.0,),
-                  _crearBotonSubmmit(context, usuarioBloc),
-                  SizedBox(height: 45.0,),
-                  _crearIngresoExterno(size),
-                  SizedBox(height: 10.0,),
-                  FlatButton(
-                    child: Text(
-                      'Registrate',
-                      style: TextStyle(
-                        fontSize: 17.0,
-                        color: Color.fromRGBO(60, 120, 250, 1),
-                      ),
-                    ),
-                    onPressed: (){
-                      Navigator.pushReplacementNamed(context, RegisterPage.route);
-                    },
-                  ),
-                  SizedBox(height: 3.0,),
-                  FlatButton(
-                    child: Text(
-                      '¿Olvidaste la contraseña?',
-                      style: TextStyle(
-                        fontSize: 17.0,
-                        color: Color.fromRGBO(60, 120, 250, 1),
-                      ),
-                    ),
-                    onPressed: (){
-
-                    },
-                  )
-                ],
+          SizedBox(
+            height: size.height * 0.03,
+          ),
+          _crearLoginForm(context, size, usuarioBloc),
+          SizedBox(
+            height: size.height * 0.05,
+          ),
+           _crearBotonSubmmit(context, size, usuarioBloc),
+          SizedBox(height: size.height * 0.03),
+          _crearIngresoExterno(size),
+          SizedBox(height: size.height*0.001),
+          FlatButton(
+            child: Text(
+              '¿Olvidó contraseña?',
+              style: TextStyle(
+                fontSize: size.width * 0.049,
+                //color: Color.fromRGBO(60, 120, 250, 1),
+                color: Colors.black.withOpacity(0.65),
               ),
             ),
+            onPressed: (){
+
+            },
+          ),
+          SizedBox(height: size.height * 0.01),
+          FlatButton(
+            child: Text(
+              'Registrate',
+              style: TextStyle(
+                fontSize: size.width * 0.06,
+                color: Colors.black.withOpacity(0.6),
+              ),
+            ),
+            onPressed: (){
+              Navigator.pushReplacementNamed(context, RegisterPage.route);
+            },
+          ),
+          
+          SizedBox(
+            height: size.height * 0.075,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _crearImgLogo(Size size){
+    return Center(
+      child: Image.asset(
+        'assets/iconos/logo_porta_01.png',
+        fit: BoxFit.fill,
+        width: size.width * 0.65,
+        height: size.height * 0.165,
+        
+      ),
+    );
+  }
+
+  Widget _crearLoginForm(BuildContext context, Size size, UsuarioBloc usuarioBloc){
+    //para poder hacer scroll a todo lo que haya dentro.
+    return Center(
+      child: Container(
+        width: size.width * 0.72,
+        decoration: BoxDecoration(
+          color: Theme.of(context).backgroundColor,
+          //color: Colors.blueAccent.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(size.width * 0.025),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.85),
+              blurRadius: size.width * 0.06,
+              offset: Offset(
+                1.0,
+                1.0
+              )
+            )
+          ]
+        ),
+        child: Column(
+          children: <Widget>[
+            /**
+             * El SingleCHildScrollView: Para que cuando salga el teclado no salga un 
+             * error de overflow verticalmente.
+             */
+            //SizedBox(height: size.height * 0.01),
+            _crearInputEmail(),
+            //SizedBox(height: size.height * 0.01),
+            SizedBox(
+              height: size.height * 0.001,
+              child: Container(
+                height: size.height * 0.001,
+                color: Colors.black.withOpacity(0.25),
+              ),
+            ),
+            _crearInputPassword(),
+            
+          ],
+        ),
       ),
     );
   }
@@ -182,8 +158,16 @@ class _LoginPageState extends State<LoginPage> {
       child: TextFormField(
         initialValue: _emailValue,
         decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.black,
+              width: 0.0,
+              style: BorderStyle.none
+              
+            )
+          ),
           icon: Icon(Icons.account_circle),
-          labelText: 'email',
+          //labelText: 'email',
 
         ),
         onChanged: (String newValue){
@@ -200,8 +184,16 @@ class _LoginPageState extends State<LoginPage> {
         initialValue: _passwordValue,
         obscureText: true,
         decoration: InputDecoration(
-          icon: Icon(Icons.lock_outline),
-          labelText: 'Contraseña',
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.black,
+              width: 0.0,
+              style: BorderStyle.none
+              
+            )
+          ),
+          icon: Icon(Icons.lock),
+          //labelText: 'Contraseña',
         ),
         onChanged: (String newValue){
           _passwordValue = newValue;
@@ -214,9 +206,10 @@ class _LoginPageState extends State<LoginPage> {
     return Column(
       children: <Widget>[
         Text(
-          'Ingresar con',
+          'O ingresa con',
           style: TextStyle(
-            fontSize: size.width * 0.04
+            fontSize: size.width * 0.05,
+            color: Colors.black.withOpacity(0.75)
           ),
         ),
         Row(
@@ -243,21 +236,29 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _crearBotonSubmmit(BuildContext context, UsuarioBloc usuarioBloc){
-    return RaisedButton(
-      color: Theme.of(context).primaryColor,
-      textColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      elevation: 0.0,
+  Widget _crearBotonSubmmit(BuildContext context, Size size, UsuarioBloc usuarioBloc){
+    return Center(
+
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 20.0),
-        child: Text('Ingresar', style: TextStyle(fontSize: 16.0),),
+        width: size.width * 0.25,
+        child: FlatButton(   
+          padding: EdgeInsets.symmetric(vertical:size.height * 0.013),
+          color: Colors.grey.withOpacity(0.55),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(size.width * 0.075)
+          ),
+          child: Text(
+            'Ingresa', 
+            style: TextStyle(
+              fontSize: size.width * 0.045,
+              color: Colors.black.withOpacity(0.65)
+            )
+          ),
+          onPressed: (){
+            _clickSubmmit(usuarioBloc);
+          },
+        ),
       ),
-      onPressed: (){
-        _clickSubmmit(usuarioBloc);
-      },
     );
   }
 

@@ -87,4 +87,9 @@ class LugaresBloc{
     await elegirLugar(idLugar, token);
     //cargarLugares(token);
   }
+
+  void dispose(){
+    _lugaresController.close();
+    _elegidoController.close();
+  }
 }

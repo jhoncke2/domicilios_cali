@@ -70,7 +70,7 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
               'Cuenta',
               style: TextStyle(
                 fontSize: size.width * 0.042,
-              ),  
+              ),
             )
           ),
       ],

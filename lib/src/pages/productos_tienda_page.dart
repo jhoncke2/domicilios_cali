@@ -2,7 +2,7 @@ import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/widgets/DrawerWidget.dart';
-import 'package:domicilios_cali/src/widgets/productos/lista_productos_widget.dart';
+import 'package:domicilios_cali/src/widgets/productos/productos_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -60,7 +60,7 @@ class ProductosTiendaPage extends StatelessWidget {
           SizedBox(height: size.height * 0.01,),
           _crearFiltros(context, size),
           SizedBox(height: size.height * 0.01,),
-          ListaProductosWidget(
+          ProductosWidget(
             widthPercent: 1,
             heightPercent: 0.72,
           ),

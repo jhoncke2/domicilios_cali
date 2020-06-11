@@ -46,4 +46,8 @@ class Provider extends InheritedWidget{
   static NavigationBloc navigationBloc(BuildContext context){
     return context.dependOnInheritedWidgetOfExactType<Provider>()._navigationBloc;
   }
+
+  void dispose(){
+    _lugaresBloc.dispose();
+  }
 }

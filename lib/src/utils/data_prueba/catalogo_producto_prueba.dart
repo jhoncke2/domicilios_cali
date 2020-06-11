@@ -79,7 +79,7 @@ class CatalogoProductoPrueba{
     //ropa
     'https://www.stickpng.com/assets/images/580b57fbd9996e24bc43bf55.png',
     'https://vignette.wikia.nocookie.net/elderscrolls/images/6/69/Steel_Plate_Helmet.png/revision/latest?cb=20170829175001',
-    'https://images-na.ssl-images-amazon.com/images/I/71O1nz1j%2BsL._AC_SY355_.jpg',
+    'https://ae01.alicdn.com/kf/HTB1UuWPQFXXXXb6XXXXq6xXFXXX0/Disfraz-T-REX-de-dinosaurio-inflable-para-la-Expo-de-Anime-traje-de-dinosaurio-inflable-disfraces.jpg_960x960.jpg',
     'https://www.centraldesuministrosgs.com/wp-content/uploads/2018/03/DSC04732-1.jpg',
     //medicina
     'https://pm1.narvii.com/6910/cc146dffd7c97de2388f97201f6a8171f130aadcr1-346-443v2_uhq.jpg',
@@ -87,8 +87,8 @@ class CatalogoProductoPrueba{
     'https://vignette.wikia.nocookie.net/elderscrolls/images/7/73/Potion_of_blood.png/revision/latest?cb=20120918003630',
     'https://vignette.wikia.nocookie.net/leagueoflegends/images/3/34/Mana_Potion_item_old.png/revision/latest/top-crop/width/220/height/220?cb=20180514000829',
     //mercado
-    'https://images-na.ssl-images-amazon.com/images/I/810aMw9j0VL._SL1500_.jpg',
-    'https://portafoliodianamaribelruizgutierrezsena.files.wordpress.com/2016/05/ramito.png?w=620',
+    'https://www.sevenmarket.co/imagenes/productos/1562501293-4b-papas-margaritas-large.jpg',
+    'https://lh3.googleusercontent.com/JGbdN1iKOdIn7klK8pEG4MPsABzYZbZ9BCy5ZUR4ERoa6U00DsU2d0Hbi5vmR3RihZ0iVTa_px7rD3Im6o7lo1BDDG6fzXviX5hs',
     'https://exitocol.vtexassets.com/arquivos/ids/654495-800-auto?width=800&height=auto&aspect=true',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ1Tq_iBf2UodcECgAg35n67Z3PWeGAQHp9etXslAp9kDJlFtCF&usqp=CAU',
     //pagos
@@ -133,10 +133,10 @@ class CatalogoProductoPrueba{
 
   final categorias = [
     //comida rápida
-    'comida',
-    'comida',
-    'comida',
-    'comida',
+    'comida preparada',
+    'comida preparada',
+    'comida preparada',
+    'comida preparada',
     //tecnologia
     'tecnologia',
     'tecnologia',

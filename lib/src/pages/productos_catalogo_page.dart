@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 //importaciones locales
 import 'package:domicilios_cali/src/utils/menu_categorias.dart';
 import 'package:domicilios_cali/src/widgets/DrawerWidget.dart';
-import 'package:domicilios_cali/src/widgets/productos/lista_productos_widget.dart';
+import 'package:domicilios_cali/src/widgets/productos/productos_widget.dart';
 
 
 class ProductosCatalogoPage extends StatelessWidget with MenuCategorias{
@@ -149,7 +149,7 @@ class ProductosCatalogoPage extends StatelessWidget with MenuCategorias{
   }
 
   Widget _crearCatalogo(BuildContext context, Size size){
-    return ListaProductosWidget(
+    return ProductosWidget(
       heightPercent: 0.87,
     );
   }

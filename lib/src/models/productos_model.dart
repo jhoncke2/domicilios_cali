@@ -6,7 +6,6 @@ import 'package:domicilios_cali/src/utils/data_prueba/catalogo_producto_prueba.d
 
 class ProductosModel with CatalogoProductoPrueba{
   List<ProductoModel> productos = new List();
-
   ProductosModel.fromJsonList(List<dynamic> jsonList){
     if(jsonList == null) return;
     jsonList.forEach((actual){
@@ -18,13 +17,11 @@ class ProductosModel with CatalogoProductoPrueba{
   /* ***********************************************
    *    Pruebas
    *********************************************** */
-  List<ProductoModel> catalogoPrueba = new List();
+  List<ProductoModel> _productosPrueba = new List();
 
-  
-  List<ProductoModel> getCatalogoProductosPrueba(){
-    final productosPrueba = new List<ProductoModel>();
+  ProductosModel.prueba(){
     for(int i = 0; i < 24; i++){
-      productosPrueba.add(
+      _productosPrueba.add(
         ProductoModel(
           id: i,
           nombre: nombres[i],
@@ -38,7 +35,12 @@ class ProductosModel with CatalogoProductoPrueba{
         )
       );
     }
-    return productosPrueba;
+  }
+
+  List<ProductoModel> get productosPrueba => _productosPrueba;
+
+  List<ProductoModel> productosPruebaPorCategoria(String categoria){
+    return _productosPrueba.where((ProductoModel producto)=>producto.categoria == categoria).toList();
   }
 }
 

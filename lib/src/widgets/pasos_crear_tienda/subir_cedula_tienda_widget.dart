@@ -43,13 +43,13 @@ class _SubirCedulaTiendaWidgetState extends State<SubirCedulaTiendaWidget> {
   Widget _crearInputImagen(BuildContext context, Size size, int indexCampo){
     File imagenInput = (indexCampo==0)? _imagenCedula1:_imagenCedula2;
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(size.width * 0.25)
-      ),
       height: size.height * 0.3,
       width: size.width * 0.5,
       child: (imagenInput == null)?
       RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(size.width * 0.04)
+        ),
         color: Colors.grey.withOpacity(0.45),
         child: Icon(
           Icons.add_box,
