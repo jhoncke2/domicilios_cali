@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
@@ -28,11 +29,6 @@ class _PerfilPageState extends State<PerfilPage> {
     //lugaresBloc.cargarLugares(usuarioBloc.token);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text('Mi Perfil'),
-        )
-      ),
       body: Column(
         children: [
           _crearDatosPerfil(size, usuarioBloc),
@@ -46,7 +42,7 @@ class _PerfilPageState extends State<PerfilPage> {
           _crearBotonCambiarRadio(context, size),
         ],
       ),
-      drawer: DrawerWidget(),
+      bottomNavigationBar: BottomBarWidget(),
     );
   }
 

@@ -21,7 +21,7 @@ class _ProductosPorCategoriasWidgetState extends State<ProductosPorCategoriasWid
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      height: size.height * 0.76,
+      height: size.height * 0.75,
       child: ListView(
         padding: EdgeInsets.all(0.0),
         children: categorias.map((categoria){
@@ -32,7 +32,6 @@ class _ProductosPorCategoriasWidgetState extends State<ProductosPorCategoriasWid
   }
 
   Widget _crearListaPorCategoria(BuildContext context, Size size, String nombreCategoria){
-
     List<ProductoModel> productosPorCategoria = _productosModel.productosPruebaPorCategoria(nombreCategoria);
     List<Widget> productosWidgets = [];
     for(int i = 0; i < productosPorCategoria.length; i++){
@@ -48,7 +47,7 @@ class _ProductosPorCategoriasWidgetState extends State<ProductosPorCategoriasWid
       );
     }
     return Container(
-      height: size.height * 0.32,
+      height: size.height * 0.28,
       width: size.width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +61,7 @@ class _ProductosPorCategoriasWidgetState extends State<ProductosPorCategoriasWid
           ),
           SizedBox(height: size.height * 0.01),
           Container(
-            height: size.height * 0.25,
+            height: size.height * 0.22,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: productosWidgets,

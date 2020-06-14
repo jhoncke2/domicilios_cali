@@ -1,7 +1,10 @@
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/tienda_bloc.dart';
+import 'package:domicilios_cali/src/pages/cuenta_page.dart';
+import 'package:domicilios_cali/src/pages/perfil_page.dart';
 import 'package:domicilios_cali/src/widgets/pasos_crear_tienda/confirmar_mapa_tienda_widget.dart';
 import 'package:domicilios_cali/src/widgets/pasos_crear_tienda/crear_direccion_tienda_widget.dart';
+import 'package:domicilios_cali/src/widgets/pasos_crear_tienda/crear_domiciliarios_tienda_widget.dart';
 import 'package:domicilios_cali/src/widgets/pasos_crear_tienda/crear_horarios_tienda_page.dart';
 import 'package:domicilios_cali/src/widgets/pasos_crear_tienda/subir_cedula_tienda_widget.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +45,8 @@ class _PasosCrearTiendaPageState extends State<PasosCrearTiendaPage> {
         return ConfirmarMapaTiendaWidget();
       case 4:
         return CrearHorariosTiendaPage();
+      case 5:
+        return CrearDomiciliariosTiendaWidget();
       default:
         return Container();
     }
@@ -72,21 +77,23 @@ class _PasosCrearTiendaPageState extends State<PasosCrearTiendaPage> {
   }
 
   Widget _crearBotonIzquierdoNavegacion(BuildContext context, Size size){
-    return (_indexPaso == 1)? Container()
-      : Positioned(
+    return Positioned(
         bottom: size.height * 0.01,
         left: size.width * 0.04,
         child: FlatButton(
           color: (_indexPaso!=3)?Colors.white.withOpacity(0.4):null,
           child: Row(
-            children: [        
+            children: [     
+                 
               Icon(
-                Icons.navigate_before,
+                ((_indexPaso > 1)?
+                Icons.navigate_before
+                :Icons.close),
                 size: size.width * 0.065,
               ),
               SizedBox(width: size.width * 0.025),
               Text(
-                'Anterior',
+                (_indexPaso > 1)?'Anterior':'Cancelar',
                 style: TextStyle(
                   fontSize: size.width * 0.045,
                 ),
@@ -95,10 +102,16 @@ class _PasosCrearTiendaPageState extends State<PasosCrearTiendaPage> {
             ],
           ),
           onPressed: (){
-            _indexPaso--;
-            setState(() {
+            if(_indexPaso == 1){
+              Navigator.pushReplacementNamed(context, CuentaPage.route);
+            }
+            else{
+              _indexPaso--;
+              setState(() {
               
             });
+            }
+            
           },
         ),
       );
@@ -126,7 +139,10 @@ class _PasosCrearTiendaPageState extends State<PasosCrearTiendaPage> {
           ],
         ),
         onPressed: (){
-          _siguientePaso(tiendaBloc);
+          if(_indexPaso==5)
+            Navigator.pushReplacementNamed(context, PerfilPage.route);
+          else
+            _siguientePaso(tiendaBloc);
         },
       ),
     );

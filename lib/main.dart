@@ -3,7 +3,6 @@ import 'package:domicilios_cali/src/pages/cuenta_page.dart';
 import 'package:domicilios_cali/src/pages/mapa_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_crear_tienda_page.dart';
 import 'package:domicilios_cali/src/pages/perfil_page.dart';
-import 'package:domicilios_cali/src/pages/tienda_create_page.dart';
 import 'package:flutter/material.dart';
 //importaciones locales
 import 'package:domicilios_cali/src/pages/home_page.dart';
@@ -31,7 +30,7 @@ class MyApp extends StatelessWidget {
     return Provider(
       child: MaterialApp(
         title: 'Domicilios',
-        initialRoute: PasosCrearTiendaPage.route,
+        initialRoute: LoginPage.route,
         routes: {
           LoginPage.route:(BuildContext context)=>LoginPage(),
           RegisterPage.route:(BuildContext context)=>RegisterPage(),
@@ -39,7 +38,6 @@ class MyApp extends StatelessWidget {
           CuentaPage.route:(BuildContext context)=>CuentaPage(),
           PerfilPage.route:(BuildContext context)=>PerfilPage(),
           PasosCrearTiendaPage.route:(BuildContext context)=>PasosCrearTiendaPage(),
-          TiendaCreatePage.route:(BuildContext context)=>TiendaCreatePage(),
           
           ProductosCatalogoPage.route:(BuildContext context)=>ProductosCatalogoPage(),
           ProductoDetailPage.route:(BuildContext context)=>ProductoDetailPage(),

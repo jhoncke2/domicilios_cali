@@ -49,16 +49,19 @@ class ProductoCardWidget extends StatelessWidget {
               child: Text(
                 producto.nombre,
                 style: TextStyle(
-                  fontSize: 17.0,
+                  fontSize: size.width * 0.04,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            Text(
-                //\$ para que tome a $ como un caracter normal y no como uno especial.
-            '${producto.categoria.toString()}',
-              style: TextStyle(
-                fontSize: size.width * 0.035,  
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: size.width  * 0.27),
+              child: Text(
+                '${producto.categoria.toString()}',
+                style: TextStyle(
+                  fontSize: size.width * 0.032,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             Container(

@@ -17,7 +17,6 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
     NavigationBloc navigationBloc = Provider.navigationBloc(context);
     LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
     UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
@@ -53,8 +52,6 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               ),
               Container(
                 margin: EdgeInsets.only(left: size.width * 0.055),
-                //height: size.height * 0.085,
-                //width: size.width * 0.085,
                 child: Image.asset(
                   'assets/iconos/logo_porta_02.png',
                   fit: BoxFit.fill,

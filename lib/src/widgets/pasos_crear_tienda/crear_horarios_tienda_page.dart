@@ -63,8 +63,7 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
         ),
       ),
     );
-    elementos.add(SizedBox(height: size.height * 0.03));
-
+    elementos.add(SizedBox(height: size.height * 0.02));
     _horarios.forEach((horario) {
       elementos.add(
         SizedBox(height: size.height * 0.04),
@@ -72,11 +71,10 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
       elementos.add(
         Container(
           width: double.infinity,
-          
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
+                //padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
                 margin: EdgeInsets.symmetric(horizontal: size.width * 0.02),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.85),
@@ -98,10 +96,7 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
                   ]
                 ),
                 child: Column(
-                  children: [
-                    SizedBox(
-                      height: size.height * 0.02,
-                    ),
+                  children: [        
                     _crearElementosTimePickers(size, horario),
                     _crearElementosDiasDeHorario(size, horario, elementos),
                   ],
@@ -109,15 +104,14 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
               ),
               Container(
                 width: size.width * 0.12,
-                child: ((_horarios.length > 0)?
+                child: ((_horarios.length > 1)?
                 IconButton(
                   icon: Icon(
                     Icons.close,
                     color: Colors.redAccent.withOpacity(0.9),
                   ),
                   onPressed: (){
-                    if(_horarios.length > 0)
-                      _eliminarModuloHorario(horario);
+                    _eliminarModuloHorario(horario);
                   },
                 )
                 :Container()),
@@ -132,61 +126,73 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
     elementos.add(SizedBox(height: size.height * 0.13,));
   }
 
-  void _eliminarModuloHorario(HorarioModel horario){
-    _horarios.remove(horario);
-    _diasSeleccionados.removeWhere((dia)=>horario.dias.contains(dia));
-    setState(() {
-      
-    });
-  }
-
   Widget _crearElementosTimePickers(Size size, HorarioModel horario){
-    return Column(
-      children: <Widget>[
-        Text(
-          'Rango de horas',
-          style: TextStyle(
-            fontSize: size.width * 0.062,
-            color: Colors.black.withOpacity(0.65)
+    return Container(
+      decoration: BoxDecoration(
+        //color: Colors.deepPurpleAccent.withOpacity(0.45),
+        color: Colors.blueGrey.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(size.width * 0.04),
+      ),
+      
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: size.height * 0.018,
           ),
-        ),
-        SizedBox(
-          height: size.height * 0.012,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            RaisedButton(
-              color: Colors.white.withOpacity(0.75),
-              child: Text(
-                'desde las ${horario.horaInicial.hour}:${horario.horaInicial.minute}',
-                style: TextStyle(
-                  fontSize: size.width * 0.04
+          Text(
+            'Rango de horas',
+            style: TextStyle(
+              fontSize: size.width * 0.062,
+              color: Colors.black.withOpacity(0.75)
+            ),
+          ),
+          SizedBox(
+            height: size.height * 0.012,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              RaisedButton(
+               shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(size.width * 0.017)
+               ),
+                color: Colors.white.withOpacity(0.85),
+                child: Text(
+                  'desde las ${horario.horaInicial.hour}:${horario.horaInicial.minute}',
+                  style: TextStyle(
+                    fontSize: size.width * 0.04
+                  ),
                 ),
+                onPressed: (){
+                  _mostrarTimePicker(context, horario, 1);
+                },
               ),
-              onPressed: (){
-                _mostrarTimePicker(context, horario, 1);
-              },
-            ),
-            SizedBox(
-              width: size.width * 0.05,
-            ),
-            RaisedButton(
-              color: Colors.white.withOpacity(0.75),
-              child: Text(
-                'hasta las ${horario.horaFinal.hour}:${horario.horaFinal.minute}',
-                style: TextStyle(
-                  fontSize: size.width * 0.035
+              SizedBox(
+                width: size.width * 0.05,
+              ),
+              RaisedButton(
+               shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(size.width * 0.017)
+               ),
+                color: Colors.white.withOpacity(0.85),
+                child: Text(
+                  'hasta las ${horario.horaFinal.hour}:${horario.horaFinal.minute}',
+                  style: TextStyle(
+                    fontSize: size.width * 0.035
+                  ),
                 ),
+                onPressed: (){
+                  _mostrarTimePicker(context, horario, 2);
+                },
               ),
-              onPressed: (){
-                _mostrarTimePicker(context, horario, 2);
-              },
-            ),
-            
-          ],
-        ),
-      ],
+              
+            ],
+          ),
+          SizedBox(
+            height: size.height * 0.025,
+          )
+        ],
+      ),
     );
   }
 
@@ -216,40 +222,44 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
       bool horarioTieneDia = horario.dias.contains(diaActual);
       if(!_diasSeleccionados.contains(diaActual) || horarioTieneDia){
         botonesDias.add(
-          Row(
-            children: [
-              Checkbox(
-                value: horarioTieneDia,
-                onChanged: (bool selected){
-                  horarioTieneDia = selected;
-                  if(selected){
-                    horario.dias.add(diaActual);
-                    _diasSeleccionados.add(diaActual);
-                  }               
-                  else{
-                    horario.dias.remove(diaActual);
-                    _diasSeleccionados.remove(diaActual);
-                  }                 
-                  setState(() {
-                    
-                  });
-                }
-              ),
-              Text(
-                diaActual,
-                style: TextStyle(
-                  fontSize: size.width * 0.045
+          Container(
+            height: size.height * 0.05,
+            child: Row(
+              children: [
+                Checkbox(
+                  activeColor: Colors.deepPurpleAccent.withOpacity(0.675),
+                  value: horarioTieneDia,
+                  onChanged: (bool selected){
+                    horarioTieneDia = selected;
+                    if(selected){
+                      horario.dias.add(diaActual);
+                      _diasSeleccionados.add(diaActual);
+                    }               
+                    else{
+                      horario.dias.remove(diaActual);
+                      _diasSeleccionados.remove(diaActual);
+                    }                 
+                    setState(() {
+                      
+                    });
+                  }
                 ),
-              )
-            ],
+                Text(
+                  diaActual,
+                  style: TextStyle(
+                    fontSize: size.width * 0.045
+                  ),
+                )
+              ],
+            ),
           ),
         );
       }
     });
     botonesDias.add(SizedBox(height: size.height * 0.01));
     return Container(
+      padding: EdgeInsets.symmetric(horizontal:size.width * 0.025),
       child: Column(
-        
         crossAxisAlignment: CrossAxisAlignment.start,
         children: botonesDias
       ),
@@ -289,8 +299,27 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
             fontSize: size.width * 0.06,
           ),
         ),
-        onPressed: (_diasSeleccionados.length < 8)? _agregarHorario : null,
+        onPressed: (_verificarCondicionesAgregarHorario())? _agregarHorario : null,
       ),
     );
+  }
+
+  bool _verificarCondicionesAgregarHorario(){
+    if(_diasSeleccionados.length < 8){
+      for(int i = 0; i < _horarios.length; i++){
+        if(_horarios[i].dias.length == 0)
+          return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  void _eliminarModuloHorario(HorarioModel horario){
+    _horarios.remove(horario);
+    _diasSeleccionados.removeWhere((dia)=>horario.dias.contains(dia));
+    setState(() {
+      
+    });
   }
 }

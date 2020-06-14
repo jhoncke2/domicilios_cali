@@ -16,23 +16,23 @@ Future<void> tomarFotoDialog(BuildContext context, Size size, Map<String, File> 
           borderRadius: BorderRadius.circular(size.width * 0.035)
         ),
         child: Container(
-          color: Colors.grey.withOpacity(0.15),
+          color: Colors.grey.withOpacity(0.45),
           padding: EdgeInsets.symmetric(vertical:0.0),
           height: size.height * 0.24,
           width: size.width * 0.8,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
+            //mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                
                 decoration: BoxDecoration(
                   color: Colors.grey.withOpacity(0.35),
                   border: Border(
                     bottom: BorderSide(
                       color: Colors.black.withOpacity(0.65)
                     )
-                  )
+                  ),
+                  
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -42,7 +42,7 @@ Future<void> tomarFotoDialog(BuildContext context, Size size, Map<String, File> 
                       child: IconButton(
                         icon: Icon(
                           Icons.cancel,
-                          color: Colors.redAccent.withOpacity(0.65),
+                          color: Colors.redAccent.withOpacity(0.9),
                         ),
                         onPressed: (){
                           Navigator.of(context).pop();
@@ -54,7 +54,7 @@ Future<void> tomarFotoDialog(BuildContext context, Size size, Map<String, File> 
               ),
               CupertinoButton(
                 borderRadius: BorderRadius.all(Radius.circular(0.0)),
-                //color: Colors.cyanAccent.withOpacity(0.2),
+                //color: Colors.blueGrey.withOpacity(0.35),
                 child: Text(
                   'Subir imagen',
                   style: TextStyle(
@@ -74,7 +74,7 @@ Future<void> tomarFotoDialog(BuildContext context, Size size, Map<String, File> 
               ),
               CupertinoButton(
                 borderRadius: BorderRadius.all(Radius.circular(0.0)),
-                //color: Colors.cyanAccent.withOpacity(0.2),
+                //color: Colors.blueGrey.withOpacity(0.35),
                 child: Text(
                   'Tomar foto',
                   style: TextStyle(
@@ -95,6 +95,8 @@ Future<void> tomarFotoDialog(BuildContext context, Size size, Map<String, File> 
     }
   );
 }
+
+
 
 Future<File> _procesarImagen(BuildContext context, ImageSource imageSource)async{
   PickedFile pickedFile = await _imagePicker.getImage(

@@ -39,8 +39,9 @@ class _ProductosWidgetState extends State<ProductosWidget> {
     Size size = MediaQuery.of(context).size;
     return Container(
       margin: EdgeInsets.symmetric(horizontal: size.width * widget.horizontalMarginPercent),
+      padding: EdgeInsets.symmetric(vertical: 0),
       //0.18 es el porcentaje de width de pantalla que tiene cada card (?).
-      height: size.height * 0.75,
+      height: size.height * 0.755,
       width: size.width,     
       decoration: BoxDecoration(
         color: Colors.white70,
@@ -49,10 +50,11 @@ class _ProductosWidgetState extends State<ProductosWidget> {
        * En 2 casos lo necesito scrollable, en 1 no
        */
       child: GridView.count(
+          padding: EdgeInsets.symmetric(vertical: size.height * 0.035),
           crossAxisCount: 3,
           mainAxisSpacing: size.width * 0.028,
           crossAxisSpacing: size.height * 0.03,
-          childAspectRatio: 0.62,
+          childAspectRatio: 0.58,
           children: _productosAMostrar.map((producto) => ProductoCardWidget(producto: producto,)).toList(),
       ),
     );

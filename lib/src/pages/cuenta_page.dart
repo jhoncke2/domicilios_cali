@@ -23,9 +23,9 @@ class _CuentaPageState extends State<CuentaPage> {
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
       child: Column(
         children: <Widget>[
-          SizedBox(height: size.height * 0.04),
+          SizedBox(height: size.height * 0.065),
           HeaderWidget(),
-          SizedBox(height: size.height * 0.012,),
+          SizedBox(height: size.height * 0.012),
           ProductosPorCategoriasWidget(),
         ],
       ),

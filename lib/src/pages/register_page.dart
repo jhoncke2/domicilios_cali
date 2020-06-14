@@ -67,7 +67,7 @@ class _RegisterPageState extends State<RegisterPage> {
           SizedBox(
             height: size.height * 0.015,
           ),
-          _crearLoginForm(context, size, usuarioBloc),
+          _crearRegisterForm(context, size, usuarioBloc),
           SizedBox(
             height: size.height * 0.05,
           ),
@@ -107,7 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _crearLoginForm(BuildContext context, Size size, UsuarioBloc usuarioBloc){
+  Widget _crearRegisterForm(BuildContext context, Size size, UsuarioBloc usuarioBloc){
 
     final size = MediaQuery.of(context).size;
     //para poder hacer scroll a todo lo que haya dentro.
@@ -132,7 +132,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         child: Column(
           children: <Widget>[
-            _crearInputNombres(),
+            _crearInputNombre(),
             SizedBox(
               height: size.height * 0.001,
               child: Container(
@@ -172,7 +172,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _crearInputNombres(){
+  Widget _crearInputNombre(){
     return Container(
       padding: EdgeInsets.symmetric(horizontal:20.0),
       child: TextField(
