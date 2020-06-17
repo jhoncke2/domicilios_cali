@@ -21,7 +21,7 @@ class _ProductosPorCategoriasWidgetState extends State<ProductosPorCategoriasWid
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      height: size.height * 0.75,
+      height: size.height * 0.74,
       child: ListView(
         padding: EdgeInsets.all(0.0),
         children: categorias.map((categoria){

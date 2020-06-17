@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           //backgroundColor: Color.fromRGBO(50, 196, 171, 1),//verde azulado
           //backgroundColor: Color.fromRGBO(240, 200, 102, 1),
-          primaryColor: Color.fromRGBO(13, 162, 158, 1),
+          primaryColor: Color.fromRGBO(103, 58, 183, 1),
           backgroundColor: Color.fromRGBO(255, 255, 255, 1),   
           secondaryHeaderColor: Color.fromRGBO(0, 150, 136, 1),
           //primaryColor: Colors.white,

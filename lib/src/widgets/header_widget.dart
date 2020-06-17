@@ -4,9 +4,9 @@ import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
 import 'package:domicilios_cali/src/pages/pasos_crear_tienda_page.dart';
+import 'package:domicilios_cali/src/pages/perfil_page.dart';
 import 'package:flutter/material.dart';
 class HeaderWidget extends StatefulWidget {
-
   @override
   _HeaderWidgetState createState() => _HeaderWidgetState();
 }
@@ -27,16 +27,15 @@ class _HeaderWidgetState extends State<HeaderWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            //padding: EdgeInsets.only(right: size.width * 0.25),
-            child: _crearDropdownDirecciones(size, lugaresBloc, token)
-          ),
-          
+          //Container(
+          //  child: _crearDropdownDirecciones(size, lugaresBloc, token)
+          //),
+          _crearPopUpDirecciones(size, lugaresBloc, token),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               ((navigationBloc.index==3)?
-                _crearPopUpMenu(context, size)
+                _crearPopUpNavigator(context, size)
               : Container()),
               Container(
                 width: size.width * 0.0005,
@@ -66,7 +65,121 @@ class _HeaderWidgetState extends State<HeaderWidget> {
       ),
     );
   }
+  Widget _crearPopUpDirecciones(Size size, LugaresBloc lugaresBloc, String token){
+    return StreamBuilder(
+      stream: lugaresBloc.lugaresStream,
+      builder: (BuildContext context, AsyncSnapshot<List<LugarModel>> snapshot){
+        if(snapshot.hasData){
+          List<LugarModel> lugares = snapshot.data;
+          LugarModel lugarElegido;
+          List<PopupMenuEntry<int>> popupItems = [];
+          for(int i = 0; i < snapshot.data.length; i++){
+            LugarModel lugar = lugares[i];
+            if(lugar.elegido)
+              lugarElegido = lugar;
+            popupItems.add(
+              PopupMenuItem(
+                value: i,
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      width: size.width * 0.095,
+                      height: size.height * 0.03,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: ((!lugar.elegido)? 
+                          Border.all(
+                            width: 1,
+                            color: Colors.black.withOpacity(0.9)
+                          )
+                          :null
+                          ),
+                        color: (lugar.elegido)? Color.fromRGBO(192, 214, 81, 1) : Colors.white,
+                      ),
+                    ),
+                    SizedBox(
+                      width: size.width * 0.01,
+                    ),
+                    Center(
+                      child: Text(
+                        (lugar.nombre == 'Tu ubicación')? lugar.nombre : lugar.direccion, 
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.9),
+                          fontSize: size.width * 0.045
+                        ),
+                      )
+                    ),
+                  ],
+                ),
+              )
+            );
+          }
+          popupItems.add(
+            PopupMenuItem(
+              enabled: false,
+              value: 0,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal:size.height * 0.015),
+                child: Center(
+                  child: FlatButton(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(size.width * 0.04)),
+                    child: Text('otra dirección'),
+                    color: Colors.grey.withOpacity(0.8),
+                    onPressed: (){
 
+                    },
+                  ),
+                ),
+              ),
+            )
+          );
+          return PopupMenuButton<int>(
+            onSelected: (int index){
+              LugarModel elegido = snapshot.data[index];
+              print('elegido');
+              lugaresBloc.elegirLugar(elegido.id, token);
+              setState(() {
+                
+              });
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(size.width * 0.048)
+            ),
+            offset: Offset(
+              -size.width * 0.04,
+              size.height * 0.155,
+            ),
+            padding: EdgeInsets.all(0.0),
+            child: Row(
+              children: <Widget>[
+                Icon(
+                  Icons.place,
+                  color: Colors.grey.withOpacity(0.8),
+                  size: size.width * 0.06,
+                ),
+                SizedBox(
+                  width: size.width * 0.02
+                ),
+                Text(
+                  lugarElegido.direccion,
+                  style: TextStyle(
+                    fontSize: size.width * 0.047,
+                    color: Colors.black.withOpacity(0.7)
+
+                  ),
+                )
+              ],
+            ),
+            itemBuilder: (BuildContext context){
+              return popupItems;
+            },
+          );
+          
+        }
+      },
+    );
+  }
   Widget _crearDropdownDirecciones(Size size, LugaresBloc lugaresBloc, String token){
     //_dropdownValue = _lugaresPrueba[0].nombre;
     DropdownButton<String> dropDown = DropdownButton<String>( 
@@ -87,13 +200,17 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               value: lugar.nombre,
               child: Row(
                 children: <Widget>[
-                  Icon(
-                    Icons.place,
-                    color: Colors.grey.withOpacity(0.8),
-                    size: size.width * 0.065,
+                  Container(
+                    width: size.width * 0.095,
+                    height: size.height * 0.03,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: (lugar.elegido)? Colors.greenAccent : Colors.white,
+                      
+                    ),
                   ),
                   SizedBox(
-                    width: size.width * 0.02,
+                    width: size.width * 0.01,
                   ),
                   Center(
                     child: Text(
@@ -108,9 +225,35 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               ),
             );
           }).toList();
-          dropDown = DropdownButton<String>( 
+          dropDown = DropdownButton<String>(
+            itemHeight: size.height * 0.08,
+            //isExpanded: true, 
             value: _dropdownValue,
             items: items,
+            selectedItemBuilder: (BuildContext context){
+              List<Widget> elementos = snapshot.data.map((lugar){
+                return Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.place,
+                      color: Colors.grey.withOpacity(0.85),
+                    ),
+                    SizedBox(
+                      width: size.width * 0.04,
+                    ),
+                    Text(
+                      (lugar.nombre == 'Tu ubicación')? lugar.nombre : lugar.direccion, 
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: size.width * 0.045
+                      ),
+                    )
+                    
+                  ],
+                );
+              }).toList();
+              return elementos;
+            },
             onChanged: (newValue){
               LugarModel elegido = snapshot.data.firstWhere((lugar)=>lugar.nombre == newValue);
               lugaresBloc.elegirLugar(elegido.id, token);
@@ -126,16 +269,17 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     );
   }
 
-  Widget _crearPopUpMenu(BuildContext context, Size size){
+  Widget _crearPopUpNavigator(BuildContext context, Size size){
     return PopupMenuButton<int>(
       onSelected: (int index){
-        print('*******************');
-        print('selected:');
-        print('element: $index');
         switch(index){
+          case 1:
+            Navigator.pushNamed(context, PerfilPage.route);
+            break;
           case 3:
             Navigator.pushReplacementNamed(context, PasosCrearTiendaPage.route);
             break;
+          
           default:
             break;
         }
@@ -149,6 +293,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
       ),
       padding: EdgeInsets.all(0.0),
       icon: Icon(Icons.arrow_drop_down),
+      
+      tooltip: 'tooltip',
       itemBuilder: (BuildContext context){
         return [
           PopupMenuItem(
@@ -187,6 +333,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             height: size.height * 0.08,
             
           ),
+          
         ];
       },
     );

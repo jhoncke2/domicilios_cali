@@ -7,7 +7,6 @@ import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
 import 'package:domicilios_cali/src/utils/data_prueba/usuarios_prueba.dart';
-import 'package:domicilios_cali/src/widgets/DrawerWidget.dart';
 import 'package:domicilios_cali/src/widgets/mapa_tienda_widget.dart';
 import 'package:flutter/material.dart';
 class PerfilPage extends StatefulWidget with UsuariosPrueba{
@@ -29,202 +28,216 @@ class _PerfilPageState extends State<PerfilPage> {
     //lugaresBloc.cargarLugares(usuarioBloc.token);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Column(
+      body: ListView(
+        padding: EdgeInsets.symmetric(horizontal: size.width * 0.09),
         children: [
-          _crearDatosPerfil(size, usuarioBloc),
           SizedBox(
-            height: size.height * 0.04,
+            height: size.height * 0.09,
+          ),    
+          _crearTitulo(size),
+          SizedBox(
+            height: size.height * 0.02,
           ),
-          _crearMapa(lugaresBloc),
+          _crearFoto(size, widget.usuarios[0]['imagen_url']),
+          SizedBox(
+            height: size.height * 0.035,
+          ),
+          //_crearDatosPerfil(size, usuarioBloc),
+          _crearEspacioDato(size, 'Nombre', usuarioBloc.usuario.name),
+          SizedBox(
+            height: size.height * 0.02,
+          ),
+          _crearEspacioDato(size, 'Correo', usuarioBloc.usuario.email),
+          SizedBox(
+            height: size.height * 0.02,
+          ),
+          _crearEspacioDato(size, 'Celular', '3133854589'),
+          SizedBox(
+            height: size.height * 0.02,
+          ),
+          _crearMapa(size, lugaresBloc),
           SizedBox(
             height: size.height * 0.005
           ),
-          _crearBotonCambiarRadio(context, size),
+          _crearCampoHorarios(size, []),
+          SizedBox(
+            height: size.height * 0.05
+          ),
+           _crearSolicitarPago(size),
+          SizedBox(
+            height: size.height * 0.05
+          ),
+          //_crearBotonCambiarRadio(context, size),
         ],
       ),
       bottomNavigationBar: BottomBarWidget(),
     );
   }
 
-  Widget _crearDatosPerfil(Size size, UsuarioBloc usuarioBloc){
-    return Column(
-      children: [
-        SizedBox(
-          height: size.height * 0.01,
-        ),      
-        Container(
-          decoration: BoxDecoration(
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                color: Colors.black45,
-                blurRadius: 15.0,
-                offset: Offset(
-                  6.0,
-                  6.0
-                ),
-              )
-            ],
+  Widget _crearTitulo(Size size){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        IconButton(
+          iconSize: size.width * 0.06,
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.grey.withOpacity(0.8),
           ),
-          child: Stack(
-            children: [
-              FadeInImage(
-                //height: size.width * 0.55,
-                width: size.width * 0.75,
-                image: NetworkImage(widget.usuarios[0]['imagen_url']),
-                placeholder: AssetImage('assets/placeholder_images/user.png'),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: size.width * 0.62, top: size.width * 0.43),
-                child: IconButton(
-                  iconSize: size.width * 0.1,
-                  color: Colors.white.withOpacity(0.4),
-                  icon: Icon(Icons.image),
-                  onPressed: ()=>_crearImagenDialog(context, usuarioBloc, size),
-                ),
-              )
-            ],
-          ),
+          onPressed: (){
+            Navigator.pop(context);
+          },
         ),
-         SizedBox(
-          height: size.height * 0.015
-        ),
+        
         Text(
-          widget.usuarios[0]['name'],
+          'Perfil',
           style: TextStyle(
-            fontSize: size.width * 0.065,
-            color: Colors.black.withOpacity(0.7)
+            color: Colors.black.withOpacity(0.8),
+            fontSize: size.width * 0.075
           ),
+        ),
+        SizedBox(
+          width: size.width * 0.1,
         ),
 
       ],
     );
   }
 
-  Widget _crearMapa(LugaresBloc lugaresBloc){
-    return StreamBuilder(
-      stream: lugaresBloc.lugaresStream,
-      builder: (BuildContext context, AsyncSnapshot<List<LugarModel>> snapshot){
-        if(snapshot.hasData){
-          if(snapshot.data != null){
-            return MapaTiendaWidget(
-              snapshot.data[0],
-              height: 0.35,
-            );
-          }
-          return Center(
-            child: CircularProgressIndicator()
-          );
-        }
-        return Center(
-          child: CircularProgressIndicator()
-        );
-      },
-    );
-  }
-
-  Widget _crearBotonCambiarRadio(BuildContext context, Size size){
-    return RaisedButton(
-      child: Text(
-        'Cambiar radio',
-        style: TextStyle(
-          fontSize: size.width * 0.055,
-          color: Colors.white54
+  Widget _crearFoto(Size size, String urlFoto){
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal:size.width * 0.22),
+      width: size.width * 0.25,
+      child: FlatButton(
+        color: Colors.redAccent.withOpacity(0.0),
+        child: ClipOval(
+          child: FadeInImage(
+            width: size.width * 0.45,
+            height: size.height * 0.15,
+            fit: BoxFit.fill,
+            image: NetworkImage(urlFoto),
+            placeholder: AssetImage('assets/placeholder_images/user.png'),
+          ),
         ),
+        onPressed: (){
+          
+        },
       ),
-      color: Theme.of(context).secondaryHeaderColor,
-      onPressed: (){
-
-      },
     );
   }
-
-  void _elegirFoto(){
-
-  }
-
-
-  void _crearImagenDialog(BuildContext context,UsuarioBloc usuarioBloc, Size size){
-    showDialog(
-      context: context,
-      builder: (BuildContext buildContext){
-        return Dialog(
-          child: Container(
-            color: Colors.grey.withOpacity(0.35),
-            padding: EdgeInsets.symmetric(vertical:0.0),
-            height: size.height * 0.24,
-            width: size.width * 0.8,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  color: Colors.grey.withOpacity(0.35),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    //crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Container(
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.cancel,
-                            color: Colors.redAccent.withOpacity(0.65),
-                          ),
-                          onPressed: (){
-                            Navigator.pop(context);
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                CupertinoButton(
-                  borderRadius: BorderRadius.all(Radius.circular(0.0)),
-                  //color: Colors.cyanAccent.withOpacity(0.2),
-                  child: Text(
-                    'Subir imagen',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.45),
-                      fontSize: size.width * 0.049
-                    ),
-                  ),
-                  onPressed: ()=>_procesarImagen(context, usuarioBloc, ImageSource.gallery)
-                ),
-                CupertinoButton(
-                  borderRadius: BorderRadius.all(Radius.circular(0.0)),
-                  //color: Colors.cyanAccent.withOpacity(0.2),
-                  child: Text(
-                    'Tomar foto',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.45),
-                      fontSize: size.width * 0.049
-                    ),
-                  ),
-                  onPressed: ()=>_procesarImagen(context, usuarioBloc, ImageSource.camera )
-                ),
-              ],
+  
+  Widget _crearEspacioDato(Size size, String nombreDato, String dato){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          nombreDato,
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.75),
+            fontSize: size.width * 0.045
+          ),
+        ),
+        SizedBox(
+          height: size.height * 0.005,
+        ),
+        Container(
+          width: size.width * 0.8,
+          padding: EdgeInsets.symmetric(vertical: size.height * 0.005, horizontal: size.width * 0.035),
+          decoration: BoxDecoration(
+            color: Colors.grey.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(size.width * 0.085)
+          ),
+          child: Text(
+            dato,
+            style: TextStyle(
+              color: Colors.black.withOpacity(0.75),
+              fontSize: size.width * 0.041
             ),
           ),
-        );
-      }
+        ),
+      ],
     );
   }
 
-  void _procesarImagen(BuildContext context, UsuarioBloc usuarioBloc, ImageSource origenImg)async{
-    PickedFile pickedFile = await _imagePicker.getImage(
-      source: origenImg
+  Widget _crearMapa(Size size, LugaresBloc lugaresBloc){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Cobertura de entrega de producto',
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.75),
+            fontSize: size.width * 0.046
+          ),
+        ),
+        SizedBox(
+          height: size.height * 0.02,
+        ),
+        StreamBuilder(
+          stream: lugaresBloc.lugaresStream,
+          builder: (BuildContext context, AsyncSnapshot<List<LugarModel>> snapshot){
+            if(snapshot.hasData){
+              if(snapshot.data != null){
+                return MapaTiendaWidget(
+                  snapshot.data[0],
+                  height: 0.35,
+                );
+              }
+              return Center(
+                child: CircularProgressIndicator()
+              );
+            }
+            return Center(
+              child: CircularProgressIndicator()
+            );
+          },
+        ),
+      ],
     );
-    _imagenSeleccionada = File(pickedFile.path);
-    if(pickedFile != null){
-      print('**********************');
-      print('pickedFile: ');
-      print(_imagenSeleccionada);
-    }
-    Navigator.of(context).pop();
-  /*
-    await ImagePicker.pickImage(
-    source: origenImg,
-  );
-  */
   }
+
+  Widget _crearCampoHorarios(Size size, List<Map<String, dynamic>> horarios){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Horarios',
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.75),
+            fontSize: size.width * 0.046
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _crearSolicitarPago(Size size){
+    return Container(
+      width: size.width * 0.45,
+      child: FlatButton(
+        padding: EdgeInsets.symmetric(horizontal: 0.0),
+        child: Row(
+          children: <Widget>[
+            Text(
+              'Solicitar pago',
+              style: TextStyle(
+                color: Colors.black.withOpacity(0.75),
+                fontSize: size.width * 0.044
+              ),
+            ),
+            Icon(
+              Icons.arrow_drop_down,
+              color: Colors.black.withOpacity(0.6),
+              size: size.width * 0.05,
+            ),
+          ],
+        ),
+        onPressed: (){
+
+        },
+      ),
+    );
+  }
+
 }
 

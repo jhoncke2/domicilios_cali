@@ -30,9 +30,6 @@ class LugaresBloc{
    * Falta implementar el parámetro usuarioId
    */
   Future<void> cargarLugares(String token)async{
-    print('cargar lugares');
-    print('**********************');
-    print(_cargando);
     if(!_cargando){
       _cargando = true;
       final lugaresResponse = await _lugaresProvider.cargarLugares(token);
@@ -45,8 +42,6 @@ class LugaresBloc{
   }
 
   Future<void> editarLugar(LugarModel lugar, String token)async{
-    print('Lugar desde editar:');
-    print(lugar.toString());
     await _lugaresProvider.editarLugar(lugar, token);
     //cargarLugares(token);
   }
