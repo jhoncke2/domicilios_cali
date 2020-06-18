@@ -3,6 +3,9 @@ import 'package:domicilios_cali/src/bloc/navigation_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
+import 'package:domicilios_cali/src/pages/direccion_create_page.dart';
+import 'package:domicilios_cali/src/pages/favoritos_page.dart';
+import 'package:domicilios_cali/src/pages/login_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_crear_tienda_page.dart';
 import 'package:domicilios_cali/src/pages/perfil_page.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +38,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               ((navigationBloc.index==3)?
-                _crearPopUpNavigator(context, size)
+                _crearPopUpNavigator(context, usuarioBloc, size, token)
               : Container()),
               Container(
                 width: size.width * 0.0005,
@@ -127,7 +130,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                     child: Text('otra dirección'),
                     color: Colors.grey.withOpacity(0.8),
                     onPressed: (){
-
+                      Navigator.pushNamed(context, DireccionCreatePage.route);
                     },
                   ),
                 ),
@@ -174,9 +177,11 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             itemBuilder: (BuildContext context){
               return popupItems;
             },
-          );
-          
+          ); 
         }
+        return Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }
@@ -269,17 +274,22 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     );
   }
 
-  Widget _crearPopUpNavigator(BuildContext context, Size size){
+  Widget _crearPopUpNavigator(BuildContext context, UsuarioBloc usuarioBloc, Size size, String token){
     return PopupMenuButton<int>(
       onSelected: (int index){
         switch(index){
           case 1:
             Navigator.pushNamed(context, PerfilPage.route);
             break;
+          case 2:
+            Navigator.pushNamed(context, FavoritosPage.route);
+            break;
           case 3:
             Navigator.pushReplacementNamed(context, PasosCrearTiendaPage.route);
             break;
-          
+          case 4:
+            _logOut(usuarioBloc, token);
+            break;
           default:
             break;
         }
@@ -377,5 +387,10 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         ],
       ),
     );
+  }
+
+  void _logOut(UsuarioBloc usuarioBloc, String token)async{
+    await usuarioBloc.logOut(token);
+    Navigator.pushReplacementNamed(context, LoginPage.route);
   }
 }

@@ -57,6 +57,10 @@ class UsuarioBloc{
     
     return respuestaRegister;
   }
+  
+  void logOut(String token)async{
+    _usuarioProvider.logOut(token);
+  }
 
   Future<Map<String, dynamic>> cambiarFoto(String token, File foto)async{
     
