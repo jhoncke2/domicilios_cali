@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapaWidget extends StatefulWidget {
-  final _tiposMapas = ['cliente', 'tienda'];
   List<LugarModel> lugares = [];
   String _tipoMapa;
   double height;
@@ -39,7 +38,6 @@ class _MapaWidgetState extends State<MapaWidget> {
   //Completer<GoogleMapController> _mapControllerCompleter = Completer();
   //datos de prueba
   List<LugarModel> _lugares;
-  String _tipoMapa;
   //fin de datos de prueba
 
   LugarModel elegido;
@@ -52,7 +50,6 @@ class _MapaWidgetState extends State<MapaWidget> {
   @override
   void initState(){
     super.initState();
-    _tipoMapa = widget._tipoMapa;
   }
 
   @override
@@ -62,34 +59,6 @@ class _MapaWidgetState extends State<MapaWidget> {
     LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
     lugaresBloc.cargarLugares(usuarioBloc.token);
     _definirElegido(lugaresBloc);
-    /*
-    lugaresBloc.elegidoStream.listen((lugarElegido) {
-      elegido = lugarElegido;
-      if(_mapController != null){
-        _agregarMaker(elegido);
-        _mapController.moveCamera(CameraUpdate.newLatLng(
-          elegido.latLng
-        ));
-        
-      }
-      print(lugarElegido);
-    });
-    */
-    /*
-    lugaresBloc.lugaresStream.listen((data) {
-      print('*********************');
-      print('lugares:');
-      print(data);
-      if(_mapController != null){
-        if(data != null && data.length > 0){
-          _mapController.moveCamera(CameraUpdate.newLatLng(
-            data.singleWhere((element) => element.elegido).latLng
-          ));
-        }
-        
-      }
-    });
-    */
     Size size = MediaQuery.of(context).size;
     return Container(
       child: Stack(
@@ -116,13 +85,6 @@ class _MapaWidgetState extends State<MapaWidget> {
               //no sé para qué sirve y/o qué cambia
               //myLocationEnabled: true,
             ),
-          ),
-
-          
-          Container(
-            margin: EdgeInsets.only(top:size.height*0.24, left: size.width * 0.3),
-            //child: _crearDropDownButton(size),
-            child: _crearBotonCambiarDireccion(size),
           ),
         ],
       ),

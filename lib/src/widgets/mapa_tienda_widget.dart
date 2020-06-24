@@ -36,8 +36,6 @@ class _MapaTiendaWidgetState extends State<MapaTiendaWidget> {
         stream: tiendaBloc.lugarCreadoStream,
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if(snapshot.hasData){
-            print('tiene data: ');
-            print(snapshot.data);
             LugarModel lugar = snapshot.data;
             _generarMarkers(lugar);
             return Stack(

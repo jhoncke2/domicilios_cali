@@ -27,10 +27,8 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
       selectedIconTheme: _selectedIconTheme,
       unselectedIconTheme: _unselectedIconTheme,
       onTap: (int newIndex){
-        print('nuevo indeeeex:');
-        print(newIndex);
         navigationBloc.index = newIndex;
-        Navigator.of(context).pushReplacementNamed(navigationBloc.routeByIndex);
+        Navigator.of(context).pushNamed(navigationBloc.routeByIndex);
         setState(() {
           
         });

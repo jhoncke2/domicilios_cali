@@ -1,30 +1,30 @@
 import 'dart:core';
 //importaciones locales
 
-class Usuarios{
-  List<Usuario> _usuarios = new List();
+class UsuariosModel{
+  List<UsuarioModel> _usuarios = new List();
   /* ***********************************************
    *    Pruebas
    *********************************************** */
-  Usuarios.fromJsonList(List<dynamic> jsonList){
+  UsuariosModel.fromJsonList(List<dynamic> jsonList){
     jsonList.forEach((actual){
-      final usuarioActual = Usuario.fromJsonMap(actual);
+      final usuarioActual = UsuarioModel.fromJsonMap(actual);
       usuarios.add(usuarioActual);
     });
   }
 
-  List<Usuario> get usuarios{
+  List<UsuarioModel> get usuarios{
     return _usuarios;
   }
 }
 
-class Usuario{
+class UsuarioModel{
   int id;
   String name;
   String email;
   String imagenUrl;
 
-  Usuario({
+  UsuarioModel({
     this.id,
     this.name,
     this.email,
@@ -32,7 +32,7 @@ class Usuario{
     //this.imagenUrl
   });
 
-  Usuario.fromJsonMap(Map<String, dynamic> json){
+  UsuarioModel.fromJsonMap(Map<String, dynamic> json){
     id          = json['id'];
     name        = json['name'];
     email       = json['email'];

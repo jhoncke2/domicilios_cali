@@ -63,7 +63,7 @@ class UsuarioProvider with UsuariosPrueba{
     if(answer.body != null)
       return json.decode(answer.body);
     return {
-      'status':'ok',
+      'status':'err',
       'message':'ocurrió algún error al tratar de crear el usuario'
     };
   }
@@ -74,6 +74,32 @@ class UsuarioProvider with UsuariosPrueba{
   
 
   //prueba
-  Usuario get usuarioLoginPrueba => Usuario.fromJsonMap(super.usuarios[0]);
+  UsuarioModel get usuarioLoginPrueba => UsuarioModel.fromJsonMap(super.usuarios[0]);
 
+  //*********************************** 
+  //  Recuperar contraseña
+  //**********************************
+  Future<Map<String, dynamic>> enviarCorreoRecuperarPassword(String email)async{
+    //por el momento
+    Map<String, dynamic> respuesta = {
+      'status':'ok',
+    };
+    return respuesta;
+  }
+
+  Future<Map<String, dynamic>> enviarCodigoRecuperarPassword(String codigo)async{
+    //por el momento
+    Map<String, dynamic> respuesta = {
+      'status':'ok',
+    };
+    return respuesta;
+  }
+
+  Future<Map<String, dynamic>> enviarPasswordRecuperarPassword(String password, String confirmedPassword)async{
+    //por el momento
+    Map<String, dynamic> respuesta = {
+      'status':'ok',
+    };
+    return respuesta;
+  }
 }

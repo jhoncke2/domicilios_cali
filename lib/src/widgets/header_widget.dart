@@ -15,8 +15,6 @@ class HeaderWidget extends StatefulWidget {
 }
 
 class _HeaderWidgetState extends State<HeaderWidget> {
-  String _dropdownValue;
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -171,7 +169,15 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                     color: Colors.black.withOpacity(0.7)
 
                   ),
-                )
+                ),
+                SizedBox(
+                  width: size.width * 0.005,
+                ),
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.grey.withOpacity(0.65),
+                  size: size.width * 0.085,
+                ),
               ],
             ),
             itemBuilder: (BuildContext context){
@@ -182,94 +188,6 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         return Center(
           child: CircularProgressIndicator(),
         );
-      },
-    );
-  }
-  Widget _crearDropdownDirecciones(Size size, LugaresBloc lugaresBloc, String token){
-    //_dropdownValue = _lugaresPrueba[0].nombre;
-    DropdownButton<String> dropDown = DropdownButton<String>( 
-      value: _dropdownValue,
-      items: [],
-      onChanged: (newValue){
-        
-      },
-    );
-    return StreamBuilder(
-      stream: lugaresBloc.lugaresStream,
-      builder: (BuildContext context, AsyncSnapshot<List<LugarModel>> snapshot){
-        if(snapshot.hasData){
-          List<DropdownMenuItem> items = snapshot.data.map((LugarModel lugar){
-            if(lugar.elegido)
-              _dropdownValue = lugar.nombre;
-            return DropdownMenuItem(
-              value: lugar.nombre,
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    width: size.width * 0.095,
-                    height: size.height * 0.03,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: (lugar.elegido)? Colors.greenAccent : Colors.white,
-                      
-                    ),
-                  ),
-                  SizedBox(
-                    width: size.width * 0.01,
-                  ),
-                  Center(
-                    child: Text(
-                      (lugar.nombre == 'Tu ubicación')? lugar.nombre : lugar.direccion, 
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: size.width * 0.045
-                      ),
-                    )
-                  ),
-                ],
-              ),
-            );
-          }).toList();
-          dropDown = DropdownButton<String>(
-            itemHeight: size.height * 0.08,
-            //isExpanded: true, 
-            value: _dropdownValue,
-            items: items,
-            selectedItemBuilder: (BuildContext context){
-              List<Widget> elementos = snapshot.data.map((lugar){
-                return Row(
-                  children: <Widget>[
-                    Icon(
-                      Icons.place,
-                      color: Colors.grey.withOpacity(0.85),
-                    ),
-                    SizedBox(
-                      width: size.width * 0.04,
-                    ),
-                    Text(
-                      (lugar.nombre == 'Tu ubicación')? lugar.nombre : lugar.direccion, 
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: size.width * 0.045
-                      ),
-                    )
-                    
-                  ],
-                );
-              }).toList();
-              return elementos;
-            },
-            onChanged: (newValue){
-              LugarModel elegido = snapshot.data.firstWhere((lugar)=>lugar.nombre == newValue);
-              lugaresBloc.elegirLugar(elegido.id, token);
-              setState(() { 
-                _dropdownValue = newValue;
-              });
-            },
-            
-          );
-        }
-        return dropDown;
       },
     );
   }
@@ -302,8 +220,10 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         -size.height * 0.005,
       ),
       padding: EdgeInsets.all(0.0),
-      icon: Icon(Icons.arrow_drop_down),
-      
+      icon: Icon(
+        Icons.arrow_drop_down,
+        color: Colors.grey.withOpacity(0.9),
+      ),
       tooltip: 'tooltip',
       itemBuilder: (BuildContext context){
         return [
@@ -368,21 +288,21 @@ class _HeaderWidgetState extends State<HeaderWidget> {
           Text(
             nombre,
             style: TextStyle(
-              color: Colors.black.withOpacity(0.65),
+              color: Colors.black.withOpacity(0.55),
               fontSize: size.width * 0.045,
               //fontFamily: 'FiraSansExtraCondensed',
               //fontFamily: 'BarlowCondensed',
               //fontFamily: 'UbuntuCondensed',
-              fontFamily: 'FjallaOne',
+              //fontFamily: 'FjallaOne',
               //fontFamily: 'RobotoCondensed',
-              fontWeight: FontWeight.w100,
-
+              fontFamily: 'OpenSansCondensed',
+              fontWeight: FontWeight.bold,
             ),
           ),
           Icon(
             icono,
             size: size.width * 0.058,
-            color: Colors.grey.withOpacity(0.9),
+            color: Colors.grey.withOpacity(0.85),
           ),
         ],
       ),

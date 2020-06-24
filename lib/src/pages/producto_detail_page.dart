@@ -211,7 +211,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
                     ),     
                     onPressed: (){
                      if(_cantidadUnidades > 1){
-                       setState(() {
+                       setState((){
                         _cantidadUnidades--;
                       });
                      }
@@ -222,8 +222,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
                   width: size.width * 0.012,
                 ),
                 Text(
-                  _cantidadUnidades.toString(),
-                  
+                  _cantidadUnidades.toString(),                  
                   style: TextStyle(
                     fontSize: size.width * 0.045
                   ),
@@ -240,9 +239,8 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
                   
                   onPressed: (){
                     setState(() {
-                      if(_cantidadUnidades < producto.stock){
-                        _cantidadUnidades++;
-                      }
+                      _cantidadUnidades++;
+
                     });
                   },
                 ),
@@ -260,13 +258,6 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: size.width * 0.045,
-                  ),
-                ),
-                Text(
-                  'Cantidad disponible: ${producto.stock}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: size.width * 0.038,
                   ),
                 ),
               ],

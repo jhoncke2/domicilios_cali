@@ -4,7 +4,9 @@ import 'package:domicilios_cali/src/pages/direccion_create_page.dart';
 import 'package:domicilios_cali/src/pages/favoritos_page.dart';
 import 'package:domicilios_cali/src/pages/historial_page.dart';
 import 'package:domicilios_cali/src/pages/mapa_page.dart';
+import 'package:domicilios_cali/src/pages/pasos_confirmacion_celular_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_crear_tienda_page.dart';
+import 'package:domicilios_cali/src/pages/pasos_recuperar_password_page.dart';
 import 'package:domicilios_cali/src/pages/perfil_page.dart';
 import 'package:flutter/material.dart';
 //importaciones locales
@@ -34,9 +36,11 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Domicilios',
         initialRoute: LoginPage.route,
-        routes: {
+        routes:{
           LoginPage.route:(BuildContext context)=>LoginPage(),
           RegisterPage.route:(BuildContext context)=>RegisterPage(),
+          PasosRecuperarPasswordPage.route:(BuildContext context)=>PasosRecuperarPasswordPage(),
+          PasosConfirmacionCelularPage.route:(BuildContext context)=>PasosConfirmacionCelularPage(),
           HomePage.route:(BuildContext context)=>HomePage(),
           HistorialPage.route:(BuildContext context)=>HistorialPage(),
           CuentaPage.route:(BuildContext context)=>CuentaPage(),
@@ -51,6 +55,7 @@ class MyApp extends StatelessWidget {
           MapaPage.route:(BuildContext context)=>MapaPage(),
         },
         theme: ThemeData(
+          fontFamily: 'OpenSans',
           //backgroundColor: Color.fromRGBO(50, 196, 171, 1),//verde azulado
           //backgroundColor: Color.fromRGBO(240, 200, 102, 1),
           primaryColor: Color.fromRGBO(103, 58, 183, 1),
@@ -74,7 +79,6 @@ class MyApp extends StatelessWidget {
             buttonColor: Color.fromRGBO(240, 200, 102, 1),
           )
         ),
-
         debugShowCheckedModeBanner: false,
       ),
     );

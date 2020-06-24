@@ -21,9 +21,9 @@ class _ProductosPorCategoriasWidgetState extends State<ProductosPorCategoriasWid
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      height: size.height * 0.74,
+      height: size.height * 0.761,
       child: ListView(
-        padding: EdgeInsets.all(0.0),
+        padding: EdgeInsets.symmetric(vertical: size.height * 0.02),
         children: categorias.map((categoria){
           return _crearListaPorCategoria(context, size, categoria['nombre']);
         }).toList(),
@@ -45,9 +45,10 @@ class _ProductosPorCategoriasWidgetState extends State<ProductosPorCategoriasWid
           child: ProductoCardWidget(producto: productosPorCategoria[i])
         )
       );
+      
     }
     return Container(
-      height: size.height * 0.28,
+      height: size.height * 0.3,
       width: size.width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,6 +58,7 @@ class _ProductosPorCategoriasWidgetState extends State<ProductosPorCategoriasWid
             style: TextStyle(
               fontSize: size.width * 0.055,
               color: Colors.black.withOpacity(0.7),
+              fontWeight: FontWeight.bold
             ),
           ),
           SizedBox(height: size.height * 0.01),
@@ -67,6 +69,10 @@ class _ProductosPorCategoriasWidgetState extends State<ProductosPorCategoriasWid
               children: productosWidgets,
             ),
           ),
+          SizedBox(
+            height: size.height * 0.025,
+          )
+
         ],
       ),
     );

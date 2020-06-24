@@ -68,7 +68,6 @@ class _HistorialPageState extends State<HistorialPage> {
       ],
     );
   }
-
   Widget _crearListViewHistorial(Size size, ProductosModel productosModel){
     List<ProductoModel> favoritos = _generarHistorial(productosModel);
     List<Widget> listViewItems = [];
@@ -93,9 +92,8 @@ class _HistorialPageState extends State<HistorialPage> {
       );
       
     });
-    
     return Container(
-      height: size.height * 0.71,
+      height: size.height * 0.7,
       child: ListView(
         padding: EdgeInsets.only(top:size.height * 0.045, bottom: size.height * 0.02),
         children: listViewItems,

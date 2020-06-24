@@ -49,6 +49,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_launcher_icons: 
+
+flutter_icons:   
+  android: "launcher_icon"    
+  ios: true   
+  image_path: "assets/iconos/logo_porta_02.png"   
+  adaptive_icon_background: "assets/iconos/logo_porta_02.png" 
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -96,6 +104,20 @@ flutter:
     - family: BarlowCondensed
       fonts:
         - asset: assets/fonts/BarlowCondensed-Regular.ttf
+    - family: OpenSans
+      fonts:
+        - asset: assets/fonts/open_sans/OpenSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/open_sans/OpenSans-Regular.ttf
+          weight: 500
+        - asset: assets/fonts/open_sans/OpenSans-Light.ttf
+          weight: 100
+    - family: OpenSansCondensed
+      fonts: 
+        - asset: assets/fonts/open_sans_condensed/OpenSansCondensed-bold.ttf
+          weight: 700
+        - asset: assets/fonts/open_sans_condensed/OpenSansCondensed-light.ttf
+          weight: 300
 
   #   - family: Schyler
   #     fonts:

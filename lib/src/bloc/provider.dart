@@ -2,7 +2,6 @@ import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/navigation_bloc.dart';
 import 'package:domicilios_cali/src/bloc/tienda_bloc.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
-import 'package:domicilios_cali/src/models/usuarios_model.dart';
 import 'package:flutter/cupertino.dart';
 
 class Provider extends InheritedWidget{
@@ -10,8 +9,6 @@ class Provider extends InheritedWidget{
   final _usuarioBloc = new UsuarioBloc();
   final _tiendaBloc = new TiendaBloc();
   final _navigationBloc = new NavigationBloc();
-
-  Usuario _usuario;
 
   static Provider _instancia;
 

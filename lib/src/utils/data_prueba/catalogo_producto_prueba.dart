@@ -39,7 +39,7 @@ class CatalogoProductoPrueba{
     1100.0,
     8500.0,
     //tecnologia
-    15000000.0,
+    2250000.0,
     12527000.0,
     94000.0,
     1800000.0,
@@ -105,12 +105,12 @@ class CatalogoProductoPrueba{
     'Hamburguesa doble carne con: queso amarillo, lechuga, tomate, pepinos, salsas basicas',
     'Deliciosa empanada crocante con ají',
     //tecnologia
-    'Legendaria espada oscura única en su clase.',
-    'Arco élfico con aumento de daño contra orcos, hecho en madera de sauco y flexibilidad del 13%.',
+    'Pc Ryzen 5 con: procesador Ryzen 5 3600, 16Gb de ram ddr4, 1 disco duro de 1Tb, y disco sólido de 500Gb.',
+    'dron dj1 phantom 4, con sistema de seguimiento y 4 helices de respuesto',
     'Audifonos con sonido envolvente y privación del sonido externo',
     'Guitarra eléctrica gibson modelo clásico con madera de abedul, 22 trastes, puente de tremolo, paquete de cuerdas de repuesto, correa con broche de seguridad.',
     //ropa
-    'La camisa negra de Juanes, 100% algodón, 4 botones, manga larga, 2 botones en cada manga.',
+    'Camisa negra, 100% algodón, 4 botones, manga larga, 2 botones en cada manga.',
     'Casco oscuro de placas lvl 55, con una reducción de peso del 20%',
     'Atuendo de T-rex talla M, impermeable, aislamiento del exterior garantizado. Ideal para salir a hacer compras.',
     'Un pantalón corriente talla M para cualquier ocasión',

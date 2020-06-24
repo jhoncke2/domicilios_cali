@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
+import 'package:domicilios_cali/src/pages/pasos_recuperar_password_page.dart';
 import 'package:domicilios_cali/src/pages/register_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -67,11 +68,11 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(
                 fontSize: size.width * 0.049,
                 //color: Color.fromRGBO(60, 120, 250, 1),
-                color: Colors.black.withOpacity(0.65),
+                color: Colors.black.withOpacity(0.8),
               ),
             ),
             onPressed: (){
-
+              Navigator.pushNamed(context, PasosRecuperarPasswordPage.route);
             },
           ),
           SizedBox(height: size.height * 0.01),
@@ -80,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
               'Registrate',
               style: TextStyle(
                 fontSize: size.width * 0.06,
-                color: Colors.black.withOpacity(0.6),
+                color: Colors.black.withOpacity(0.8),
               ),
             ),
             onPressed: (){
@@ -209,7 +210,8 @@ class _LoginPageState extends State<LoginPage> {
           'O ingresa con',
           style: TextStyle(
             fontSize: size.width * 0.05,
-            color: Colors.black.withOpacity(0.75)
+            color: Colors.black.withOpacity(0.8),
+            fontWeight: FontWeight.normal,
           ),
         ),
         Row(

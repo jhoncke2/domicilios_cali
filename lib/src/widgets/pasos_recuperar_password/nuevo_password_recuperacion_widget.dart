@@ -1,0 +1,106 @@
+import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
+import 'package:domicilios_cali/src/pages/login_page.dart';
+import 'package:flutter/material.dart';
+class NuevoPasswordRecuperacionWidget extends StatefulWidget {
+  @override
+  _NuevoPasswordRecuperacionWidgetState createState() => _NuevoPasswordRecuperacionWidgetState();
+}
+
+class _NuevoPasswordRecuperacionWidgetState extends State<NuevoPasswordRecuperacionWidget> {
+  String _passwordValue = '';
+  String _confirmedPasswordValue = '';
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
+    return Container(
+      width: size.width,
+      padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Introduce la nueva contraseña',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: size.width * 0.057,
+              color: Colors.black.withOpacity(0.85),
+            ),
+          ),
+          SizedBox(
+            height: size.height * 0.045,
+          ),
+          _crearInputPassword(size),
+          SizedBox(
+            height: size.height * 0.045,
+          ),
+          _crearInputConfirmarPassword(size),
+          SizedBox(
+            height: size.height * 0.075,
+          ),
+          _crearBotonCambiar(size, usuarioBloc),
+
+        ],
+      ),
+    );
+  }
+
+  Widget _crearInputPassword(Size size){
+    return Container(
+      width: size.width * 0.65,
+      child: TextFormField(   
+        initialValue: _passwordValue,
+        keyboardType: TextInputType.text,
+        obscureText: true,
+        decoration: InputDecoration(
+          icon: Icon(Icons.lock),
+          labelText: 'Contraseña',
+        ),
+        onChanged: (String newValue){
+          _passwordValue = newValue;
+        },
+      ),
+    );
+  }
+
+  Widget _crearInputConfirmarPassword(Size size){
+    return Container(
+      width: size.width * 0.65,
+      child: TextFormField(   
+        initialValue: _confirmedPasswordValue,
+        keyboardType: TextInputType.text,
+        obscureText: true,
+        decoration: InputDecoration(
+          icon: Icon(Icons.lock_outline),
+          labelText: 'Confirmar contraseña',
+        ),
+        onChanged: (String newValue){
+          _confirmedPasswordValue = newValue;
+        },
+      ),
+    );
+  }
+
+  Widget _crearBotonCambiar(Size size, UsuarioBloc usuarioBloc){
+    return FlatButton(
+      padding: EdgeInsets.symmetric(horizontal: size.width * 0.085, vertical: size.height * 0.0075),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(size.width * 0.05),
+      ),
+      color: Colors.grey.withOpacity(0.75),
+      child: Text(
+        'Cambiar',
+        style: TextStyle(
+          fontSize: size.width * 0.065,
+          color: Colors.black.withOpacity(0.65)
+        ),
+      ),
+      onPressed: (){
+        usuarioBloc.enviarPasswordRecuperarPassword(_passwordValue, _confirmedPasswordValue);
+        Navigator.pushReplacementNamed(context, LoginPage.route);
+      },
+    );
+  }
+}

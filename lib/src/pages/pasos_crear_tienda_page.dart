@@ -26,7 +26,6 @@ class _PasosCrearTiendaPageState extends State<PasosCrearTiendaPage> {
         child: Stack(
           children: [
             _crearPasoWidget(),
-            //_crearIndexPaso(size),
             _crearBotonIzquierdoNavegacion(context, size),
             _crearBotonDerechoNavegacion(context, size, tiendaBloc),
           ],

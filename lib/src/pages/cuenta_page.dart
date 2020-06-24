@@ -25,7 +25,6 @@ class _CuentaPageState extends State<CuentaPage> {
         children: <Widget>[
           SizedBox(height: size.height * 0.065),
           HeaderWidget(),
-          SizedBox(height: size.height * 0.012),
           ProductosPorCategoriasWidget(),
         ],
       ),

@@ -14,7 +14,7 @@ class NavigationBloc{
       case 2:
         return HistorialPage.route;
       case 3:
-        return CuentaPage.route;
+        return PerfilPage.route;
       default:
         return PerfilPage.route;
     }

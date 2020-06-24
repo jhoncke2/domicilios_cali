@@ -11,7 +11,7 @@ import 'package:domicilios_cali/src/pages/home_page.dart';
 import 'package:domicilios_cali/src/pages/productos_tienda_page.dart';
 
 class DrawerWidget extends StatelessWidget {
-  Usuario _usuario;
+  UsuarioModel _usuario;
 
   @override
   Widget build(BuildContext context) {

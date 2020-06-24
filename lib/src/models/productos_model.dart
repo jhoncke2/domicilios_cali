@@ -30,7 +30,6 @@ class ProductosModel with CatalogoProductoPrueba{
           imagenUrl: imagenesUrls[i],
           descripcion: descripciones[i],
           categoria: categorias[i],
-          stock: stocks[i],
           calificacion: calificaciones[i],
         )
       );
@@ -52,7 +51,6 @@ class ProductoModel{
   String imagenUrl;
   String descripcion;
   String categoria;
-  int stock;
   double calificacion;
 
   ProductoModel({
@@ -63,7 +61,6 @@ class ProductoModel{
     this.imagenUrl,
     this.descripcion,
     this.categoria,
-    this.stock,
     this.calificacion,
   });
 
@@ -76,7 +73,6 @@ class ProductoModel{
     imagenUrl    = json['imagen_url'];
     descripcion  = json['descripcion'];
     categoria    = json['categoria'];
-    stock        = json['stock'] ;
     calificacion = json['calificacion'];
   }
 }

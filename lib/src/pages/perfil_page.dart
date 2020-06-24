@@ -1,25 +1,24 @@
 import 'dart:io';
 import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
+import 'package:domicilios_cali/src/widgets/header_widget.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
 import 'package:domicilios_cali/src/utils/data_prueba/usuarios_prueba.dart';
-import 'package:domicilios_cali/src/widgets/mapa_tienda_widget.dart';
 import 'package:flutter/material.dart';
 class PerfilPage extends StatefulWidget with UsuariosPrueba{
   static final route = 'perfil';
-
   @override
   _PerfilPageState createState() => _PerfilPageState();
 }
 
 class _PerfilPageState extends State<PerfilPage> {
-  ImagePicker _imagePicker = ImagePicker();
-  bool _cargando = false;
   File _imagenSeleccionada;
+
+  GoogleMapController _mapController;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +31,15 @@ class _PerfilPageState extends State<PerfilPage> {
         padding: EdgeInsets.symmetric(horizontal: size.width * 0.09),
         children: [
           SizedBox(
-            height: size.height * 0.09,
+            height: size.height * 0.065,
+          ),
+          HeaderWidget(), 
+          SizedBox(
+            height: size.height * 0.035,
           ),    
           _crearTitulo(size),
           SizedBox(
-            height: size.height * 0.02,
+            height: size.height * 0.03,
           ),
           _crearFoto(size, widget.usuarios[0]['imagen_url']),
           SizedBox(
@@ -57,7 +60,7 @@ class _PerfilPageState extends State<PerfilPage> {
           ),
           _crearMapa(size, lugaresBloc),
           SizedBox(
-            height: size.height * 0.005
+            height: size.height * 0.035
           ),
           _crearCampoHorarios(size, []),
           SizedBox(
@@ -87,8 +90,7 @@ class _PerfilPageState extends State<PerfilPage> {
           onPressed: (){
             Navigator.pop(context);
           },
-        ),
-        
+        ),     
         Text(
           'Perfil',
           style: TextStyle(
@@ -133,8 +135,9 @@ class _PerfilPageState extends State<PerfilPage> {
         Text(
           nombreDato,
           style: TextStyle(
-            color: Colors.black.withOpacity(0.75),
-            fontSize: size.width * 0.045
+            color: Colors.black.withOpacity(0.8),
+            fontSize: size.width * 0.045,
+            fontWeight: FontWeight.normal
           ),
         ),
         SizedBox(
@@ -150,8 +153,8 @@ class _PerfilPageState extends State<PerfilPage> {
           child: Text(
             dato,
             style: TextStyle(
-              color: Colors.black.withOpacity(0.75),
-              fontSize: size.width * 0.041
+              color: Colors.black.withOpacity(0.55),
+              fontSize: size.width * 0.041,
             ),
           ),
         ),
@@ -166,7 +169,7 @@ class _PerfilPageState extends State<PerfilPage> {
         Text(
           'Cobertura de entrega de producto',
           style: TextStyle(
-            color: Colors.black.withOpacity(0.75),
+            color: Colors.black.withOpacity(0.8),
             fontSize: size.width * 0.046
           ),
         ),
@@ -178,9 +181,35 @@ class _PerfilPageState extends State<PerfilPage> {
           builder: (BuildContext context, AsyncSnapshot<List<LugarModel>> snapshot){
             if(snapshot.hasData){
               if(snapshot.data != null){
-                return MapaTiendaWidget(
-                  snapshot.data[0],
-                  height: 0.35,
+                return Container(
+                  //width: size.width * 0.75,
+                  height: size.height * 0.45,
+                  child: GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: CameraPosition(
+                      /*
+                      target: LatLng(
+                        3.4683343,
+                        -76.52105999999999
+                      ),
+                      */
+                      target: snapshot.data[1].latLng,
+                      zoom: 15.0
+                    ),
+                    circles: {
+                      Circle(
+                        circleId: CircleId('0'),
+                        radius: 450.0,
+                        center: snapshot.data[1].latLng,
+                        fillColor: Colors.blueAccent.withOpacity(0.35),
+                        strokeColor: Colors.blueAccent.withOpacity(0.5),
+                        strokeWidth: 1
+                      )
+                    },
+                    onMapCreated: (GoogleMapController newController){
+                      _mapController = newController;
+                    },
+                  ),
                 );
               }
               return Center(
@@ -203,7 +232,7 @@ class _PerfilPageState extends State<PerfilPage> {
         Text(
           'Horarios',
           style: TextStyle(
-            color: Colors.black.withOpacity(0.75),
+            color: Colors.black.withOpacity(0.8),
             fontSize: size.width * 0.046
           ),
         ),
@@ -221,7 +250,7 @@ class _PerfilPageState extends State<PerfilPage> {
             Text(
               'Solicitar pago',
               style: TextStyle(
-                color: Colors.black.withOpacity(0.75),
+                color: Colors.black.withOpacity(0.8),
                 fontSize: size.width * 0.044
               ),
             ),

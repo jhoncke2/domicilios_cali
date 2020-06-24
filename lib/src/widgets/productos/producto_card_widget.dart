@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
 //Importaciones locales
-import 'package:domicilios_cali/src/models/productos_model.dart';
 import 'package:domicilios_cali/src/pages/producto_detail_page.dart';
 class ProductoCardWidget extends StatelessWidget {
 
-  Size size;
-  ProductoModel producto;
-  double percentageWidthScreen;
+  final producto;
+  final percentageWidthScreen;
 
   ProductoCardWidget({
-    this.size,
     this.producto,
     this.percentageWidthScreen
   });
@@ -50,6 +47,8 @@ class ProductoCardWidget extends StatelessWidget {
                 producto.nombre,
                 style: TextStyle(
                   fontSize: size.width * 0.04,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -59,10 +58,14 @@ class ProductoCardWidget extends StatelessWidget {
               child: Text(
                 '${producto.categoria.toString()}',
                 style: TextStyle(
-                  fontSize: size.width * 0.032,
+                  fontSize: size.width * 0.033,
+                  fontWeight: FontWeight.normal,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
+            ),
+            SizedBox(
+              height: size.height * 0.003,
             ),
             Container(
               width: size.width * 0.102,

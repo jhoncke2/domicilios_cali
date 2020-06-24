@@ -48,7 +48,7 @@ class LugaresBloc{
   
   Future<void> elegirLugar(int idLugar, String token)async{
     await _lugaresProvider.elegirLugar(idLugar, token);
-    //cargarLugares(token);
+    cargarLugares(token);
   }
 
   Future<void> latLon(int idLugar, String token, double latitud, double longitud)async{
