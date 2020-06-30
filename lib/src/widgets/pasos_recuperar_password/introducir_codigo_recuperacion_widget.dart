@@ -1,3 +1,4 @@
+import 'package:domicilios_cali/src/bloc/confirmation_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,8 @@ class _IntroducirCodigoRecuperacionWidgetState extends State<IntroducirCodigoRec
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
+    final usuarioBloc = Provider.usuarioBloc(context);
+    final confirmationBloc = Provider.confirmationBloc(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
       child: Column(
@@ -33,7 +35,7 @@ class _IntroducirCodigoRecuperacionWidgetState extends State<IntroducirCodigoRec
           SizedBox(
             height: size.height * 0.045,
           ),
-          _crearBotonEnviar(size, usuarioBloc),
+          _crearBotonEnviar(size, confirmationBloc),
           SizedBox(
             height: size.height * 0.12,
           ),
@@ -48,7 +50,7 @@ class _IntroducirCodigoRecuperacionWidgetState extends State<IntroducirCodigoRec
           SizedBox(
             height: size.height * 0.035,
           ),
-          _crearBotonReenviarCodigo(size),
+          _crearBotonReenviarCodigo(size, usuarioBloc, confirmationBloc)
         ],
       ),
     );
@@ -71,7 +73,7 @@ class _IntroducirCodigoRecuperacionWidgetState extends State<IntroducirCodigoRec
     );
   }
 
-  Widget _crearBotonEnviar(Size size, UsuarioBloc usuarioBloc){
+  Widget _crearBotonEnviar(Size size, ConfirmationBloc confirmationBloc){
     return FlatButton(
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.085, vertical: size.height * 0.0075),
       shape: RoundedRectangleBorder(
@@ -86,12 +88,12 @@ class _IntroducirCodigoRecuperacionWidgetState extends State<IntroducirCodigoRec
         ),
       ),
       onPressed: (){
-        usuarioBloc.enviarCodigoRecuperarPassword(_codigoValue);
+        confirmationBloc.enviarCodigoRecuperarPassword(confirmationBloc.emailPasswordConfirmation, _codigoValue);
       },
     );
   }
 
-  Widget _crearBotonReenviarCodigo(Size size){
+  Widget _crearBotonReenviarCodigo(Size size, UsuarioBloc usuarioBloc, ConfirmationBloc confirmationBloc){
     return FlatButton(
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.085, vertical: size.height * 0.0075),
       shape: RoundedRectangleBorder(
@@ -106,7 +108,7 @@ class _IntroducirCodigoRecuperacionWidgetState extends State<IntroducirCodigoRec
         ),
       ),
       onPressed: (){
-
+        confirmationBloc.resetCode(usuarioBloc.token, 'password', confirmationBloc.emailPasswordConfirmation);
       },
     );
   }

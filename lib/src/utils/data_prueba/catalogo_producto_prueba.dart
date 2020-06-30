@@ -243,4 +243,13 @@ class CatalogoProductoPrueba{
 
   ];
   */
+
+  final categoriasUnitarias = [
+    'comida preparada',
+    'tecnologia',
+    'ropa',
+    'medicina',
+    'mercado',
+    'pagos'
+  ];
 }

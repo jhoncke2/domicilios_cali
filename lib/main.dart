@@ -8,6 +8,7 @@ import 'package:domicilios_cali/src/pages/pasos_confirmacion_celular_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_crear_tienda_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_recuperar_password_page.dart';
 import 'package:domicilios_cali/src/pages/perfil_page.dart';
+import 'package:domicilios_cali/src/pages/producto_create_page.dart';
 import 'package:flutter/material.dart';
 //importaciones locales
 import 'package:domicilios_cali/src/pages/home_page.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
           FavoritosPage.route:(BuildContext context)=>FavoritosPage(),
           CarritoPage.route:(BuildContext context)=>CarritoPage(),
           MapaPage.route:(BuildContext context)=>MapaPage(),
+          ProductoCreatePage.route:(BuildContext context)=>ProductoCreatePage(),
         },
         theme: ThemeData(
           fontFamily: 'OpenSans',

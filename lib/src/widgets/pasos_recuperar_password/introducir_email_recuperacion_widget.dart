@@ -1,19 +1,19 @@
+import 'package:domicilios_cali/src/bloc/confirmation_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
-import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:flutter/material.dart';
-class IntroducirCelularRecuperacionWidget extends StatefulWidget {
+class IntroducirEmailRecuperacionWidget extends StatefulWidget {
 
   @override
-  _IntroducirCelularRecuperacionWidgetState createState() => _IntroducirCelularRecuperacionWidgetState();
+  _IntroducirEmailRecuperacionWidgetState createState() => _IntroducirEmailRecuperacionWidgetState();
 }
 
-class _IntroducirCelularRecuperacionWidgetState extends State<IntroducirCelularRecuperacionWidget> {
+class _IntroducirEmailRecuperacionWidgetState extends State<IntroducirEmailRecuperacionWidget> {
 
   String _emailValue = '';
   @override
   Widget build(BuildContext context){
     Size size = MediaQuery.of(context).size;
-    UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
+    ConfirmationBloc confirmationBloc = Provider.confirmationBloc(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
       child: Column(
@@ -35,7 +35,7 @@ class _IntroducirCelularRecuperacionWidgetState extends State<IntroducirCelularR
           SizedBox(
             height: size.height * 0.065,
           ),
-          _crearBotonEnviar(size, usuarioBloc),
+          _crearBotonEnviar(size, confirmationBloc),
         ],
       ),
     );
@@ -58,7 +58,7 @@ class _IntroducirCelularRecuperacionWidgetState extends State<IntroducirCelularR
     );
   }
 
-  Widget _crearBotonEnviar(Size size, UsuarioBloc usuarioBloc){
+  Widget _crearBotonEnviar(Size size, ConfirmationBloc confirmationBloc){
     return FlatButton(
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.085, vertical: size.height * 0.0075),
       shape: RoundedRectangleBorder(
@@ -73,7 +73,7 @@ class _IntroducirCelularRecuperacionWidgetState extends State<IntroducirCelularR
         ),
       ),
       onPressed: (){
-        usuarioBloc.enviarCorreoRecuperarPassword(_emailValue);
+        confirmationBloc.enviarCorreoRecuperarPassword(_emailValue);
       },
     );
   }

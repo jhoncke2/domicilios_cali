@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
+import 'package:domicilios_cali/src/pages/pasos_confirmacion_celular_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_recuperar_password_page.dart';
 import 'package:domicilios_cali/src/pages/register_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,8 +17,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String _emailValue = 'email4@gmail.com';
-  String _passwordValue = '123456';
+  String _emailValue = 'yonandres97@gmail.com';
+  String _passwordValue = '12345678';
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(
             height: size.height * 0.05,
           ),
-           _crearBotonSubmmit(context, size, usuarioBloc),
+           _crearBotonSubmit(context, size, usuarioBloc),
           SizedBox(height: size.height * 0.03),
           _crearIngresoExterno(size),
           SizedBox(height: size.height*0.001),
@@ -238,9 +239,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _crearBotonSubmmit(BuildContext context, Size size, UsuarioBloc usuarioBloc){
+  Widget _crearBotonSubmit(BuildContext context, Size size, UsuarioBloc usuarioBloc){
     return Center(
-
       child: Container(
         width: size.width * 0.25,
         child: FlatButton(   
@@ -257,15 +257,18 @@ class _LoginPageState extends State<LoginPage> {
             )
           ),
           onPressed: (){
-            _clickSubmmit(usuarioBloc);
+            _clickSubmmit(context, usuarioBloc);
           },
         ),
       ),
     );
   }
 
-  void _clickSubmmit(UsuarioBloc usuarioBloc)async{
+  void _clickSubmmit(BuildContext context, UsuarioBloc usuarioBloc)async{
     Map<String, dynamic> respuesta = await usuarioBloc.login(_emailValue, _passwordValue);
-    Navigator.pushReplacementNamed(context, HomePage.route, arguments: respuesta['user']);
+    if(usuarioBloc.usuario.phoneVerify)
+      Navigator.pushReplacementNamed(context, HomePage.route, arguments: respuesta['user']);
+    else
+      Navigator.pushNamed(context, PasosConfirmacionCelularPage.route);
   }
 }

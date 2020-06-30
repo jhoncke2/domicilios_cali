@@ -22,22 +22,27 @@ class UsuarioModel{
   int id;
   String name;
   String email;
-  String imagenUrl;
+  String avatar;
+  String phone;
+  bool phoneVerify;
 
   UsuarioModel({
     this.id,
     this.name,
     this.email,
-    //en proceso
-    //this.imagenUrl
+    this.avatar,
+    this.phone,
+    this.phoneVerify,
   });
 
   UsuarioModel.fromJsonMap(Map<String, dynamic> json){
-    id          = json['id'];
-    name        = json['name'];
-    email       = json['email'];
-    //en proceso
-    //imagenUrl   = json['imagen_url'];
+    id            = json['id'];
+    name          = json['name'];
+    email         = json['email'];
+    avatar        = json['avatar'];
+    phone         = json['phone'].toString();
+    phoneVerify   = (json['phone_verify']==1)? true : false;
+
   }
 
   @override

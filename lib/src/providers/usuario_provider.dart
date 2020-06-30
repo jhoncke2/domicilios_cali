@@ -31,9 +31,9 @@ class UsuarioProvider with UsuariosPrueba{
 
   Future<Map<String, dynamic>> logOut(String token)async{
     final respuesta = await http.post(
-      '${_apiUrl}/logout',
+      '$_apiUrl/logout',
       body: {
-        "token":'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvY29kZWNsb3VkLnh5elwvYXBpXC9sb2dpbiIsImlhdCI6MTU4OTU2NDA5OCwiZXhwIjoxNTg5NTY3Njk4LCJuYmYiOjE1ODk1NjQwOTgsImp0aSI6InN0Sndubkk5QnB3N1JOZjgiLCJzdWIiOjEsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEifQ.thJ9q1SjMKEKoljEIxnzULmQXYhPx6h2D_G98dnhu54'
+        "token":token
       }
     );
     Map<String, dynamic> decodedMap = json.decode(respuesta.body);
@@ -47,17 +47,19 @@ class UsuarioProvider with UsuariosPrueba{
         "Authorization": 'Bearer $token'
       }
     );
-    Map<String, dynamic> decodedResp = json.decode(respuesta.body);
+    Map<String, dynamic> decodedResp = json.decode(respuesta.body)['user'];
     return decodedResp;
   }
 
-  Future<Map<String, dynamic>> register(String name, String email, String password)async{
+  Future<Map<String, dynamic>> register(String name, String email, String phone, String password, String passwordConfirmation)async{
     final answer = await http.post(
       '$_apiUrl/register',
       body:{
         'name':name,
         'email':email,
-        'password':password
+        'phone':phone,
+        'password':password,
+        'password_confirmation':passwordConfirmation
       }
     );
     if(answer.body != null)
@@ -80,26 +82,54 @@ class UsuarioProvider with UsuariosPrueba{
   //  Recuperar contraseña
   //**********************************
   Future<Map<String, dynamic>> enviarCorreoRecuperarPassword(String email)async{
-    //por el momento
-    Map<String, dynamic> respuesta = {
-      'status':'ok',
+    final passwordResetUrl = '$_apiUrl/password/reset';
+    final answer = await http.post(
+      passwordResetUrl,
+      body: {
+        'email':email
+      }
+    );
+
+    if(answer.body != null)
+      return json.decode(answer.body);
+    return {
+      'status':'err',
+      'message':answer.reasonPhrase
     };
-    return respuesta;
   }
 
-  Future<Map<String, dynamic>> enviarCodigoRecuperarPassword(String codigo)async{
-    //por el momento
-    Map<String, dynamic> respuesta = {
-      'status':'ok',
+  Future<Map<String, dynamic>> enviarCodigoRecuperarPassword(String email, String code)async{
+    final passwordCodeVerifyUrl = '$_apiUrl/password/code/verify';
+    final answer = await http.post(
+      passwordCodeVerifyUrl,
+      body: {
+        'email':email,
+        'code':code
+      }
+    );
+    if(answer.body != null)
+      return json.decode(answer.body);
+    return {
+      'status':'err',
+      'message':answer.reasonPhrase
     };
-    return respuesta;
   }
 
-  Future<Map<String, dynamic>> enviarPasswordRecuperarPassword(String password, String confirmedPassword)async{
-    //por el momento
-    Map<String, dynamic> respuesta = {
-      'status':'ok',
+  Future<Map<String, dynamic>> enviarPasswordRecuperarPassword(String email, String password, String passwordConfirmation)async{
+    final passwordChangeUrl = '$_apiUrl/password/change';
+    final answer = await http.post(
+      passwordChangeUrl,
+      body:{
+        'email':email,
+        'password':password,
+        'passwordConfirmation':passwordConfirmation
+      }
+    );
+    if(answer.body != null)
+      return json.decode(answer.body);
+    return {
+      'status':'err',
+      'message':answer.reasonPhrase
     };
-    return respuesta;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:domicilios_cali/src/bloc/confirmation_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/pages/login_page.dart';
@@ -14,7 +15,7 @@ class _NuevoPasswordRecuperacionWidgetState extends State<NuevoPasswordRecuperac
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
+    ConfirmationBloc confirmationBloc = Provider.confirmationBloc(context);
     return Container(
       width: size.width,
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
@@ -40,7 +41,7 @@ class _NuevoPasswordRecuperacionWidgetState extends State<NuevoPasswordRecuperac
           SizedBox(
             height: size.height * 0.075,
           ),
-          _crearBotonCambiar(size, usuarioBloc),
+          _crearBotonCambiar(size, confirmationBloc),
 
         ],
       ),
@@ -83,7 +84,7 @@ class _NuevoPasswordRecuperacionWidgetState extends State<NuevoPasswordRecuperac
     );
   }
 
-  Widget _crearBotonCambiar(Size size, UsuarioBloc usuarioBloc){
+  Widget _crearBotonCambiar(Size size, ConfirmationBloc confirmationBloc){
     return FlatButton(
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.085, vertical: size.height * 0.0075),
       shape: RoundedRectangleBorder(
@@ -98,7 +99,7 @@ class _NuevoPasswordRecuperacionWidgetState extends State<NuevoPasswordRecuperac
         ),
       ),
       onPressed: (){
-        usuarioBloc.enviarPasswordRecuperarPassword(_passwordValue, _confirmedPasswordValue);
+        confirmationBloc.enviarPasswordRecuperarPassword(confirmationBloc.emailPasswordConfirmation, _passwordValue, _confirmedPasswordValue);
         Navigator.pushReplacementNamed(context, LoginPage.route);
       },
     );

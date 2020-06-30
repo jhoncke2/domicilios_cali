@@ -1,3 +1,6 @@
+import 'package:domicilios_cali/src/bloc/confirmation_bloc.dart';
+import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
 import 'package:flutter/material.dart';
 class PasosConfirmacionCelularPage extends StatefulWidget {
@@ -13,6 +16,11 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final confirmationBloc = Provider.confirmationBloc(context);
+    final usuarioBloc = Provider.usuarioBloc(context);
+    if(confirmationBloc.newPhoneConfirmation == null)
+      confirmationBloc.newPhoneConfirmation = usuarioBloc.usuario.phone;
+    print('phone usuario: ${usuarioBloc.usuario.phone}');
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: size.width * 0.07),
@@ -21,15 +29,15 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
             SizedBox(
               height: size.height * 0.08,
             ),
-            _crearHeader(size),
-            _crearElementosContenido(size),
+            _crearTitulo(size),
+            _crearElementosContenido(size, confirmationBloc, usuarioBloc),
           ],
         ),
       ),
     );
   }
 
-  Widget _crearHeader(Size size){
+  Widget _crearTitulo(Size size){
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -38,7 +46,7 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
             Icons.arrow_back_ios,
             color: Colors.grey.withOpacity(0.9),
           ),
-          iconSize: size.width * 0.075,
+          iconSize: size.width * 0.065,
           onPressed: (){
             Navigator.of(context).pop();
           },
@@ -58,7 +66,7 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
     );
   }
 
-  Widget _crearElementosContenido(Size size){
+  Widget _crearElementosContenido(Size size, ConfirmationBloc confirmationBloc, UsuarioBloc usuarioBloc){
     return Expanded(   
       child: Container(
         
@@ -82,7 +90,7 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
             SizedBox(
               height: size.height * 0.035,
             ),
-            _crearBotonSubmit(size),
+            _crearBotonSubmit(size, confirmationBloc, usuarioBloc),
             SizedBox(
               height: size.height * 0.11,
             ),
@@ -98,7 +106,7 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
             SizedBox(
               height: size.height * 0.042,
             ),
-            _crearBotonReenviarCodigo(size),
+            _crearBotonReenviarCodigo(size, usuarioBloc, confirmationBloc),
             SizedBox(
               height: size.height * 0.05,
             )
@@ -107,8 +115,6 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
       )
     );
   }
-
-  
 
   Widget _crearInputIntroducirCodigo(Size size){
     return Container(
@@ -127,7 +133,7 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
     );
   }
 
-  Widget _crearBotonSubmit(Size size){
+  Widget _crearBotonSubmit(Size size, ConfirmationBloc confirmationBloc, UsuarioBloc usuarioBloc){
     return FlatButton(
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.075, vertical: size.height * 0.008),
       shape: RoundedRectangleBorder(
@@ -142,13 +148,17 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
           color: Colors.white.withOpacity(0.95)
         ),
       ),
-      onPressed: (){
-        Navigator.of(context).pushReplacementNamed(HomePage.route);
-      },
+      onPressed: ()=> _verificarCodigo(confirmationBloc, usuarioBloc),
     );
   }
 
-  Widget _crearBotonReenviarCodigo(Size size){
+  void _verificarCodigo(ConfirmationBloc confirmationBloc, UsuarioBloc usuarioBloc)async{
+    Map<String, dynamic> resultado = await confirmationBloc.enviarCodigoConfirmarPhone(usuarioBloc.token, usuarioBloc.usuario.id, _codigoValue);
+    if(resultado['status'] == 'ok')
+      Navigator.of(context).pushReplacementNamed(HomePage.route);
+  }
+
+  Widget _crearBotonReenviarCodigo(Size size, UsuarioBloc usuarioBloc, ConfirmationBloc confirmationBloc){
     return FlatButton(
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.067, vertical: size.height * 0.0085),
       shape: RoundedRectangleBorder(
@@ -164,7 +174,7 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
         ),
       ),
       onPressed: (){
-
+        confirmationBloc.resetCode(usuarioBloc.token, 'phone', usuarioBloc.usuario.id.toString());
       },
     );
   }

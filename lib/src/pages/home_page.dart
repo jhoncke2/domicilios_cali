@@ -1,6 +1,5 @@
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
-import 'package:domicilios_cali/src/models/lugares_model.dart';
 import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
 import 'package:domicilios_cali/src/widgets/header_widget.dart';
 import 'package:domicilios_cali/src/widgets/productos/productos_por_categorias_widget.dart';
@@ -20,6 +19,8 @@ class _HomePageState extends State<HomePage> with MenuCategorias{
     final size = MediaQuery.of(context).size;
     String token = Provider.usuarioBloc(context).token;
     LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
+
+    print('usuariooo: ${Provider.usuarioBloc(context).usuario.toString()}');
     return Scaffold(
       bottomNavigationBar: BottomBarWidget(),
       body: Container(

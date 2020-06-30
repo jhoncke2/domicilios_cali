@@ -29,21 +29,6 @@ class _CrearDireccionTiendaWidgetState extends State<CrearDireccionTiendaWidget>
   List<DropdownMenuItem> _itemsCiudades = [];
 
   @override
-  void initState() {
-    /*
-    _valorDireccion = 'Av. calle 40 # 13 - 73';
-    _dropdownDepartamentoValue = 'Bogotá';
-    _dropdownCiudadValue = 'Bogotá';
-    _dropdownTipoDeViaValue = 'Avenida calle';
-    _valorViaPrincipal = '40';
-    _valorViaSecundaria = '13';
-    _valorNumeroDomiciliario = '73';
-    */
-    // TODO: implement initState
-    super.initState();  
-  }
-
-  @override
   Widget build(BuildContext context) {
     final usuarioBloc = Provider.usuarioBloc(context);
     final lugaresBloc = Provider.lugaresBloc(context);

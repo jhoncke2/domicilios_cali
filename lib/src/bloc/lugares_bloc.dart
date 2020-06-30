@@ -60,10 +60,8 @@ class LugaresBloc{
     _lugaresProvider.eliminarLugar(idLugar);
   }
 
-  void crearLugar(LugarModel lugar, String token)async{
+  Future<void> crearLugar(LugarModel lugar, String token)async{
     _lugaresProvider.crearLugar(lugar, token);
-    print('************************');
-    print('lugar a guardar: ${lugar.toString()}');
     cargarLugares(token);
   }
 

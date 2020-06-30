@@ -2,8 +2,10 @@ import 'dart:ui';
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
+import 'package:domicilios_cali/src/models/lugares_model.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
 import 'package:domicilios_cali/src/pages/login_page.dart';
+import 'package:domicilios_cali/src/pages/pasos_confirmacion_celular_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,23 +17,24 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  String _nombreValue = '';
-  String _emailVaue = '';
-  String _numeroCelularValue = '';
-  String _passwordValue = '';
-  String _confirmatedPasswordValue = '';
+  String _nombreValue = 'Elsa Camuelas';
+  String _emailVaue = 'yonandres97@gmail.com';
+  String _phoneValue = '3213569599';
+  String _passwordValue = '12345678';
+  String _confirmatedPasswordValue = '12345678';
 
   @override
   Widget build(BuildContext context) {
-    UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
+    final usuarioBloc = Provider.usuarioBloc(context);
+    final lugaresBloc = Provider.lugaresBloc(context);
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: _crearElementos(context, size, usuarioBloc),
+      body: _crearElementos(context, size, usuarioBloc, lugaresBloc),
       backgroundColor: Theme.of(context).backgroundColor,
     );
   }
-  Widget _crearElementos(BuildContext context, Size size, UsuarioBloc usuarioBloc){
+  Widget _crearElementos(BuildContext context, Size size, UsuarioBloc usuarioBloc, LugaresBloc lugaresBloc){
     return Container(
       //padding: EdgeInsets.symmetric(horizontal:size.width * 0.15),
       child: ListView(
@@ -71,7 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
           SizedBox(
             height: size.height * 0.05,
           ),
-           _crearBotonSubmmit(context, size, usuarioBloc),
+           _crearBotonSubmmit(context, size, usuarioBloc, lugaresBloc),
           
           SizedBox(height: size.height*0.045),
           FlatButton(
@@ -175,8 +178,8 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _crearInputNombre(){
     return Container(
       padding: EdgeInsets.symmetric(horizontal:20.0),
-      child: TextField(
-        
+      child: TextFormField(
+        initialValue: _nombreValue,
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -200,9 +203,11 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _crearInputEmail(){
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.0),
-      child: TextField(
+      child: TextFormField(
+        initialValue: _emailVaue,
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
+          
           border: OutlineInputBorder(
             borderSide: BorderSide(
               color: Colors.black,
@@ -225,7 +230,8 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _crearInputNumeroCelular(){
     return Container(
       padding: EdgeInsets.symmetric(horizontal:20.0),
-      child: TextField(
+      child: TextFormField(
+        initialValue: _phoneValue,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -241,7 +247,7 @@ class _RegisterPageState extends State<RegisterPage> {
           //labelText: 'Número de celular'
         ),
         onChanged: (String newValue){
-          _numeroCelularValue = newValue;
+          _phoneValue = newValue;
         },
       ),
     );
@@ -250,7 +256,8 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _crearInputPassword(){
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.0),
-      child: TextField(
+      child: TextFormField(
+        initialValue: _passwordValue,
         obscureText: true,
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -275,7 +282,8 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _crearInputConfirmarPassword(){
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.0),
-      child: TextField(
+      child: TextFormField(
+        initialValue: _confirmatedPasswordValue,
         obscureText: true,
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -283,7 +291,6 @@ class _RegisterPageState extends State<RegisterPage> {
               color: Colors.black,
               width: 0.0,
               style: BorderStyle.none
-              
             )
           ),
           icon: Icon(Icons.lock),
@@ -320,7 +327,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _crearBotonSubmmit(BuildContext context, Size size, UsuarioBloc usuarioBloc){
+  Widget _crearBotonSubmmit(BuildContext context, Size size, UsuarioBloc usuarioBloc, LugaresBloc lugaresBloc){
     
     return Center(
 
@@ -340,15 +347,23 @@ class _RegisterPageState extends State<RegisterPage> {
             )
           ),
           onPressed: (){
-            _registrar(context, usuarioBloc);
+            _registrar(context, usuarioBloc, lugaresBloc);
           },
         ),
       ),
     );
   }
 
-  void _registrar(BuildContext context, UsuarioBloc usuarioBloc)async{
-    await usuarioBloc.register(_nombreValue, _emailVaue, _passwordValue);
-    Navigator.pushReplacementNamed(context, HomePage.route);
+  void _registrar(BuildContext context, UsuarioBloc usuarioBloc, LugaresBloc lugaresBloc)async{
+    print(_passwordValue);
+    print(_confirmatedPasswordValue);
+    Map<String, dynamic> respuestaRegister = await usuarioBloc.register(_nombreValue, _emailVaue, _phoneValue, _passwordValue, _confirmatedPasswordValue);
+    
+    if(respuestaRegister['status']=='ok'){
+      Navigator.pushNamed(context, PasosConfirmacionCelularPage.route);
+    }
+    
   }
+
+  
 }

@@ -14,4 +14,9 @@ class TiendaBloc{
   void agregarLugarCreado(LugarModel lugar){
     _lugarCreadoController.add(lugar);
   }
+
+  void dispose(){
+    _crearTiendaController.close();
+    _lugarCreadoController.close();
+  }
 }

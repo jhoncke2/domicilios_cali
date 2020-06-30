@@ -69,7 +69,6 @@ class LugarModel{
     Map<String, dynamic> jsonObject = {};
     jsonObject['nombre'] = nombre;
     jsonObject['direccion'] = direccion;
-    
     jsonObject['componentes'] = (componentes != null)? json.encode(componentes):json.encode([]);
     if(id != null)
     jsonObject['id'] = '$id';

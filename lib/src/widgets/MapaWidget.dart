@@ -11,11 +11,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapaWidget extends StatefulWidget {
   List<LugarModel> lugares = [];
-  String _tipoMapa;
   double height;
 
   MapaWidget(
-    this._tipoMapa,
     {
       this.lugares,
       this.height = 0.3,

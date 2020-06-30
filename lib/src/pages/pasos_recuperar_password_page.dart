@@ -1,7 +1,7 @@
+import 'package:domicilios_cali/src/bloc/confirmation_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
-import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/widgets/pasos_recuperar_password/introducir_codigo_recuperacion_widget.dart';
-import 'package:domicilios_cali/src/widgets/pasos_recuperar_password/introducir_celular_recuperacion_widget.dart';
+import 'package:domicilios_cali/src/widgets/pasos_recuperar_password/introducir_email_recuperacion_widget.dart';
 import 'package:domicilios_cali/src/widgets/pasos_recuperar_password/nuevo_password_recuperacion_widget.dart';
 import 'package:flutter/material.dart';
 class PasosRecuperarPasswordPage extends StatefulWidget{
@@ -11,31 +11,27 @@ class PasosRecuperarPasswordPage extends StatefulWidget{
 }
 
 class _PasosRecuperarPasswordPageState extends State<PasosRecuperarPasswordPage> {
-  int _indexPaso = 1;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
+    ConfirmationBloc confirmationBloc = Provider.confirmationBloc(context);
     return Scaffold(
-      body: 
-      StreamBuilder(
-        stream: usuarioBloc.recuperarPasswordStream,
+      body: StreamBuilder(
+        stream: confirmationBloc.pasoPasswordSuperadoStream,
         builder: (BuildContext context, AsyncSnapshot snapshot){
-          print('**********************');
-          print('en el steamBuilder');
           
           if(snapshot.hasData){
             print('tiene data');
-            if(snapshot.data['paso']=='email')
+            if(snapshot.data=='email')
               return IntroducirCodigoRecuperacionWidget();
-            else if(snapshot.data['paso']=='code')
+            else if(snapshot.data=='code')
               return NuevoPasswordRecuperacionWidget();
               
-            return IntroducirCelularRecuperacionWidget();
+            return IntroducirEmailRecuperacionWidget();
           }
           else{
             print('no tiene data');
-            return IntroducirCelularRecuperacionWidget();
+            return IntroducirEmailRecuperacionWidget();
           }
         },
       ),

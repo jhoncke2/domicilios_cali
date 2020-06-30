@@ -35,9 +35,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              ((navigationBloc.index==3)?
-                _crearPopUpNavigator(context, usuarioBloc, size, token)
-              : Container()),
+              _crearPopUpNavigator(context, usuarioBloc, size, token),
               Container(
                 width: size.width * 0.0005,
                 height: size.height * 0.045,
@@ -61,7 +59,6 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               ),
             ],
           ),
-          
         ],
       ),
     );

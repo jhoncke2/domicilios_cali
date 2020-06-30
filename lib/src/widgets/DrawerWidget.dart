@@ -17,7 +17,7 @@ class DrawerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
     _usuario = usuarioBloc.usuario;
-    _usuario.imagenUrl = 'https://i.pinimg.com/originals/e1/7f/f3/e17ff3375ec7a91b07e6ae4bb338ce95.jpg';
+    _usuario.avatar = 'https://i.pinimg.com/originals/e1/7f/f3/e17ff3375ec7a91b07e6ae4bb338ce95.jpg';
 
     final size = MediaQuery.of(context).size;
     double nombreUsuarioFontSize = size.width * 0.045;
@@ -34,7 +34,7 @@ class DrawerWidget extends StatelessWidget {
               children: <Widget>[
                 SizedBox(width: size.width * 0.03,),
                 CircleAvatar(
-                  backgroundImage: NetworkImage(_usuario.imagenUrl),
+                  backgroundImage: NetworkImage(_usuario.avatar),
                   radius: 25.0,
                   
                 ),

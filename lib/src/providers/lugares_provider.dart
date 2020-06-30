@@ -35,6 +35,7 @@ class LugaresProvider with LugaresPrueba{
       body: lugar.toJson(),
       headers: {
         'Authorization':'Bearer $token',
+        //'Content-Type':'application/json'
       }
     );
     print('**********************');
