@@ -2,8 +2,6 @@ import 'dart:ui';
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
-import 'package:domicilios_cali/src/models/lugares_model.dart';
-import 'package:domicilios_cali/src/pages/home_page.dart';
 import 'package:domicilios_cali/src/pages/login_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_confirmacion_celular_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,7 +9,6 @@ import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
   static final String route = 'register';
-
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -22,13 +19,12 @@ class _RegisterPageState extends State<RegisterPage> {
   String _phoneValue = '3213569599';
   String _passwordValue = '12345678';
   String _confirmatedPasswordValue = '12345678';
-
+  
   @override
   Widget build(BuildContext context) {
     final usuarioBloc = Provider.usuarioBloc(context);
     final lugaresBloc = Provider.lugaresBloc(context);
     Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       body: _crearElementos(context, size, usuarioBloc, lugaresBloc),
       backgroundColor: Theme.of(context).backgroundColor,
@@ -74,8 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
           SizedBox(
             height: size.height * 0.05,
           ),
-           _crearBotonSubmmit(context, size, usuarioBloc, lugaresBloc),
-          
+           _crearBotonSubmmit(context, size, usuarioBloc, lugaresBloc),      
           SizedBox(height: size.height*0.045),
           FlatButton(
             child: Text(
@@ -88,8 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
             onPressed: (){
               Navigator.pushReplacementNamed(context, LoginPage.route);
             },
-          ),
-          
+          ),        
           SizedBox(
             height: size.height * 0.075,
           ),
@@ -104,14 +98,12 @@ class _RegisterPageState extends State<RegisterPage> {
         'assets/iconos/logo_porta_01.png',
         fit: BoxFit.fill,
         width: size.width * 0.65,
-        height: size.height * 0.165,
-        
+        height: size.height * 0.165,     
       ),
     );
   }
 
   Widget _crearRegisterForm(BuildContext context, Size size, UsuarioBloc usuarioBloc){
-
     final size = MediaQuery.of(context).size;
     //para poder hacer scroll a todo lo que haya dentro.
     return Center(
@@ -129,7 +121,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 1.0, 
                 1.0
               ),
-              
             ),
           ],
         ),
@@ -167,8 +158,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 color: Colors.black.withOpacity(0.25),
               ),
             ),
-            _crearInputConfirmarPassword(),
-            
+            _crearInputConfirmarPassword(),  
           ],
         ),
       ),
@@ -185,8 +175,7 @@ class _RegisterPageState extends State<RegisterPage> {
             borderSide: BorderSide(
               color: Colors.black,
               width: 0.0,
-              style: BorderStyle.none
-              
+              style: BorderStyle.none         
             )
           ),
           icon: Icon(Icons.account_circle),
@@ -206,14 +195,12 @@ class _RegisterPageState extends State<RegisterPage> {
       child: TextFormField(
         initialValue: _emailVaue,
         keyboardType: TextInputType.emailAddress,
-        decoration: InputDecoration(
-          
+        decoration: InputDecoration(      
           border: OutlineInputBorder(
             borderSide: BorderSide(
               color: Colors.black,
               width: 0.0,
               style: BorderStyle.none
-              
             )
           ),
           icon: Icon(Icons.email),
@@ -238,8 +225,7 @@ class _RegisterPageState extends State<RegisterPage> {
             borderSide: BorderSide(
               color: Colors.black,
               width: 0.0,
-              style: BorderStyle.none
-              
+              style: BorderStyle.none             
             )
           ),
           icon: Icon(Icons.phone_android),
@@ -264,8 +250,7 @@ class _RegisterPageState extends State<RegisterPage> {
             borderSide: BorderSide(
               color: Colors.black,
               width: 0.0,
-              style: BorderStyle.none
-              
+              style: BorderStyle.none          
             )
           ),
           icon: Icon(Icons.lock_outline),
@@ -327,13 +312,11 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _crearBotonSubmmit(BuildContext context, Size size, UsuarioBloc usuarioBloc, LugaresBloc lugaresBloc){
-    
+  Widget _crearBotonSubmmit(BuildContext context, Size size, UsuarioBloc usuarioBloc, LugaresBloc lugaresBloc){ 
     return Center(
-
       child: Container(
         width: size.width * 0.3,
-        child: FlatButton(   
+        child: FlatButton(
           padding: EdgeInsets.symmetric(vertical:size.height * 0.013),
           color: Colors.grey.withOpacity(0.55),
           shape: RoundedRectangleBorder(
@@ -357,13 +340,10 @@ class _RegisterPageState extends State<RegisterPage> {
   void _registrar(BuildContext context, UsuarioBloc usuarioBloc, LugaresBloc lugaresBloc)async{
     print(_passwordValue);
     print(_confirmatedPasswordValue);
-    Map<String, dynamic> respuestaRegister = await usuarioBloc.register(_nombreValue, _emailVaue, _phoneValue, _passwordValue, _confirmatedPasswordValue);
-    
+    Map<String, dynamic> respuestaRegister = await usuarioBloc.register(_nombreValue, _emailVaue, _phoneValue, _passwordValue, _confirmatedPasswordValue);    
     if(respuestaRegister['status']=='ok'){
       Navigator.pushNamed(context, PasosConfirmacionCelularPage.route);
-    }
-    
+    }   
   }
-
   
 }

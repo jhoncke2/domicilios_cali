@@ -9,6 +9,7 @@ import 'package:domicilios_cali/src/pages/pasos_crear_tienda_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_recuperar_password_page.dart';
 import 'package:domicilios_cali/src/pages/perfil_page.dart';
 import 'package:domicilios_cali/src/pages/producto_create_page.dart';
+import 'package:domicilios_cali/src/pages/splash_screen_page.dart';
 import 'package:flutter/material.dart';
 //importaciones locales
 import 'package:domicilios_cali/src/pages/home_page.dart';
@@ -36,8 +37,9 @@ class MyApp extends StatelessWidget {
     return Provider(
       child: MaterialApp(
         title: 'Domicilios',
-        initialRoute: LoginPage.route,
+        initialRoute: SplashScreenPage.route,
         routes:{
+          SplashScreenPage.route:(BuildContext context)=>SplashScreenPage(),
           LoginPage.route:(BuildContext context)=>LoginPage(),
           RegisterPage.route:(BuildContext context)=>RegisterPage(),
           PasosRecuperarPasswordPage.route:(BuildContext context)=>PasosRecuperarPasswordPage(),

@@ -40,3 +40,11 @@ final departamentos = [
     'Transversal',
     'Via'
   ];
+
+  final ciudades = [
+    'Cali',
+    'Bogotá',
+    'Ibagué',
+    'Pasto',
+    'Cartagena'
+  ];

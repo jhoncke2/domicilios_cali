@@ -79,6 +79,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               PopupMenuItem(
                 value: i,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Container(
                       width: size.width * 0.095,
@@ -96,18 +97,17 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                       ),
                     ),
                     SizedBox(
-                      width: size.width * 0.01,
+                      width: size.width * 0.025,
                     ),
-                    Center(
-                      child: Text(
-                        (lugar.nombre == 'Tu ubicación')? lugar.nombre : lugar.direccion, 
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black.withOpacity(0.9),
-                          fontSize: size.width * 0.045
-                        ),
-                      )
+                    Text(
+                      (lugar.nombre == 'Tu ubicación')? lugar.nombre : lugar.direccion, 
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(0.9),
+                        fontSize: size.width * 0.045
+                      ),
                     ),
+                    
                   ],
                 ),
               )

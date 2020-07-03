@@ -19,11 +19,6 @@ class LugaresBloc{
   //Stream<bool> get cargandoStream => _cargandoController.stream;
 
   bool _cargando = false;
-
-  LugaresBloc(){
-    print('constructor lugares bloc');
-    //_cargandoController.sink.add(false);
-  }
   //Stream<Lugar> get lugaresStream => _lugaresController.stream;
 
   /**
@@ -43,7 +38,6 @@ class LugaresBloc{
 
   Future<void> editarLugar(LugarModel lugar, String token)async{
     await _lugaresProvider.editarLugar(lugar, token);
-    //cargarLugares(token);
   }
   
   Future<void> elegirLugar(int idLugar, String token)async{

@@ -1,6 +1,5 @@
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
-import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
 import 'package:flutter/material.dart';
 
@@ -18,13 +17,13 @@ class DireccionCreatePage extends StatefulWidget {
 class _DireccionCreatePageState extends State<DireccionCreatePage> {
   LugarModel lugar = LugarModel();
 
-  String _valorDireccion;
   String _dropdownDepartamentoValue;
-  String _dropdownCiudadValue;
-  String _dropdownTipoDeViaValue;
-  String _valorViaPrincipal;
-  String _valorViaSecundaria;
-  String _valorNumeroDomiciliario;
+  String _ciudadValue;
+  String _viaPrincipalValue;
+  String _numeroViaPrincipalValue;
+  String _numeroViaSecundariaValue;
+  String _numeroCasaValue;
+  String _observacionesValue;
   
   List<DropdownMenuItem> _itemsCiudades = [];
 
@@ -64,18 +63,35 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
               SizedBox(
                 height: size.height * 0.08,
               ),
-              _crearFormDirecciones(size, lugaresBloc),
+              _crearInputCiudad(size),
               SizedBox(
-                height: size.height * 0.065,
+                height: size.height * 0.01,
               ),
-              _crearBotonCrear(size, lugaresBloc, token),
+              _crearInputsViaPrincipal(size),
               SizedBox(
-                height: size.height * 0.4,
-              ),  
+                height: size.height * 0.01,
+              ),
+              _crearInputsViaSecundariaYCasa(size),
+              SizedBox(
+                height: size.height * 0.01,
+              ),
+              Text(
+                'Observaciones:',
+                style: TextStyle(
+                  fontSize: size.width * 0.047,
+                  color: Colors.black.withOpacity(0.8)
+                ),
+              ),
+              SizedBox(
+                height: size.height * 0.005,
+              ), 
+              _crearInputComponenteDireccion(size, 'observaciones'),
             ]
           ),
         ),
       ),
+      floatingActionButton: _crearBotonCrear(size, lugaresBloc, token),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -107,200 +123,241 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
     );
   }
 
-  Widget _crearFormDirecciones(Size size, LugaresBloc lugaresBloc){    
-    return Form(
-      child: Column(
-        children: [ 
-          TextFormField(
-            initialValue: _valorDireccion,
-            decoration: InputDecoration(
-              labelText: 'La dirección como te la sabes',
-            ),
-            onChanged: (newValue){
-              _valorDireccion = newValue;
-            },
+  Widget _crearInputCiudad(Size size){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(
+          'Ciudad',
+          style: TextStyle(
+            fontSize: size.width * 0.047,
+            color: Colors.black.withOpacity(0.8)
           ),
-          SizedBox(
-            height: size.height * 0.045,
+        ),
+        SizedBox(
+          width: size.width * 0.01,
+        ),
+        _crearPopupMenuItem(size, 'ciudad', componentesLugares.ciudades),
+      ],
+    );
+  }
+
+  Widget _crearInputsViaPrincipal(Size size){
+    return Row(
+      children: <Widget>[
+        _crearPopupMenuItem(size, 'via_principal', componentesLugares.tipos_vias),
+        SizedBox(
+          width: size.width * 0.05,
+        ),
+        _crearInputComponenteDireccion(size, 'via_principal'),
+      ],
+    );
+  }
+
+  Widget _crearInputsViaSecundariaYCasa(Size size){
+    return Row(
+      children: <Widget>[
+        SizedBox(
+          width: size.width * 0.05,
+        ),
+        Text(
+          '#',
+          style: TextStyle(
+            fontSize: size.width * 0.055,
+            color: Colors.black.withOpacity(0.8)
           ),
-          (_dropdownDepartamentoValue != null)?Text(
-            'departamento',
-            style: TextStyle(
-              fontSize: size.width * 0.038,
-              color: Colors.black45,
-            ),
-          )
-          :SizedBox(),
-          DropdownButton(
-            hint: Text('departamento'),
-            
-            value: _dropdownDepartamentoValue,
-            items: componentesLugares.departamentos.map((departamento){
-              return DropdownMenuItem<String>(
-                value: departamento['nombre'],
-                child: Text(departamento['nombre']),
-              );
-            }).toList(),
-            onChanged: (String value){
-              _dropdownDepartamentoValue = value;
-              _dropdownCiudadValue = null;
-              _itemsCiudades = _generarNombresCiudadesPorDepartamento(value);
-              setState(() {
-              });
-            },
+        ),
+        SizedBox(
+          width: size.width * 0.025,
+        ),
+        _crearInputComponenteDireccion(size, 'via_secundaria'),
+        SizedBox(
+          width: size.width * 0.02,
+        ),
+        Text(
+          '-',
+          style: TextStyle(
+            fontSize: size.width * 0.06,
+            color: Colors.black.withOpacity(0.8)
           ),
-          SizedBox(
-            height: size.height * 0.045,
-          ),
-          (_dropdownCiudadValue != null)?Text(
-            'ciudad',
-            style: TextStyle(
-              fontSize: size.width * 0.038,
-              color: Colors.black45,
-            ),
-          )
-          :SizedBox(),
-          DropdownButton(
-            hint: Text('ciudad'),
-            value: _dropdownCiudadValue,
-            items: _itemsCiudades,
-            onChanged: (value){
-              _dropdownCiudadValue = value;
-              setState(() {
-                
-              });
-            },
-          ),
-          SizedBox(
-            height: size.height * 0.045,
-          ),
-          (_dropdownTipoDeViaValue != null)?Text(
-            'tipo de vía',
-            style: TextStyle(
-              fontSize: size.width * 0.038,
-              color: Colors.black45,
-            ),
-          )
-          :SizedBox(),
-          DropdownButton(
-            hint: Text('tipo de vía'),
-            value: _dropdownTipoDeViaValue,
-            items: componentesLugares.tipos_vias.map((tipoVia){
-              return DropdownMenuItem(
-                value: tipoVia,
-                child: Text(tipoVia),
-              );
-            }).toList(),
-            onChanged: (value){
-              _dropdownTipoDeViaValue = value;
-              setState(() {
-                
-              });
-            },
-          ),
-          SizedBox(
-            height: size.height * 0.03,
-          ),
-          Column(
-            children: [
-              TextFormField(
-                initialValue: _valorViaPrincipal,
-                decoration: InputDecoration(
-                  labelText: 'Via principal',
+        ),
+        SizedBox(
+          width: size.width * 0.02,
+        ),
+        _crearInputComponenteDireccion(size, 'casa'),
+      ],
+    );
+  }
+
+  /**
+   * params:
+   *  * tipoPopUp:
+   *    * ciudad
+   *    * via_principal 
+   */
+  Widget _crearPopupMenuItem(Size size, String tipoPopUp, List<String> elementos){
+    String value = (tipoPopUp == 'ciudad')? _ciudadValue : _viaPrincipalValue;
+    List<PopupMenuItem<String>> popupItems = elementos.map((String elementoActual){
+      return PopupMenuItem(
+          value: elementoActual,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                width: size.width * 0.095,
+                height: size.height * 0.03,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: ((value != elementoActual)? 
+                    Border.all(
+                      width: 1,
+                      color: Colors.black.withOpacity(0.9)
+                    )
+                    :null
+                    ),
+                  color: (value == elementoActual)? Color.fromRGBO(192, 214, 81, 1) : Colors.white,
                 ),
-                onChanged: (newValue){
-                  _valorViaPrincipal = newValue;
-                },
               ),
               SizedBox(
-                height: size.height * 0.02,
+                width: size.width * 0.025,
               ),
               Text(
-                '#',
+                elementoActual, 
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: size.width * 0.05,
-                  color: Colors.black45
+                  color: Colors.black.withOpacity(0.9),
+                  fontSize: size.width * 0.045
                 ),
               ),
-              SizedBox(
-                height: size.height * 0.015,
-              ),
-              TextFormField(
-                initialValue: _valorViaSecundaria,
-                decoration: InputDecoration(
-                  labelText: 'Via secundaria',
-                ),
-                onChanged: (newValue){
-                  _valorViaSecundaria = newValue;
-                },
-              ),
-              SizedBox(
-                height: size.height * 0.02,
-              ),
-              Text(
-                '-',
-                style: TextStyle(
-                  fontSize: size.width * 0.062,
-                  color: Colors.black45
-                ),
-              ),
-              SizedBox(
-                height: size.height * 0.01,
-              ),
-              TextFormField(
-                initialValue: _valorNumeroDomiciliario,
-                decoration: InputDecoration(
-                  labelText: 'Num',
-                ),
-                onChanged: (newValue){
-                  _valorNumeroDomiciliario = newValue;
-                },
-              ),
+              
             ],
           ),
+        );
+    }).toList();
+    return PopupMenuButton<String>(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(size.width * 0.05)
+      ),
+      offset: Offset(
+        size.width * 0.1,
+        size.height * 0.1,
+      ),
+      //initialValue: 'Bogotá',
+      onSelected: (String newValue){
+        if(tipoPopUp=='ciudad')
+          _ciudadValue = newValue;
+        else
+          _viaPrincipalValue = newValue;
+        setState(() {
           
-        ],
+        });
+      },
+      child: Container(
+        width: (tipoPopUp == 'ciudad')? size.width * 0.58 : size.width * 0.45,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(size.width * 0.04),
+          color: Colors.grey.withOpacity(0.2)
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            SizedBox(
+              width: size.width * 0.02
+            ),
+            ((value != null)?
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: size.width * 0.045,
+                color: Colors.black.withOpacity(0.8)
+              ),
+            )
+            :(tipoPopUp == 'via_principal')?
+              Text('via principal')
+            :Container()
+            ),
+            Icon(
+              Icons.arrow_drop_down,
+              color: Colors.grey.withOpacity(0.65),
+              size: size.width * 0.085,
+            ),
+          ],
+        ),
+      ),
+      itemBuilder: (BuildContext context){
+        return popupItems;
+      },
+    );
+  }
+
+  Widget _crearInputComponenteDireccion(Size size, String tipoComponente){
+    return Container(
+      padding: EdgeInsets.only(
+        top:size.height * 0.002
+      ),
+      width: size.width * ((tipoComponente == 'observaciones')? 0.7: 0.25),
+      height: size.height * 0.05,
+
+      child: TextField(       
+        style: TextStyle(
+          color: Colors.black
+        ),
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(
+            vertical: size.height * 0.0025,
+            horizontal: size.width * 0.025
+          ),
+          filled: true,
+          fillColor: Colors.grey.withOpacity(0.25),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 0.001,
+              color: Colors.green.withOpacity(0.9),
+            ),
+             borderRadius: BorderRadius.circular(
+              size.width * 0.1
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.red.withOpacity(0.85),
+              width: size.width * 0.0001
+            ),
+            borderRadius: BorderRadius.circular(
+              size.width * 0.1
+            ),
+          ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.red.withOpacity(0.85),
+              width: size.width * 0.0001
+            ),
+            borderRadius: BorderRadius.circular(
+              size.width * 0.1
+            ),
+          )
+        ),
+        onChanged: (String newValue){
+          switch(tipoComponente){
+            case 'via_principal':
+              _numeroViaPrincipalValue = newValue;
+            break;
+            case 'via_secundaria':
+              _numeroViaSecundariaValue = newValue;
+            break;
+            case 'casa':
+              _numeroCasaValue = newValue;
+            break;
+            case 'observaciones':
+              _observacionesValue = newValue;
+            break;
+          }
+          setState(() {
+            
+          });
+        },
       ),
     );
-  }
-
-  List<DropdownMenuItem<String>> _generarNombresCiudadesPorDepartamento(String nombreDepartamento){
-    print(nombreDepartamento);
-    dynamic departamento = componentesLugares.departamentos.singleWhere(
-      (element) => element['nombre'] == nombreDepartamento
-    );
-    print(departamento);
-    List<DropdownMenuItem<String>> ciudadesItems = [];
-
-    departamento['ciudades'].forEach((ciudad){
-      ciudadesItems.add(
-        DropdownMenuItem(
-          value: ciudad,
-          child: Text(
-            ciudad,
-          ),
-        )
-      );
-    });
-
-    return ciudadesItems;
-  }
-
-  void _guardarDatos(LugaresBloc lugaresBloc, String token)async{
-    //googleServices.getUbicacionConComponentesDireccion(componentes)
-    List<Map<String, dynamic>> componentesLugar = _crearComponentes();
-    if(componentesLugar == null)
-      return;
-    LatLng posicion = await googleServices.getUbicacionConComponentesDireccion(componentesLugar);
-    lugar.latitud = posicion.latitude;
-    lugar.longitud = posicion.longitude;
-    lugar.componentes = componentesLugar;
-    lugar.nombre = _valorDireccion;
-    lugar.direccion = _valorDireccion;
-    lugar.tipoViaPrincipal = _dropdownTipoDeViaValue;
-    lugar.elegido = false;
-    await lugaresBloc.crearLugar(lugar, token);
-    Navigator.pop(context);
   }
 
   List<Map<String, dynamic>> _crearComponentes(){
@@ -318,34 +375,34 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
           break;
         case 1:
           componente = {
-            'nombre':'departamento',
-            'valor':_dropdownDepartamentoValue
+            'nombre':'ciudad',
+            'valor':_ciudadValue
           };
           break;
         case 2:
           componente = {
-            'nombre':'ciudad',
-            'valor':_dropdownCiudadValue
+            'nombre':'via_principal',
+            'valor':  '$_viaPrincipalValue $_numeroViaPrincipalValue'
           };
           break;
         case 3:
           componente = {
-            'nombre':'via_principal',
-            'valor':  '$_dropdownTipoDeViaValue $_valorViaPrincipal'
+            'nombre':'via_secundaria',
+            'valor':_numeroViaSecundariaValue
           };
           break;
         case 4:
           componente = {
-            'nombre':'via_secundaria',
-            'valor':_valorViaSecundaria
+            'nombre':'numero_casa',
+            'valor':_numeroCasaValue
           };
           break;
         case 5:
           componente = {
-            'nombre':'numero_domiciliario',
-            'valor':_valorNumeroDomiciliario
+            'nombre':'observaciones',
+            'valor': _observacionesValue
           };
-          break;
+        break;
       }
       if(componente['valor'] == null)
         return null;
@@ -356,12 +413,17 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
 
   Widget _crearBotonCrear(Size size, LugaresBloc lugaresBloc, String token){
     return FlatButton(
+      
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(size.width * 0.04),
       ),
-      color: Colors.grey.withOpacity(0.85),
+      padding: EdgeInsets.symmetric(
+        horizontal: size.width * 0.045,
+        vertical: size.height * 0.002
+      ),
+      color: Colors.grey.withOpacity(0.62),
       child: Text(
-        'Crear',
+        'Continuar',
         style: TextStyle(
           fontSize: size.width * 0.05,
           color: Colors.black.withOpacity(0.8)
@@ -371,5 +433,23 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
         _guardarDatos(lugaresBloc, token);
       },
     );
+  }
+
+  void _guardarDatos(LugaresBloc lugaresBloc, String token)async{
+    //googleServices.getUbicacionConComponentesDireccion(componentes)
+    List<Map<String, dynamic>> componentesLugar = _crearComponentes();
+    if(componentesLugar == null)
+      return;
+    LatLng posicion = await googleServices.getUbicacionConComponentesDireccion(componentesLugar);
+    String direccion = await googleServices.getDireccionByLatLng(posicion);
+    lugar.latitud = posicion.latitude;
+    lugar.longitud = posicion.longitude;
+    lugar.componentes = componentesLugar;
+    lugar.nombre = 'nueva dirección';
+    lugar.direccion = direccion;
+    lugar.tipoViaPrincipal = _viaPrincipalValue;
+    lugar.elegido = false;
+    await lugaresBloc.crearLugar(lugar, token);
+    Navigator.pop(context);
   }
 }
