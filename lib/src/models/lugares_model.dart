@@ -3,14 +3,6 @@ import 'dart:convert';
 
 class LugaresModel {
   List<LugarModel> lugares = new List();
-
-  /* ***********************************************
-   *    Pruebas
-   *********************************************** */
-
-   /* ***********************************************
-   *    fin datos prueba
-   *********************************************** */
    
   LugaresModel.fromJsonList(List<dynamic> jsonList){
     if(jsonList==null)
@@ -24,59 +16,64 @@ class LugaresModel {
   List<LugarModel> getLugares(){
     return lugares;
   }
-
 }
 
 class LugarModel{
   int id;
-  String nombre;
-  String direccion;
   double latitud;
   double longitud;
+  String direccion;
+  String pais;
+  String ciudad;
+  String observaciones;
+  String tipo;
+  int rango;
   bool elegido;
-  String tipoViaPrincipal;
-  List<Map<String, dynamic> > componentes = []; 
+  
 
   LugarModel({
-    this.id,
-    this.nombre,
-    this.direccion,
+    this.id,   
     this.latitud,
     this.longitud,
+    this.direccion,
+    this.pais,
+    this.ciudad,
+    this.observaciones,
+    this.tipo,
+    this.rango,
     this.elegido,
-    this.tipoViaPrincipal,
-    this.componentes,
+    
   });
 
   LugarModel.fromJsonMap(Map<String, dynamic> jsonObject){
-    id                            = jsonObject['id'];
-    nombre                        = jsonObject['nombre'];
-    direccion                     = jsonObject['direccion'];
+    id                            = jsonObject['id'];  
     latitud                       = double.parse( jsonObject['latitud'] );
     longitud                      = double.parse( jsonObject['longitud'] );
+    direccion                     = jsonObject['direccion'];
+    pais                          = jsonObject['pais'];
+    ciudad                        = jsonObject['ciudad'];
+    observaciones                 = jsonObject['observaciones'];
+    tipo                          = jsonObject['tipo'];
+    rango                         = jsonObject['rango'];
     elegido                       = (jsonObject['elegido'] == 1 )? true : false ;
-    tipoViaPrincipal              = jsonObject['tipo_via_principal'];
-
-    json.decode(jsonObject['componentes']).forEach((element){
-      componentes.add({
-        'nombre':element['nombre'],
-        'valor':element['valor'],
-      });
-    });
   }
 
   Map<String, dynamic> toJson(){
     Map<String, dynamic> jsonObject = {};
-    jsonObject['nombre'] = nombre;
-    jsonObject['direccion'] = direccion;
-    jsonObject['componentes'] = (componentes != null)? json.encode(componentes):json.encode([]);
     if(id != null)
-    jsonObject['id'] = '$id';
+      jsonObject['id'] = '$id';
     jsonObject['latitud'] = '$latitud';
     jsonObject['longitud'] = '$longitud';
+    jsonObject['direccion'] = direccion;
+    if(pais!=null)
+      jsonObject['pais'] = pais;
+    jsonObject['ciudad'] = ciudad;
+    jsonObject['observaciones'] = observaciones;
+    jsonObject['tipo'] = tipo;
+    if(rango!=null)
+      jsonObject['rango'] = rango;
     if(elegido != null)
       jsonObject['elegido'] = '$elegido';
-    jsonObject['tipo_via_principal'] = tipoViaPrincipal;
     return jsonObject;
   }
 
@@ -87,14 +84,7 @@ class LugarModel{
   @override
   String toString(){
     String respuesta = '';
-    respuesta += '{id:$id\nnombre:$nombre\ndireccion:$direccion\nlatitud:$latitud\nlongitud:$longitud\nelegido:$elegido\ntipoViaPrincipal$tipoViaPrincipal\n';
-    respuesta += 'componentes:[\n';
-    if(componentes != null){
-      componentes.forEach((element) {
-        respuesta += '{nombre:${element["nombre"]}\nvalor:${element["valor"]}\n';
-      });
-      respuesta +=']\n';
-    }
+    respuesta += '{id:$id\ndireccion:$direccion\nlatitud:$latitud\nlongitud:$longitud\nelegido:$elegido\n';
     respuesta += '}';
     
     return respuesta;

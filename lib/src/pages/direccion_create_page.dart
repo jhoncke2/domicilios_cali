@@ -397,12 +397,6 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
             'valor':_numeroCasaValue
           };
           break;
-        case 5:
-          componente = {
-            'nombre':'observaciones',
-            'valor': _observacionesValue
-          };
-        break;
       }
       if(componente['valor'] == null)
         return null;
@@ -444,12 +438,12 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
     String direccion = await googleServices.getDireccionByLatLng(posicion);
     lugar.latitud = posicion.latitude;
     lugar.longitud = posicion.longitude;
-    lugar.componentes = componentesLugar;
-    lugar.nombre = 'nueva dirección';
     lugar.direccion = direccion;
-    lugar.tipoViaPrincipal = _viaPrincipalValue;
-    lugar.elegido = false;
-    await lugaresBloc.crearLugar(lugar, token);
-    Navigator.pop(context);
+    lugar.ciudad = _ciudadValue;
+    lugar.observaciones = _observacionesValue;
+    lugar.tipo = 'cliente';
+    Map<String, dynamic> response = await lugaresBloc.crearLugar(lugar, token);
+    if(response['status'] == 'ok')
+      Navigator.pop(context);
   }
 }

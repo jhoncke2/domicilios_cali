@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
     return Provider(
       child: MaterialApp(
         title: 'Domicilios',
-        initialRoute: SplashScreenPage.route,
+        initialRoute: HomePage.route,
         routes:{
           SplashScreenPage.route:(BuildContext context)=>SplashScreenPage(),
           LoginPage.route:(BuildContext context)=>LoginPage(),

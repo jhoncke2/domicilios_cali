@@ -60,18 +60,4 @@ class _ProductosWidgetState extends State<ProductosWidget> {
     );
   }
 
-  /*
-  child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisSpacing: size.width * 0.028,
-          crossAxisSpacing: size.height * 0.03,
-          childAspectRatio: 0.655,
-        ),
-        itemBuilder: (BuildContext context, int index){
-          return ProductoCardWidget(producto: productosAMostrar[index]);
-        },
-        itemCount: productosAMostrar.length,
-      ),
-  */
 }

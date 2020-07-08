@@ -1,5 +1,7 @@
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
+import 'package:domicilios_cali/src/bloc/navigation_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
 import 'package:domicilios_cali/src/widgets/header_widget.dart';
 import 'package:domicilios_cali/src/widgets/productos/productos_por_categorias_widget.dart';
@@ -20,7 +22,6 @@ class _HomePageState extends State<HomePage> with MenuCategorias{
     String token = Provider.usuarioBloc(context).token;
     LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
 
-    print('usuariooo: ${Provider.usuarioBloc(context).usuario.toString()}');
     return Scaffold(
       bottomNavigationBar: BottomBarWidget(),
       body: Container(
@@ -43,31 +44,3 @@ class _HomePageState extends State<HomePage> with MenuCategorias{
     );
   }
 }
-
-/*
-selectedItemBuilder: (BuildContext context){
-    return _lugares.map<Widget>((lugar){
-      return Row(
-        children: <Widget>[
-          Icon(
-            Icons.add_circle,
-            color: Colors.grey.withOpacity(0.8),
-            size: size.width * 0.065,
-          ),
-          SizedBox(
-            width: size.width * 0.01,
-          ),
-          Center(
-            child: Text(
-              (lugar.nombre == 'Tu ubicación')? lugar.nombre : lugar.direccion, 
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: size.width * 0.045
-              ),
-            )
-          ),
-        ],
-      );
-    }).toList();
-  },
-*/

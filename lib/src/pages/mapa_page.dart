@@ -15,7 +15,6 @@ class MapaPage extends StatelessWidget {
   ){
     lugar = new LugarModel(
       id: 1001,
-      nombre: 'lugar casual',
       latitud: 4.637479,
       longitud: -74.101,
       elegido: true,
@@ -79,7 +78,7 @@ class MapaPage extends StatelessWidget {
         icon: BitmapDescriptor.defaultMarker,
         position: lugar.latLng,
         infoWindow: InfoWindow(
-          title: lugar.nombre,
+          title: lugar.direccion,
         ),
         draggable: true,
         onDragEnd: (LatLng newPosition){

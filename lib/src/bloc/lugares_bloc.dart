@@ -9,7 +9,6 @@ class LugaresBloc{
   Location _locationController = new Location();
 
   final _lugaresProvider = new LugaresProvider();
-
   final _lugaresController = new BehaviorSubject<List<LugarModel>>();
   final _elegidoController = new BehaviorSubject<LugarModel>();
   //final _cargandoController = new BehaviorSubject<bool>();
@@ -25,15 +24,12 @@ class LugaresBloc{
    * Falta implementar el parámetro usuarioId
    */
   Future<void> cargarLugares(String token)async{
-    if(!_cargando){
-      _cargando = true;
-      final lugaresResponse = await _lugaresProvider.cargarLugares(token);
-      LugaresModel lugares = LugaresModel.fromJsonList(lugaresResponse);
-      _lugaresController.sink.add(lugares.getLugares());
-      LugarModel elegido = lugares.getLugares().singleWhere((element) => element.elegido);
-      _elegidoController.sink.add(elegido);
-      _cargando = false;
-    }
+    final lugaresResponse = await _lugaresProvider.cargarLugares(token);
+    LugaresModel lugares = LugaresModel.fromJsonList(lugaresResponse);
+    _lugaresController.sink.add(lugares.getLugares());
+    LugarModel elegido = lugares.getLugares().singleWhere((element) => element.elegido);
+    _elegidoController.sink.add(elegido);
+    _cargando = false;
   }
 
   Future<void> editarLugar(LugarModel lugar, String token)async{
@@ -54,9 +50,13 @@ class LugaresBloc{
     _lugaresProvider.eliminarLugar(idLugar);
   }
 
-  Future<void> crearLugar(LugarModel lugar, String token)async{
-    _lugaresProvider.crearLugar(lugar, token);
-    cargarLugares(token);
+  Future<Map<String, dynamic>> crearLugar(LugarModel lugar, String token)async{
+    Map<String, dynamic> response = await _lugaresProvider.crearLugar(lugar, token);
+    if(response['status'] == 'ok'){
+      cargarLugares(token);
+    }
+    return response;
+    
   }
 
   /**

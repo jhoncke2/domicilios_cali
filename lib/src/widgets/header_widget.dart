@@ -1,5 +1,4 @@
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
-import 'package:domicilios_cali/src/bloc/navigation_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
@@ -18,24 +17,22 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    NavigationBloc navigationBloc = Provider.navigationBloc(context);
     LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
     UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
     String token = usuarioBloc.token;
+    if(usuarioBloc.usuario != null)
+      lugaresBloc.cargarLugares(token);
 
-    lugaresBloc.cargarLugares(token);
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          //Container(
-          //  child: _crearDropdownDirecciones(size, lugaresBloc, token)
-          //),
-          _crearPopUpDirecciones(size, lugaresBloc, token),
+          ((usuarioBloc.usuario != null)?
+          _crearPopUpDirecciones(size, lugaresBloc, token)
+          :Container()),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              _crearPopUpNavigator(context, usuarioBloc, size, token),
               Container(
                 width: size.width * 0.0005,
                 height: size.height * 0.045,
@@ -99,15 +96,28 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                     SizedBox(
                       width: size.width * 0.025,
                     ),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: size.width  * 0.45),
+                      child: Text(
+                        lugar.direccion,
+                        style: TextStyle(
+                          fontSize: size.width * 0.04,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    /*
                     Text(
-                      (lugar.nombre == 'Tu ubicación')? lugar.nombre : lugar.direccion, 
+                      lugar.direccion, 
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black.withOpacity(0.9),
                         fontSize: size.width * 0.045
                       ),
                     ),
-                    
+                    ¨*/
                   ],
                 ),
               )
@@ -135,10 +145,9 @@ class _HeaderWidgetState extends State<HeaderWidget> {
           return PopupMenuButton<int>(
             onSelected: (int index){
               LugarModel elegido = snapshot.data[index];
-              print('elegido');
               lugaresBloc.elegirLugar(elegido.id, token);
               setState(() {
-                
+
               });
             },
             shape: RoundedRectangleBorder(
@@ -159,12 +168,16 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                 SizedBox(
                   width: size.width * 0.02
                 ),
-                Text(
-                  lugarElegido.direccion,
-                  style: TextStyle(
-                    fontSize: size.width * 0.047,
-                    color: Colors.black.withOpacity(0.7)
-
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: size.width  * 0.45),
+                  child: Text(
+                    lugarElegido.direccion,
+                    style: TextStyle(
+                      fontSize: size.width * 0.04,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 SizedBox(

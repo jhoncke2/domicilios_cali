@@ -23,7 +23,6 @@ class DrawerWidget extends StatelessWidget {
     double nombreUsuarioFontSize = size.width * 0.045;
     double subtituloFontSize = size.width * 0.05;
     double nombreElementoFontSize = size.width * 0.043;
-
     return Drawer(
       child: ListView(
         padding: EdgeInsets.only(top: 41.0),    

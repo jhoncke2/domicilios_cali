@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:domicilios_cali/src/bloc/navigation_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
@@ -17,21 +18,21 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  
   String _emailValue = 'yonandres97@gmail.com';
   String _passwordValue = '12345678';
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
-
+    NavigationBloc navigationBloc = Provider.navigationBloc(context);
     return Scaffold(
-      body: _crearElementos(context, size, usuarioBloc),
+      body: _crearElementos(context, size, usuarioBloc, navigationBloc),
       backgroundColor: Theme.of(context).backgroundColor,
     );
   }
 
-  Widget _crearElementos(BuildContext context, Size size, UsuarioBloc usuarioBloc){
+  Widget _crearElementos(BuildContext context, Size size, UsuarioBloc usuarioBloc, NavigationBloc navigationBloc){
     return Container(
       //padding: EdgeInsets.symmetric(horizontal:size.width * 0.15),
       child: ListView(
@@ -59,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(
             height: size.height * 0.05,
           ),
-           _crearBotonSubmit(context, size, usuarioBloc),
+           _crearBotonSubmit(context, size, usuarioBloc, navigationBloc),
           SizedBox(height: size.height * 0.03),
           _crearIngresoExterno(size),
           SizedBox(height: size.height*0.001),
@@ -239,7 +240,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _crearBotonSubmit(BuildContext context, Size size, UsuarioBloc usuarioBloc){
+  Widget _crearBotonSubmit(BuildContext context, Size size, UsuarioBloc usuarioBloc, NavigationBloc navigationBloc){
     return Center(
       child: Container(
         width: size.width * 0.25,
@@ -257,17 +258,19 @@ class _LoginPageState extends State<LoginPage> {
             )
           ),
           onPressed: (){
-            _clickSubmmit(context, usuarioBloc);
+            _clickSubmmit(context, usuarioBloc, navigationBloc);
           },
         ),
       ),
     );
   }
 
-  void _clickSubmmit(BuildContext context, UsuarioBloc usuarioBloc)async{
+  void _clickSubmmit(BuildContext context, UsuarioBloc usuarioBloc, NavigationBloc navigationBloc)async{
+    navigationBloc.reiniciarIndex();
     Map<String, dynamic> respuesta = await usuarioBloc.login(_emailValue, _passwordValue);
-    if(usuarioBloc.usuario.phoneVerify)
+    if(usuarioBloc.usuario != null && usuarioBloc.usuario.phoneVerify){
       Navigator.pushReplacementNamed(context, HomePage.route, arguments: respuesta['user']);
+    }  
     else
       Navigator.pushNamed(context, PasosConfirmacionCelularPage.route);
   }

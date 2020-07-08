@@ -32,15 +32,13 @@ class LugaresProvider with LugaresPrueba{
     print(lugar);
     final response = await http.post(
       _serviceRoute,
-      body: lugar.toJson(),
       headers: {
         'Authorization':'Bearer $token',
         //'Content-Type':'application/json'
-      }
+      },
+      body: lugar.toJson()
+      
     );
-    print('**********************');
-    print('desde lugaresProvider.createLugar:');
-    print(response);
     Map<String, dynamic> decodedResponse = json.decode(response.body);
     return decodedResponse;
   }
@@ -53,9 +51,6 @@ class LugaresProvider with LugaresPrueba{
         'Authorization':'Bearer $token'
       }
     );
-    print('**********************');
-    print('desde elegir lugar response: ');
-    print(response.toString());
     Map<String, dynamic> decodedResponse = json.decode(response.body);
     print('***********************');
     print('elegir lugar decodedResponse: ');

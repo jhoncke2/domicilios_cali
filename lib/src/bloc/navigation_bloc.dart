@@ -1,7 +1,6 @@
-import 'package:domicilios_cali/src/pages/cuenta_page.dart';
 import 'package:domicilios_cali/src/pages/historial_page.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
-import 'package:domicilios_cali/src/pages/perfil_page.dart';
+import 'package:domicilios_cali/src/pages/login_page.dart';
 
 class NavigationBloc{
   int index = 0;
@@ -14,9 +13,13 @@ class NavigationBloc{
       case 2:
         return HistorialPage.route;
       case 3:
-        return PerfilPage.route;
+        return LoginPage.route;
       default:
-        return PerfilPage.route;
+        return LoginPage.route;
     }
+  }
+
+  void reiniciarIndex(){
+    index = 0;
   }
 }
