@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 class MapaPage extends StatelessWidget {
   static final route = 'mapa';
-
+  
   LugarModel lugar;
   GoogleMapController _mapController;
   Set<Marker> _markers;
@@ -15,7 +15,6 @@ class MapaPage extends StatelessWidget {
   ){
     lugar = new LugarModel(
       id: 1001,
-      nombre: 'lugar casual',
       latitud: 4.637479,
       longitud: -74.101,
       elegido: true,
@@ -47,13 +46,13 @@ class MapaPage extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       body: Stack(
         children: [
-          _crearMap(),
+          _crearMapa(),
         ],
       ),
     );
   }
 
-  Widget _crearMap(){
+  Widget _crearMapa(){
     return GoogleMap(
       mapType: MapType.normal,
       initialCameraPosition: CameraPosition(
@@ -79,7 +78,7 @@ class MapaPage extends StatelessWidget {
         icon: BitmapDescriptor.defaultMarker,
         position: lugar.latLng,
         infoWindow: InfoWindow(
-          title: lugar.nombre,
+          title: lugar.direccion,
         ),
         draggable: true,
         onDragEnd: (LatLng newPosition){

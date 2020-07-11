@@ -1,6 +1,7 @@
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
+import 'package:domicilios_cali/src/pages/direccion_create_mapa_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:domicilios_cali/src/utils/google_services.dart' as googleServices;
@@ -16,16 +17,14 @@ class DireccionCreatePage extends StatefulWidget {
 
 class _DireccionCreatePageState extends State<DireccionCreatePage> {
   LugarModel lugar = LugarModel();
+  String _tipoDireccion;
 
-  String _dropdownDepartamentoValue;
   String _ciudadValue;
   String _viaPrincipalValue;
   String _numeroViaPrincipalValue;
   String _numeroViaSecundariaValue;
   String _numeroCasaValue;
   String _observacionesValue;
-  
-  List<DropdownMenuItem> _itemsCiudades = [];
 
   @override
   void initState() {
@@ -39,13 +38,15 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
     _valorNumeroDomiciliario = '73';
     */
     // TODO: implement initState
-    super.initState();  
+    super.initState();
+    
   }
 
   @override
   Widget build(BuildContext context) {
     final usuarioBloc = Provider.usuarioBloc(context);
     final lugaresBloc = Provider.lugaresBloc(context);
+    _tipoDireccion = ModalRoute.of(context).settings.arguments;
     String token = usuarioBloc.token;
     Size size = MediaQuery.of(context).size;
     return  Scaffold(
@@ -397,12 +398,6 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
             'valor':_numeroCasaValue
           };
           break;
-        case 5:
-          componente = {
-            'nombre':'observaciones',
-            'valor': _observacionesValue
-          };
-        break;
       }
       if(componente['valor'] == null)
         return null;
@@ -441,15 +436,20 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
     if(componentesLugar == null)
       return;
     LatLng posicion = await googleServices.getUbicacionConComponentesDireccion(componentesLugar);
-    String direccion = await googleServices.getDireccionByLatLng(posicion);
+    //String direccion = await googleServices.getDireccionByLatLng(posicion);
+    String direccion = _concatenarDireccion();
     lugar.latitud = posicion.latitude;
     lugar.longitud = posicion.longitude;
-    lugar.componentes = componentesLugar;
-    lugar.nombre = 'nueva dirección';
     lugar.direccion = direccion;
-    lugar.tipoViaPrincipal = _viaPrincipalValue;
-    lugar.elegido = false;
-    await lugaresBloc.crearLugar(lugar, token);
-    Navigator.pop(context);
+    lugar.ciudad = _ciudadValue;
+    lugar.observaciones = _observacionesValue;
+    lugar.tipo = 'cliente';
+    Map<String, dynamic> response = await lugaresBloc.crearLugar(lugar, token);
+    if(response['status'] == 'ok')
+      Navigator.of(context).pushReplacementNamed(DireccionCreateMapaPage.route, arguments: response['content']);
+  }
+
+  String _concatenarDireccion(){
+    return '$_viaPrincipalValue $_numeroViaPrincipalValue # $_numeroViaSecundariaValue - $_numeroCasaValue, $_ciudadValue';
   }
 }

@@ -9,7 +9,6 @@ class LugaresBloc{
   Location _locationController = new Location();
 
   final _lugaresProvider = new LugaresProvider();
-
   final _lugaresController = new BehaviorSubject<List<LugarModel>>();
   final _elegidoController = new BehaviorSubject<LugarModel>();
   //final _cargandoController = new BehaviorSubject<bool>();
@@ -18,22 +17,18 @@ class LugaresBloc{
   Stream<LugarModel> get elegidoStream => _elegidoController.stream;
   //Stream<bool> get cargandoStream => _cargandoController.stream;
 
-  bool _cargando = false;
   //Stream<Lugar> get lugaresStream => _lugaresController.stream;
 
   /**
    * Falta implementar el parámetro usuarioId
    */
   Future<void> cargarLugares(String token)async{
-    if(!_cargando){
-      _cargando = true;
-      final lugaresResponse = await _lugaresProvider.cargarLugares(token);
-      LugaresModel lugares = LugaresModel.fromJsonList(lugaresResponse);
-      _lugaresController.sink.add(lugares.getLugares());
-      LugarModel elegido = lugares.getLugares().singleWhere((element) => element.elegido);
-      _elegidoController.sink.add(elegido);
-      _cargando = false;
-    }
+    final lugaresResponse = await _lugaresProvider.cargarLugares(token);
+    LugaresModel lugares = LugaresModel.fromJsonList(lugaresResponse);
+    _lugaresController.sink.add(lugares.getLugares());
+    LugarModel elegido = lugares.getLugares().singleWhere((element) => element.elegido);
+    _elegidoController.sink.add(elegido);
+
   }
 
   Future<void> editarLugar(LugarModel lugar, String token)async{
@@ -45,18 +40,23 @@ class LugaresBloc{
     cargarLugares(token);
   }
 
-  Future<void> latLon(int idLugar, String token, double latitud, double longitud)async{
-    Map<String, dynamic> respuesta = await _lugaresProvider.latLon(idLugar, token, latitud, longitud);
-    print(respuesta);
+  Future<Map<String, dynamic>> latLong(int idLugar, String token, double latitud, double longitud)async{
+    Map<String, dynamic> respuesta = await _lugaresProvider.latLong(idLugar, token, latitud, longitud);
+    return respuesta;
   }
 
   Future<void> eliminarLugar(int idLugar)async{
     _lugaresProvider.eliminarLugar(idLugar);
   }
 
-  Future<void> crearLugar(LugarModel lugar, String token)async{
-    _lugaresProvider.crearLugar(lugar, token);
-    cargarLugares(token);
+  Future<Map<String, dynamic>> crearLugar(LugarModel lugar, String token)async{
+    Map<String, dynamic> response = await _lugaresProvider.crearLugar(lugar, token);
+    if(response['status'] == 'ok'){
+      await cargarLugares(token);
+    }
+    response['content'] = LugarModel.fromJsonMap(response['content']);
+    return response;
+    
   }
 
   /**
@@ -70,7 +70,7 @@ class LugaresBloc{
     //LugarModel lugarActual = lugares.singleWhere((element) => element.nombre == 'Tu ubicación');
     //lugarActual.latitud = currentLocation.latitude;
     //lugarActual.longitud = currentLocation.longitude;
-    await latLon(idLugar, token, currentLocation.latitude, currentLocation.longitude);
+    await latLong(idLugar, token, currentLocation.latitude, currentLocation.longitude);
     await elegirLugar(idLugar, token);
     //cargarLugares(token);
   }

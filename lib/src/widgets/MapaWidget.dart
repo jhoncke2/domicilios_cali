@@ -98,7 +98,7 @@ class _MapaWidgetState extends State<MapaWidget> {
       Marker(
         markerId: MarkerId('lugar_${lugar.id}'),
         infoWindow: InfoWindow(
-          title: lugar.nombre,
+          title: lugar.direccion,
           //snippet: lugar.nombre,
         ),
         position: lugar.latLng,

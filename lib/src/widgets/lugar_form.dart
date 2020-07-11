@@ -3,10 +3,7 @@ import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
 import 'package:flutter/material.dart';
-
-import 'package:domicilios_cali/src/utils/google_services.dart' as googleServices;
 import 'package:domicilios_cali/src/utils/data_prueba/componentes_lugares.dart' as componentesLugares;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LugarForm extends StatefulWidget {
   LugarModel lugar;
@@ -45,14 +42,7 @@ class _LugarFormState extends State<LugarForm> {
     super.initState();  
     if(widget.tipoForm == widget.tiposForms[0]){
       
-      _dropdownDepartamentoValue = widget.lugar.componentes.singleWhere(
-        (element) => element['nombre'] == 'departamento'
-      )['valor'];
-      _dropdownCiudadValue = widget.lugar.componentes.singleWhere(
-        (element) => element['nombre'] == 'ciudad'
-      )['valor'];
       _itemsCiudades = _generarNombresCiudadesPorDepartamento(_dropdownDepartamentoValue);
-      _dropdownTipoDeViaValue = widget.lugar.tipoViaPrincipal;
     }
   }
 
@@ -81,12 +71,11 @@ class _LugarFormState extends State<LugarForm> {
                 decoration: InputDecoration(
                   labelText: 'Nombre de lugar',
                 ),
-                initialValue: widget.lugar.nombre,
+                initialValue: widget.lugar.direccion,
                 onChanged: (value){
                   if(value != 'Tu ubicación')
                     _valorNombre = value;
-                  else
-                    print('Tu ubicación por implementar');
+                  
                 },
               ),
               SizedBox(
@@ -137,20 +126,6 @@ class _LugarFormState extends State<LugarForm> {
     String viaPrincipal;
     String viaSecundaria;
     String numeroDomiciliario;
-
-    if(widget.tipoForm == 'edit'){
-      viaPrincipal = widget.lugar.componentes.singleWhere(
-        (element) => element['nombre'] == 'via_principal'
-      )['valor'].split(widget.lugar.tipoViaPrincipal)[1];
-      //['valor'].split(lugar.tipoViaPrincipal)[1];
-
-      viaSecundaria = widget.lugar.componentes.singleWhere(
-        (element) => element['nombre'] == 'via_secundaria'
-      )['valor'];
-      numeroDomiciliario = widget.lugar.componentes.singleWhere(
-        (element) => element['nombre'] == 'numero_domiciliario'
-      )['valor'];
-    }
     
     return Form(
       child: Column(
@@ -308,11 +283,9 @@ class _LugarFormState extends State<LugarForm> {
   }
 
   List<DropdownMenuItem<String>> _generarNombresCiudadesPorDepartamento(String nombreDepartamento){
-    print(nombreDepartamento);
     dynamic departamento = componentesLugares.departamentos.singleWhere(
       (element) => element['nombre'] == nombreDepartamento
     );
-    print(departamento);
     List<DropdownMenuItem<String>> ciudadesItems = [];
 
     departamento['ciudades'].forEach((ciudad){
@@ -330,91 +303,7 @@ class _LugarFormState extends State<LugarForm> {
   }
 
   void _guardarDatos(UsuarioBloc usuarioBloc, LugaresBloc lugaresBloc)async{
-    widget.lugar.nombre = _valorNombre?? widget.lugar.nombre;
     widget.lugar.direccion = _valorDireccion?? widget.lugar.direccion;
-    widget.lugar.tipoViaPrincipal = _dropdownTipoDeViaValue;
-    //faltan la latitud y la longitud
-    if(widget.tipoForm == widget.tiposForms[0]){
-      widget.lugar.componentes.forEach((element) {
-        switch(element['nombre']){
-          case 'numero_domiciliario':
-            element['valor'] = _valorNumeroDomiciliario??element['valor'];
-            break;
-          case 'via_secundario':
-            element['valor'] = _valorViaSecundaria??element['valor'];
-            break;
-          case 'via_principal':
-            element['valor'] = _valorViaPrincipal??element['valor'];
-            break;
-          case 'ciudad':
-            element['valor'] = _dropdownCiudadValue;
-            break;
-          case 'departamento':
-            element['valor'] = _dropdownDepartamentoValue;
-            break;
-        }
-      });
-
-      lugaresBloc.editarLugar(widget.lugar, usuarioBloc.token);
-    }else{
-      List<Map<String, dynamic>> componentes = [];
-      //Lo quité. Estar pendiente.
-      //widget.lugar.elegido = false;
-      var componente;
-      for(int i = 0; i < 6; i++){
-        switch(i){
-          case 0:
-            componente = {
-              'nombre':'pais',
-              'valor':'Colombia'
-            };
-            break;
-          case 1:
-            componente = {
-              'nombre':'departamento',
-              'valor':_dropdownDepartamentoValue
-            };
-            break;
-          case 2:
-            componente = {
-              'nombre':'ciudad',
-              'valor':_dropdownCiudadValue
-            };
-            break;
-          case 3:
-            componente = {
-              'nombre':'via_principal',
-              'valor':  '$_dropdownTipoDeViaValue $_valorViaPrincipal'
-            };
-            break;
-          case 4:
-            componente = {
-              'nombre':'via_secundaria',
-              'valor':_valorViaSecundaria
-            };
-            break;
-          case 5:
-            componente = {
-              'nombre':'numero_domiciliario',
-              'valor':_valorNumeroDomiciliario
-            };
-            break;
-        }
-        componentes.add(componente);
-      }
-      widget.lugar.componentes = componentes;
-      LatLng latLong = await googleServices.getUbicacionConComponentesDireccion(componentes);
-      if(latLong != null){
-        widget.lugar.latitud = latLong.latitude;
-        widget.lugar.longitud = latLong.longitude;
-
-        print('creando componente: ');
-        print('latitud y longitud: ${latLong.latitude}/${latLong.longitude}');
-        lugaresBloc.crearLugar(widget.lugar, usuarioBloc.token);
-      }else{
-        print('No se pudo obtener latitud y longitud de los componentes de dirección dados');
-      }
-    }
       
   }
 }

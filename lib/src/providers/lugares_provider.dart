@@ -62,7 +62,7 @@ class LugaresProvider with LugaresPrueba{
     print(decodedResponse.toString());
   }
 
-  Future<Map<String, dynamic>> latLon(int idLugar, String token, double latitud, double longitud)async{
+  Future<Map<String, dynamic>> latLong(int idLugar, String token, double latitud, double longitud)async{
     final latlonRoute = '$_serviceDireccionRoute/latlon/$idLugar';
     final response = await http.post(
       latlonRoute,

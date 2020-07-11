@@ -1,13 +1,9 @@
 import 'dart:io';
-
-import 'package:domicilios_cali/src/models/lugares_model.dart';
-import 'package:domicilios_cali/src/models/usuarios_model.dart';
-import 'package:domicilios_cali/src/providers/lugares_provider.dart';
-import 'package:domicilios_cali/src/providers/usuario_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
+import 'package:domicilios_cali/src/models/usuarios_model.dart';
+import 'package:domicilios_cali/src/providers/usuario_provider.dart';
 class UsuarioBloc{
-  final _lugaresProvider = new LugaresProvider();
   final _usuarioProvider = new UsuarioProvider();
 
   final _usuarioController = new BehaviorSubject<List<UsuarioModel>>();
@@ -39,24 +35,17 @@ class UsuarioBloc{
       token = respuestaRegister['token'];
       Map<String, dynamic> user = await _usuarioProvider.getUserByToken(respuestaRegister['token']);
       usuario = UsuarioModel.fromJsonMap(user);
-      LugarModel tuPosicion = LugarModel(
-        nombre: 'Tu ubicación',
-        direccion: 'direccion',
-        latitud: 0.0,
-        longitud: 0.0,
-        tipoViaPrincipal: 'tipo_via_principal',
-        componentes: [],      
-      );
-      Map<String, dynamic> respuestaCreateLugar = await _lugaresProvider.crearLugar(tuPosicion, token);
-      if(respuestaCreateLugar['status']!='ok')
-        //return respuestaCreateLugar;
-        print('crear lugar diferente de ok');
     }
     return respuestaRegister;
   }
   
-  void logOut(String token)async{
-    _usuarioProvider.logOut(token);
+  Future<void> logOut(String token)async{
+    Map<String, dynamic> response = await _usuarioProvider.logOut(token);
+    if(response['status']=='ok'){
+      this.usuario = null;
+      this.token = null;
+    }
+
   }
 
   Future<Map<String, dynamic>> cambiarFoto(String token, File foto)async{

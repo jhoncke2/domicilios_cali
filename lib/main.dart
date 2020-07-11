@@ -1,5 +1,6 @@
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/pages/cuenta_page.dart';
+import 'package:domicilios_cali/src/pages/direccion_create_mapa_page.dart';
 import 'package:domicilios_cali/src/pages/direccion_create_page.dart';
 import 'package:domicilios_cali/src/pages/favoritos_page.dart';
 import 'package:domicilios_cali/src/pages/historial_page.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
     return Provider(
       child: MaterialApp(
         title: 'Domicilios',
-        initialRoute: SplashScreenPage.route,
+        initialRoute: HomePage.route,
         routes:{
           SplashScreenPage.route:(BuildContext context)=>SplashScreenPage(),
           LoginPage.route:(BuildContext context)=>LoginPage(),
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
           CarritoPage.route:(BuildContext context)=>CarritoPage(),
           MapaPage.route:(BuildContext context)=>MapaPage(),
           ProductoCreatePage.route:(BuildContext context)=>ProductoCreatePage(),
+          DireccionCreateMapaPage.route:(BuildContext context)=>DireccionCreateMapaPage(),
         },
         theme: ThemeData(
           fontFamily: 'OpenSans',
