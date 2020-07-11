@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 class CatalogoProductoPrueba{
   final nombres = [
     //comida rápida
@@ -251,5 +252,14 @@ class CatalogoProductoPrueba{
     'medicina',
     'mercado',
     'pagos'
+  ];
+
+  final categoriasIconos = [
+    Icons.fastfood,
+    Icons.computer,
+    Icons.shopping_basket,
+    Icons.healing,
+    Icons.shopping_cart,
+    Icons.filter
   ];
 }

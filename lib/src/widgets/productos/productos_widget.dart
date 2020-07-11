@@ -41,7 +41,7 @@ class _ProductosWidgetState extends State<ProductosWidget> {
       margin: EdgeInsets.symmetric(horizontal: size.width * widget.horizontalMarginPercent),
       padding: EdgeInsets.symmetric(vertical: 0),
       //0.18 es el porcentaje de width de pantalla que tiene cada card (?).
-      height: size.height * 0.755,
+      height: size.height * widget.heightPercent,
       width: size.width,     
       decoration: BoxDecoration(
         color: Colors.white70,

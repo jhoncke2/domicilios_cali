@@ -39,7 +39,7 @@ class ProductoCardWidget extends StatelessWidget {
             ),
             
             SizedBox(
-              height: size.height * 0.015,
+              height: size.height * 0.005,
             ),
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: size.width  * 0.27),
@@ -71,6 +71,10 @@ class ProductoCardWidget extends StatelessWidget {
               width: size.width * 0.102,
               child: Center(
                 child: Badge(
+                  padding: EdgeInsets.symmetric(
+                    vertical: size.height * 0.003,
+                    horizontal: size.width * 0.015
+                  ),
                   shape: BadgeShape.square,
                   badgeColor: Colors.grey,
                   borderRadius: size.width * 0.012,
@@ -86,7 +90,7 @@ class ProductoCardWidget extends StatelessWidget {
                       Icon(
                         Icons.star,
                         size: size.width * 0.029,
-                        color: Colors.orange,
+                        color: Colors.orange[300],
                       )
                     ],
                   ),
