@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">domicilios cali</string>
+
+    <!-- Replace "000000000000" with your Facebook App ID here. -->
+    <string name="facebook_app_id">4089914317747680</string>
+
+    <!--
+      Replace "000000000000" with your Facebook App ID here.
+      **NOTE**: The scheme needs to start with `fb` and then your ID.
+    -->
+    <string name="fb_login_protocol_scheme">fb4089914317747680</string>
+</resources>

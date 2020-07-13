@@ -1,9 +1,7 @@
 import 'dart:core';
-//importaciones locales
-import 'package:domicilios_cali/src/models/productos_model.dart';
 
-class Tiendas {
-  List<Tienda> tiendas = new List();
+class TiendasModel {
+  List<TiendaModel> tiendas = new List();
   /* ***********************************************
    *    Pruebas
    *********************************************** */
@@ -15,33 +13,52 @@ class Tiendas {
       'imagen_url':''
     }
   ];
-  Tiendas.fromJsonList(List<dynamic> jsonList){
+  TiendasModel.fromJsonList(List<dynamic> jsonList){
     if(jsonList == null)
       jsonList = _tiendasPrueba;
     jsonList.forEach((actual){
-      final tiendaActual = Tienda.fromJsonMap(actual);
+      final tiendaActual = TiendaModel.fromJsonMap(actual);
       tiendas.add(tiendaActual);
     });
   }
 
-  List<Tienda> get lugares{
+  List<TiendaModel> get lugares{
     return tiendas;
   }
 }
 
-class Tienda{
+class TiendaModel{
   int id;
-  int usuarioId;
-  String nombre;
-  String imagenUrl;
-  List<ProductoModel> productos;
+  int userId;
+  int horarioId;
+  int direccionId;
+  String tipoDePago;
+  String ccFrontalRoute;
+  String ccAtrasRoute;
 
-  Tienda.fromJsonMap(Map<String, dynamic> json){
-    id          = json['id'];
-    usuarioId   = json['usuario_id'];
-    nombre      = json['nombre'];
-    imagenUrl   = json['imagen_url'];
-    //aún no verificados.
-    productos   = json['productos'];
+
+  TiendaModel.fromJsonMap(Map<String, dynamic> json){
+    id                = json['id'];
+    userId            = json['user_id'];
+    horarioId         = json['horario_id'];
+    direccionId       = json['direccion_id'];
+    tipoDePago        = json['tipo_de_pago'];
+    ccFrontalRoute    = json['cc_frontal'];
+    ccAtrasRoute      = json['cc_atras'];
+  }
+
+  Map<String, dynamic> toJson(){
+    Map<String, dynamic> jsonObject = {};
+    if(id != null)
+      jsonObject['id'] = '$id';
+    jsonObject['user_id'] = '$userId';
+    jsonObject['horario_id'] = '$horarioId';
+    jsonObject['direccion_id'] = '$direccionId';
+    jsonObject['tipo_de_pago'] = '$tipoDePago';
+    if(ccFrontalRoute != null)
+      jsonObject['cc_frontal'] = ccFrontalRoute;
+    if(ccAtrasRoute != null)
+      jsonObject['cc_atras'] = ccAtrasRoute;
+    return jsonObject;
   }
 }

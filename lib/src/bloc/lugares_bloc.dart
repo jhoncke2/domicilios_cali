@@ -28,7 +28,6 @@ class LugaresBloc{
     _lugaresController.sink.add(lugares.getLugares());
     LugarModel elegido = lugares.getLugares().singleWhere((element) => element.elegido);
     _elegidoController.sink.add(elegido);
-
   }
 
   Future<void> editarLugar(LugarModel lugar, String token)async{
