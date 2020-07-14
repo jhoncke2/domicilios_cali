@@ -30,19 +30,31 @@ class LugaresProvider with LugaresPrueba{
 
   Future<Map<String, dynamic>> crearLugar(LugarModel lugar, String token)async{
     print(lugar);
-    final response = await http.post(
-      _serviceRoute,
-      body: lugar.toJson(),
-      headers: {
-        'Authorization':'Bearer $token',
-        //'Content-Type':'application/json'
+    try{
+      final response = await http.post(
+        _serviceRoute,
+        body: lugar.toJson(),
+        headers: {
+          'Authorization':'Bearer $token',
+          //'Content-Type':'application/json'
+        }
+      );
+      print(response);
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      if(decodedResponse['status']==null){
+        return {
+          'status':'ok',
+          'content':decodedResponse['direccion']
+        };
       }
-    );
-    print('**********************');
-    print('desde lugaresProvider.createLugar:');
-    print(response);
-    Map<String, dynamic> decodedResponse = json.decode(response.body);
-    return decodedResponse;
+      return decodedResponse;
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+    
   }
 
   Future<void> elegirLugar(int idLugar, String token)async{

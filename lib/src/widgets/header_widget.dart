@@ -3,10 +3,6 @@ import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
 import 'package:domicilios_cali/src/pages/direccion_create_page.dart';
-import 'package:domicilios_cali/src/pages/favoritos_page.dart';
-import 'package:domicilios_cali/src/pages/login_page.dart';
-import 'package:domicilios_cali/src/pages/pasos_crear_tienda_page.dart';
-import 'package:domicilios_cali/src/pages/perfil_page.dart';
 import 'package:flutter/material.dart';
 class HeaderWidget extends StatefulWidget {
   @override
@@ -108,16 +104,6 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    /*
-                    Text(
-                      lugar.direccion, 
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black.withOpacity(0.9),
-                        fontSize: size.width * 0.045
-                      ),
-                    ),
-                    ¨*/
                   ],
                 ),
               )
@@ -135,7 +121,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                     child: Text('otra dirección'),
                     color: Colors.grey.withOpacity(0.8),
                     onPressed: (){
-                      Navigator.pushNamed(context, DireccionCreatePage.route);
+                      Navigator.pushNamed(context, DireccionCreatePage.route, arguments: 'cliente');
                     },
                   ),
                 ),
@@ -200,127 +186,5 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         );
       },
     );
-  }
-
-  Widget _crearPopUpNavigator(BuildContext context, UsuarioBloc usuarioBloc, Size size, String token){
-    return PopupMenuButton<int>(
-      onSelected: (int index){
-        switch(index){
-          case 1:
-            Navigator.pushNamed(context, PerfilPage.route);
-            break;
-          case 2:
-            Navigator.pushNamed(context, FavoritosPage.route);
-            break;
-          case 3:
-            Navigator.pushReplacementNamed(context, PasosCrearTiendaPage.route);
-            break;
-          case 4:
-            _logOut(usuarioBloc, token);
-            break;
-          default:
-            break;
-        }
-      },
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(size.width * 0.048)
-      ),
-      offset: Offset(
-        size.width * 0.28,
-        -size.height * 0.005,
-      ),
-      padding: EdgeInsets.all(0.0),
-      icon: Icon(
-        Icons.arrow_drop_down,
-        color: Colors.grey.withOpacity(0.9),
-      ),
-      tooltip: 'tooltip',
-      itemBuilder: (BuildContext context){
-        return [
-          PopupMenuItem(
-            enabled: false,
-            value: 0,
-            child: Container(
-              padding: EdgeInsets.only(bottom:size.height * 0.045),
-              child: Center(
-                child: Image.asset(
-                  'assets/iconos/logo_porta_01.png',
-                  fit: BoxFit.fill,
-                  width: size.width * 0.37,
-                  height: size.height * 0.074,
-                ),
-              ),
-            ),
-          ),
-          PopupMenuItem(
-            value: 1,
-            height: size.height * 0.08,
-            child: _crearChildPopUpMenuItem(size, 0, 'Perfil', Icons.person),
-          ),
-          PopupMenuItem(
-            value: 2,
-            child: _crearChildPopUpMenuItem(size, 1, 'Favoritos', Icons.favorite),
-            height: size.height * 0.08,
-          ),
-          PopupMenuItem(
-            value: 3,
-            child: _crearChildPopUpMenuItem(size, 2, 'Ofrecer productos para venta', Icons.monetization_on),
-            height: size.height * 0.08,
-          ),
-          PopupMenuItem(
-            value: 4,
-            child: _crearChildPopUpMenuItem(size, 3, 'Salir', Icons.open_in_new),
-            height: size.height * 0.08,
-            
-          ),
-          
-        ];
-      },
-    );
-  }
-
-  Widget _crearChildPopUpMenuItem(Size size, int index, String nombre, IconData icono){
-    return Container(
-      height: size.height * 0.08,
-      margin: EdgeInsets.all(0.0),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.grey.withOpacity(((index < 3)? 0.45: 0.0)),
-            width: 1.35
-          )
-        )
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            nombre,
-            style: TextStyle(
-              color: Colors.black.withOpacity(0.55),
-              fontSize: size.width * 0.045,
-              //fontFamily: 'FiraSansExtraCondensed',
-              //fontFamily: 'BarlowCondensed',
-              //fontFamily: 'UbuntuCondensed',
-              //fontFamily: 'FjallaOne',
-              //fontFamily: 'RobotoCondensed',
-              fontFamily: 'OpenSansCondensed',
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Icon(
-            icono,
-            size: size.width * 0.058,
-            color: Colors.grey.withOpacity(0.85),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _logOut(UsuarioBloc usuarioBloc, String token)async{
-    await usuarioBloc.logOut(token);
-    Navigator.pushReplacementNamed(context, LoginPage.route);
   }
 }

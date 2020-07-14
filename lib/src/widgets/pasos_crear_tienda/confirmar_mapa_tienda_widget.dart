@@ -1,4 +1,3 @@
-import 'package:domicilios_cali/src/models/lugares_model.dart';
 import 'package:domicilios_cali/src/widgets/mapa_tienda_widget.dart';
 import 'package:flutter/material.dart';
 class ConfirmarMapaTiendaWidget extends StatefulWidget {
@@ -14,10 +13,6 @@ class _ConfirmarMapaTiendaWidgetState extends State<ConfirmarMapaTiendaWidget> {
       height: size.height,
       width: size.width,
       child: MapaTiendaWidget(
-        LugarModel(
-          latitud: 0.0,
-          longitud: 0.0
-        ),
       ),
     );
   }

@@ -1,9 +1,8 @@
-import 'dart:io';
+import 'package:domicilios_cali/src/bloc/tienda_bloc.dart';
 import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
 import 'package:domicilios_cali/src/widgets/header_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
@@ -16,97 +15,158 @@ class PerfilPage extends StatefulWidget with UsuariosPrueba{
 }
 
 class _PerfilPageState extends State<PerfilPage> {
-  File _imagenSeleccionada;
-
   GoogleMapController _mapController;
+
+  String _urlAvatar;
+
+  //prueba
+  LugarModel direccionTiendaPrueba;
+
+  @override
+  void initState() {
+    direccionTiendaPrueba = LugarModel(
+      pais: 'Colombia',
+      ciudad: 'Bogotá',
+      direccion: 'Avenida calle 40 # 13 - 73',
+      observaciones: '',
+      tipo: 'tienda',
+      rango: 150,
+      latitud: -70.5,
+      longitud: 35.05
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);   
-    LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
+    TiendaBloc tiendaBloc = Provider.tiendaBloc(context);
+    tiendaBloc.cargarTienda(usuarioBloc.token);
     //lugaresBloc.cargarLugares(usuarioBloc.token);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: size.width * 0.09),
-        children: [
-          SizedBox(
-            height: size.height * 0.065,
-          ),
-          HeaderWidget(), 
-          SizedBox(
-            height: size.height * 0.035,
-          ),    
-          _crearTitulo(size),
-          SizedBox(
-            height: size.height * 0.03,
-          ),
-          _crearFoto(size, widget.usuarios[0]['imagen_url']),
-          SizedBox(
-            height: size.height * 0.035,
-          ),
-          //_crearDatosPerfil(size, usuarioBloc),
-          _crearEspacioDato(size, 'Nombre', usuarioBloc.usuario.name),
-          SizedBox(
-            height: size.height * 0.02,
-          ),
-          _crearEspacioDato(size, 'Correo', usuarioBloc.usuario.email),
-          SizedBox(
-            height: size.height * 0.02,
-          ),
-          _crearEspacioDato(size, 'Celular', '3133854589'),
-          SizedBox(
-            height: size.height * 0.02,
-          ),
-          _crearMapa(size, lugaresBloc),
-          SizedBox(
-            height: size.height * 0.035
-          ),
-          _crearCampoHorarios(size, []),
-          SizedBox(
-            height: size.height * 0.05
-          ),
-           _crearSolicitarPago(size),
-          SizedBox(
-            height: size.height * 0.05
-          ),
-          //_crearBotonCambiarRadio(context, size),
-        ],
-      ),
+      body: _crearElementos(size, usuarioBloc, tiendaBloc),
       bottomNavigationBar: BottomBarWidget(),
     );
   }
 
-  Widget _crearTitulo(Size size){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        IconButton(
-          iconSize: size.width * 0.06,
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.grey.withOpacity(0.8),
-          ),
-          onPressed: (){
-            Navigator.pop(context);
-          },
-        ),     
-        Text(
-          'Perfil',
-          style: TextStyle(
-            color: Colors.black.withOpacity(0.8),
-            fontSize: size.width * 0.075
-          ),
-        ),
-        SizedBox(
-          width: size.width * 0.1,
-        ),
+  Widget _crearElementos(Size size, UsuarioBloc usuarioBloc, TiendaBloc tiendaBloc){
+    List<Widget> listViewItems = [];
+    _agregarItemsCliente(size, usuarioBloc, listViewItems);
 
-      ],
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal:size.width * 0.05),
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: size.height * 0.065,
+          ),
+          HeaderWidget(),
+          StreamBuilder(
+            stream: tiendaBloc.tiendaStream,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              if(snapshot.hasData){
+                if(snapshot.data != null && snapshot.data.id != null)
+                  _agregarItemsTienda(size, listViewItems, direccionTiendaPrueba);
+                else if(tiendaBloc.enCreacion)
+                  _agregarItemsTienda(size, listViewItems, tiendaBloc.direccionTienda);
+                return Container(
+                  padding: EdgeInsets.all(0),
+                  height: size.height * 0.75,
+                  child: ListView(
+                    padding: EdgeInsets.symmetric(vertical:size.height * 0.02),
+                    children: listViewItems,
+                  ),
+                );
+              }else{
+                return Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Theme.of(context).primaryColor,
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _crearFoto(Size size, String urlFoto){
+  void _agregarItemsCliente(Size size, UsuarioBloc usuarioBloc, List<Widget> items){
+    items.add(
+      _crearTitulo(size)
+    );
+    items.add(
+      SizedBox(
+        height: size.height * 0.02,
+      )
+    );
+    items.add(
+      _crearFoto(size),
+    );
+    items.add(
+      _crearEspacioDato(size, 'Nombre', usuarioBloc.usuario.name)
+    );
+    items.add(
+      SizedBox(
+        height: size.height * 0.02,
+      )
+    );
+    items.add(
+      _crearEspacioDato(size, 'Correo', usuarioBloc.usuario.email)
+    );
+    items.add(
+      SizedBox(
+        height: size.height * 0.02,
+      )
+    );
+    items.add(
+      _crearEspacioDato(size, 'Celular', usuarioBloc.usuario.phone)
+    );
+  }
+
+  void _agregarItemsTienda(Size size, List<Widget> items, LugarModel direccionTienda){      
+    items.add(
+      _crearMapa(size, direccionTienda),
+    );
+    items.add(
+      SizedBox(
+        height: size.height * 0.035
+      ),
+    );
+    items.add(
+      _crearCampoHorarios(size, []),
+    );
+    items.add(
+      SizedBox(
+        height: size.height * 0.05
+      ),
+    );
+    items.add(
+      _crearSolicitarPago(size),
+    );
+  }
+
+  Widget _crearDatosPerfilBasicos(Size size){
+    return Column(
+
+    );
+  }
+
+  Widget _crearTitulo(Size size){
+    return Center(
+      child: Text(
+        'Perfil',
+        style: TextStyle(
+          color: Colors.black.withOpacity(0.8),
+          fontWeight: FontWeight.bold,
+          fontSize: size.width * 0.07
+        ),
+      ),
+    );
+  }
+
+  Widget _crearFoto(Size size){
     return Container(
       padding: EdgeInsets.symmetric(horizontal:size.width * 0.22),
       width: size.width * 0.25,
@@ -117,7 +177,7 @@ class _PerfilPageState extends State<PerfilPage> {
             width: size.width * 0.45,
             height: size.height * 0.15,
             fit: BoxFit.fill,
-            image: NetworkImage(urlFoto),
+            image: (_urlAvatar != null)? NetworkImage(_urlAvatar) : AssetImage('assets/placeholder_images/user.png'),
             placeholder: AssetImage('assets/placeholder_images/user.png'),
           ),
         ),
@@ -162,7 +222,7 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
-  Widget _crearMapa(Size size, LugaresBloc lugaresBloc){
+  Widget _crearMapa(Size size, LugarModel lugarTienda){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -176,50 +236,29 @@ class _PerfilPageState extends State<PerfilPage> {
         SizedBox(
           height: size.height * 0.02,
         ),
-        StreamBuilder(
-          stream: lugaresBloc.lugaresStream,
-          builder: (BuildContext context, AsyncSnapshot<List<LugarModel>> snapshot){
-            if(snapshot.hasData){
-              if(snapshot.data != null){
-                return Container(
-                  //width: size.width * 0.75,
-                  height: size.height * 0.45,
-                  child: GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: CameraPosition(
-                      /*
-                      target: LatLng(
-                        3.4683343,
-                        -76.52105999999999
-                      ),
-                      */
-                      target: snapshot.data[1].latLng,
-                      zoom: 15.0
-                    ),
-                    circles: {
-                      Circle(
-                        circleId: CircleId('0'),
-                        radius: 450.0,
-                        center: snapshot.data[1].latLng,
-                        fillColor: Colors.blueAccent.withOpacity(0.35),
-                        strokeColor: Colors.blueAccent.withOpacity(0.5),
-                        strokeWidth: 1
-                      )
-                    },
-                    onMapCreated: (GoogleMapController newController){
-                      _mapController = newController;
-                    },
-                  ),
-                );
-              }
-              return Center(
-                child: CircularProgressIndicator()
-              );
-            }
-            return Center(
-              child: CircularProgressIndicator()
-            );
-          },
+        Container(
+          //width: size.width * 0.75,
+          height: size.height * 0.45,
+          child: GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: CameraPosition(
+              target: lugarTienda.latLng,
+              zoom: 15.0
+            ),
+            circles: {
+              Circle(
+                circleId: CircleId('0'),
+                radius: 450.0,
+                center: lugarTienda.latLng,
+                fillColor: Colors.blueAccent.withOpacity(0.35),
+                strokeColor: Colors.blueAccent.withOpacity(0.5),
+                strokeWidth: 1
+              )
+            },
+            onMapCreated: (GoogleMapController newController){
+              _mapController = newController;
+            },
+          ),
         ),
       ],
     );

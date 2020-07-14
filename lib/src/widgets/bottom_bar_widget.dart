@@ -1,6 +1,7 @@
 import 'package:domicilios_cali/src/bloc/navigation_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
+import 'package:domicilios_cali/src/pages/direccion_create_page.dart';
 import 'package:domicilios_cali/src/pages/favoritos_page.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_crear_tienda_page.dart';
@@ -162,7 +163,7 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
         Navigator.of(context).pushNamed(FavoritosPage.route);
         break;
       case 'tienda':
-        Navigator.of(context).pushNamed(PasosCrearTiendaPage.route);
+        Navigator.of(context).pushNamed(DireccionCreatePage.route, arguments: 'tienda');
         break;
       case 'salir':
         _logOut(usuarioBloc, navigationBloc, token);

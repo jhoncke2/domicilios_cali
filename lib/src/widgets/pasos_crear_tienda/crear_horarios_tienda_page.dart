@@ -15,13 +15,19 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _agregarHorario();
+    //_agregarHorario();
   }
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     List<Widget> elementos = [];
-    _crearElementosListView(context, size, elementos);
+    //_crearElementosListView(context, size, elementos);
+    return Container(
+      child: Center(
+        child: Text('Crear horario tienda page'),
+      ),
+    );
+    /*
     return Container(
       width: size.width,
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.045),
@@ -31,21 +37,11 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
         ),
       ),
     );
+    */
   }
 
+  /*
   void _agregarHorario(){
-    HorarioModel horario = new HorarioModel(
-      dias: [],
-      horaInicial: TimeOfDay(
-        hour: 0,
-        minute: 0,
-      ),
-      horaFinal: TimeOfDay(
-        hour: 23,
-        minute: 59
-      )
-    );
-    _horarios.add(horario);
     setState(() {
     });
   }
@@ -158,7 +154,8 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
                ),
                 color: Colors.white.withOpacity(0.85),
                 child: Text(
-                  'desde las ${horario.horaInicial.hour}:${horario.horaInicial.minute}',
+                  '',
+                  //'desde las ${horario.horaInicial.hour}:${horario.horaInicial.minute}',
                   style: TextStyle(
                     fontSize: size.width * 0.04
                   ),
@@ -176,7 +173,8 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
                ),
                 color: Colors.white.withOpacity(0.85),
                 child: Text(
-                  'hasta las ${horario.horaFinal.hour}:${horario.horaFinal.minute}',
+                  '',
+                  //'hasta las ${horario.horaFinal.hour}:${horario.horaFinal.minute}',
                   style: TextStyle(
                     fontSize: size.width * 0.035
                   ),
@@ -218,6 +216,7 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
       )
     );
 
+    /*
     _dias.forEach((diaActual) {
       bool horarioTieneDia = horario.dias.contains(diaActual);
       if(!_diasSeleccionados.contains(diaActual) || horarioTieneDia){
@@ -256,6 +255,7 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
         );
       }
     });
+    */
     botonesDias.add(SizedBox(height: size.height * 0.01));
     return Container(
       padding: EdgeInsets.symmetric(horizontal:size.width * 0.025),
@@ -272,6 +272,7 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
       minute: ((nTimePicker ==1)? 0 : 59)
     );
     TimeOfDay selectedTime = await showTimePicker(context: context, initialTime: initialTime);
+    /*
     if(selectedTime != null){
       if(nTimePicker == 1)
         horario.horaInicial = selectedTime;
@@ -281,6 +282,7 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
         
       });
     }
+    */
   }
 
   Widget _crearBotonNuevoHorario(Size size){
@@ -306,6 +308,7 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
 
   bool _verificarCondicionesAgregarHorario(){
     if(_diasSeleccionados.length < 8){
+      
       for(int i = 0; i < _horarios.length; i++){
         if(_horarios[i].dias.length == 0)
           return false;
@@ -322,4 +325,5 @@ class _CrearHorariosTiendaPageState extends State<CrearHorariosTiendaPage> {
       
     });
   }
+  */
 }

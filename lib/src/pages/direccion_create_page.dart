@@ -18,7 +18,6 @@ class DireccionCreatePage extends StatefulWidget {
 class _DireccionCreatePageState extends State<DireccionCreatePage> {
   LugarModel lugar = LugarModel();
   String _tipoDireccion;
-
   String _ciudadValue;
   String _viaPrincipalValue;
   String _numeroViaPrincipalValue;
@@ -28,15 +27,6 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
 
   @override
   void initState() {
-    /*
-    _valorDireccion = 'Av. calle 40 # 13 - 73';
-    _dropdownDepartamentoValue = 'Bogotá';
-    _dropdownCiudadValue = 'Bogotá';
-    _dropdownTipoDeViaValue = 'Avenida calle';
-    _valorViaPrincipal = '40';
-    _valorViaSecundaria = '13';
-    _valorNumeroDomiciliario = '73';
-    */
     // TODO: implement initState
     super.initState();
     
@@ -47,6 +37,8 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
     final usuarioBloc = Provider.usuarioBloc(context);
     final lugaresBloc = Provider.lugaresBloc(context);
     _tipoDireccion = ModalRoute.of(context).settings.arguments;
+    print(ModalRoute.of(context).settings);
+
     String token = usuarioBloc.token;
     Size size = MediaQuery.of(context).size;
     return  Scaffold(
@@ -111,14 +103,15 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
           },
         ),
         Text(
-          'Crear dirección',
+          ((_tipoDireccion == 'cliente')? 'Nueva dirección' : 'Dirección de tienda'),
           style: TextStyle(
-            fontSize: size.width * 0.067,
-            color: Colors.black.withOpacity(0.65)
+            fontSize: size.width * 0.063,
+            color: Colors.black.withOpacity(0.8),
+            fontWeight: FontWeight.bold
           ),
         ),
         SizedBox(
-          width: size.width * 0.05,
+          width: size.width * 0.02,
         )
       ],
     );
@@ -443,10 +436,27 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
     lugar.direccion = direccion;
     lugar.ciudad = _ciudadValue;
     lugar.observaciones = _observacionesValue;
-    lugar.tipo = 'cliente';
-    Map<String, dynamic> response = await lugaresBloc.crearLugar(lugar, token);
-    if(response['status'] == 'ok')
-      Navigator.of(context).pushReplacementNamed(DireccionCreateMapaPage.route, arguments: response['content']);
+    lugar.tipo = _tipoDireccion;
+
+
+    LugarModel lugarArguments = lugar;
+    if(_tipoDireccion == 'cliente'){
+      print(lugar);
+      Map<String, dynamic> response = await lugaresBloc.crearLugar(lugar, token);
+      if(response['status'] == 'ok')
+        lugarArguments = response['content'];
+      
+    }
+    
+    Navigator.of(context).pushReplacementNamed(
+      DireccionCreateMapaPage.route, 
+      arguments: {
+        'tipo_direccion':_tipoDireccion,
+        'direccion':lugarArguments
+      }
+    );
+
+    
   }
 
   String _concatenarDireccion(){

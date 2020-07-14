@@ -1,8 +1,10 @@
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/bloc/tienda_bloc.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
+import 'package:domicilios_cali/src/pages/perfil_page.dart';
 import 'package:domicilios_cali/src/widgets/header_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -13,17 +15,26 @@ class DireccionCreateMapaPage extends StatefulWidget {
 }
 
 class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
+  Map<String, dynamic> _routeSettings;
+
   GoogleMapController _mapController;
   LugarModel _lugar;
   Set<Marker> _markers = {};
+  Set<Circle> _circles = {};
   bool _ubicacionCambio = false;
-
+  int _circleRadio = 100;
+  
   @override
   Widget build(BuildContext context) {
     UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
     LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
     String token = usuarioBloc.token;
-
+    _routeSettings = ModalRoute.of(context).settings.arguments;
+    _lugar = _routeSettings['direccion'];
+    print(_routeSettings);
+    if(_routeSettings['tipo_direccion']=='tienda'){
+      _agregarCircle();
+    }
     _crearLugarYMarkers(context);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
@@ -107,7 +118,7 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
           _mapController = newController;
         },
         markers: _markers,
-        //circles: (_tipoMapa==widget._tiposMapas[1])? _circles : [],
+        circles: _circles,
         //circles: null,
         //no sé para qué sirve y/o qué cambia
         //myLocationEnabled: true,
@@ -139,8 +150,11 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
     );
   }
 
+  Widget _crearInputRadio(Size size){
+    return null;
+  }
+
   void _crearLugarYMarkers(BuildContext context){
-    _lugar = ModalRoute.of(context).settings.arguments;
     _markers.add(Marker(
       markerId: MarkerId(_lugar.id.toString()),
       position: _lugar.latLng,
@@ -149,22 +163,51 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
         _ubicacionCambio = true;
         _lugar.latitud = newPosition.latitude;
         _lugar.longitud = newPosition.longitude;
+        _circles = {};
+        _agregarCircle();
+        setState(() {
+          
+        });
       },
       infoWindow: InfoWindow(
         title: _lugar.direccion
       ),
     ));
+    
+  }
+
+  void _agregarCircle(){
+    _circles.add(
+      Circle(
+        circleId: CircleId(_lugar.id.toString()),
+        center: _lugar.latLng,
+        radius: _circleRadio.toDouble(),
+        fillColor: Colors.blue.withOpacity(0.45),
+        strokeColor: Colors.blue.withOpacity(0.6),
+        strokeWidth: 1
+      )
+    );
   }
 
   void _guardarDatos(BuildContext context, LugaresBloc lugaresBloc, String token)async{
-    if(_ubicacionCambio){
-       Map<String, dynamic> response = await lugaresBloc.latLong(_lugar.id, token, _lugar.latitud, _lugar.longitud);
-      if(response['status'] == 'ok')
+    if(_routeSettings['tipo_direccion']=='cliente'){
+      if(_ubicacionCambio){
+        Map<String, dynamic> response = await lugaresBloc.latLong(_lugar.id, token, _lugar.latitud, _lugar.longitud);
+        if(response['status'] == 'ok')
+          Navigator.of(context).pushReplacementNamed(HomePage.route);
+      }else{
         Navigator.of(context).pushReplacementNamed(HomePage.route);
+      } 
     }else{
-      Navigator.of(context).pushReplacementNamed(HomePage.route);
-    }        
+      if(_ubicacionCambio){
+        TiendaBloc tiendaBloc = Provider.tiendaBloc(context);
+        tiendaBloc.direccionTienda.latitud = _lugar.latitud;
+        tiendaBloc.direccionTienda.longitud = _lugar.longitud;
+        Navigator.of(context).pushReplacementNamed(PerfilPage.route);
+      }else{
+        Navigator.of(context).pushReplacementNamed(PerfilPage.route);
+      } 
+    }          
   }
-
 
 }

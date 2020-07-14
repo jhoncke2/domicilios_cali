@@ -29,4 +29,30 @@ class TiendaProvider{
     return decodedResponse;
   }
 
+  Future<Map<String, dynamic>> cargarTienda(String token)async{
+    final response = await http.get(
+      _serviceRoute,
+      headers:{
+        'Authorization':'Bearer $token'
+      }
+    );
+    try{
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      if(decodedResponse['status'] == null)
+        return {
+          'status':'ok',
+          'tienda':decodedResponse
+        };
+      else
+        return decodedResponse;
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+    
+    
+  }
+
 }

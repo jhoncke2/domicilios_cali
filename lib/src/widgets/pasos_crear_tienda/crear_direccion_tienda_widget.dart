@@ -33,11 +33,13 @@ class _CrearDireccionTiendaWidgetState extends State<CrearDireccionTiendaWidget>
     final usuarioBloc = Provider.usuarioBloc(context);
     final lugaresBloc = Provider.lugaresBloc(context);
     final tiendaBloc = Provider.tiendaBloc(context);
+    /*
     tiendaBloc.crearTiendaStream.listen((event) {
       if(event == 2){
         _guardarDatos(usuarioBloc, lugaresBloc, tiendaBloc);
       }
     });
+    */
     Size size = MediaQuery.of(context).size;
     return  SingleChildScrollView(
       child: Container(
@@ -260,7 +262,6 @@ class _CrearDireccionTiendaWidgetState extends State<CrearDireccionTiendaWidget>
     LatLng posicion = await googleServices.getUbicacionConComponentesDireccion(componentesLugar);
     lugar.latitud = posicion.latitude;
     lugar.longitud = posicion.longitude;
-    tiendaBloc.agregarLugarCreado(lugar);
   }
 
   List<Map<String, dynamic>> _crearComponentes(){
