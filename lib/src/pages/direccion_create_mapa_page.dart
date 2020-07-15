@@ -30,9 +30,10 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
     LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
     String token = usuarioBloc.token;
     _routeSettings = ModalRoute.of(context).settings.arguments;
-    _lugar = _routeSettings['direccion'];
-    print(_routeSettings);
+    if(_lugar == null)
+      _lugar = _routeSettings['direccion'];
     if(_routeSettings['tipo_direccion']=='tienda'){
+      _lugar.rango = _circleRadio;
       _agregarCircle();
     }
     _crearLugarYMarkers(context);
@@ -61,6 +62,10 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
             height: size.height * 0.035,
           ),
           _crearMapa(size),
+          SizedBox(
+            height: size.height * 0.015,
+          ),
+          _crearInputRadio(size),
         ],
       ),
     );
@@ -94,7 +99,7 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
   Widget _crearMapa(Size size){
     return Container(
       width: size.width,
-      height: size.height * 0.63,
+      height: size.height * 0.6,
       decoration: BoxDecoration(
         boxShadow: <BoxShadow>[
           BoxShadow(
@@ -103,7 +108,7 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
             spreadRadius: size.width * 0.005,
             offset: Offset(
               1.0,
-              size.height * 0.045
+              size.height * 0.001
             )
           )
         ]
@@ -123,6 +128,80 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
         //no sé para qué sirve y/o qué cambia
         //myLocationEnabled: true,
       ),
+    );
+  }
+
+  Widget _crearInputRadio(Size size){
+    return Row(
+      children: <Widget>[
+        Text(
+          'Radio de cobertura:',
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.8),
+            fontSize: size.width * 0.045
+          ),
+        ),
+        SizedBox(
+          width: size.width * 0.03,
+        ),
+        Container(
+          padding: EdgeInsets.only(
+            top:size.height * 0.002
+          ),
+          width: size.width *  0.45,
+          height: size.height * 0.05,
+
+          child: TextField(       
+            style: TextStyle(
+              color: Colors.black
+            ),
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(
+                vertical: size.height * 0.0025,
+                horizontal: size.width * 0.025
+              ),
+              filled: true,
+              fillColor: Colors.grey.withOpacity(0.25),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  width: 0.001,
+                  color: Colors.green.withOpacity(0.9),
+                ),
+                borderRadius: BorderRadius.circular(
+                  size.width * 0.1
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red.withOpacity(0.85),
+                  width: size.width * 0.0001
+                ),
+                borderRadius: BorderRadius.circular(
+                  size.width * 0.1
+                ),
+              ),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red.withOpacity(0.85),
+                  width: size.width * 0.0001
+                ),
+                borderRadius: BorderRadius.circular(
+                  size.width * 0.1
+                ),
+              )
+            ),
+            onChanged: (String newValue){
+              print('new Value: $newValue');
+              _circleRadio = int.parse( newValue );
+              _lugar.rango = _circleRadio;
+              _agregarCircle();
+              setState(() {
+                
+              });
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -150,9 +229,7 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
     );
   }
 
-  Widget _crearInputRadio(Size size){
-    return null;
-  }
+  
 
   void _crearLugarYMarkers(BuildContext context){
     _markers.add(Marker(
@@ -163,7 +240,6 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
         _ubicacionCambio = true;
         _lugar.latitud = newPosition.latitude;
         _lugar.longitud = newPosition.longitude;
-        _circles = {};
         _agregarCircle();
         setState(() {
           
@@ -177,6 +253,7 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
   }
 
   void _agregarCircle(){
+    _circles = {};
     _circles.add(
       Circle(
         circleId: CircleId(_lugar.id.toString()),
@@ -199,14 +276,9 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
         Navigator.of(context).pushReplacementNamed(HomePage.route);
       } 
     }else{
-      if(_ubicacionCambio){
-        TiendaBloc tiendaBloc = Provider.tiendaBloc(context);
-        tiendaBloc.direccionTienda.latitud = _lugar.latitud;
-        tiendaBloc.direccionTienda.longitud = _lugar.longitud;
-        Navigator.of(context).pushReplacementNamed(PerfilPage.route);
-      }else{
-        Navigator.of(context).pushReplacementNamed(PerfilPage.route);
-      } 
+      TiendaBloc tiendaBloc = Provider.tiendaBloc(context);
+      tiendaBloc.direccionTienda = _lugar;
+      Navigator.of(context).pushReplacementNamed(PerfilPage.route);
     }          
   }
 

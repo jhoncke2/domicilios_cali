@@ -291,7 +291,6 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
       ),
       width: size.width * ((tipoComponente == 'observaciones')? 0.7: 0.25),
       height: size.height * 0.05,
-
       child: TextField(       
         style: TextStyle(
           color: Colors.black

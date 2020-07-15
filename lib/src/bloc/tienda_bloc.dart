@@ -33,8 +33,13 @@ class TiendaBloc{
     }else{
       _tiendaController.sink.add(null);
     }
-      
     return response;
+  }
+
+  void iniciarCreacionTienda(){
+    enCreacion = true;
+    tienda = TiendaModel();
+    horarioTienda = HorarioModel();
   }
 
   void dispose(){

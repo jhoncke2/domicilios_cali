@@ -33,18 +33,39 @@ class TiendaModel{
   int horarioId;
   int direccionId;
   String tipoDePago;
+  String banco;
+  String tipoDeCuenta;
+  String numeroDeCuenta;
+  String certificacionBancariaRoute;
   String ccFrontalRoute;
   String ccAtrasRoute;
 
+  TiendaModel({
+    this.id,
+    this.userId,
+    this.horarioId,
+    this.direccionId,
+    this.tipoDePago,
+    this.banco,
+    this.tipoDeCuenta,
+    this.numeroDeCuenta,
+    this.certificacionBancariaRoute,
+    this.ccFrontalRoute,
+    this.ccAtrasRoute
+  });
 
   TiendaModel.fromJsonMap(Map<String, dynamic> json){
-    id                = json['id'];
-    userId            = json['user_id'];
-    horarioId         = json['horario_id'];
-    direccionId       = json['direccion_id'];
-    tipoDePago        = json['tipo_de_pago'];
-    ccFrontalRoute    = json['cc_frontal'];
-    ccAtrasRoute      = json['cc_atras'];
+    id                          = json['id'];
+    userId                      = json['user_id'];
+    horarioId                   = json['horario_id'];
+    direccionId                 = json['direccion_id'];
+    tipoDePago                  = json['tipo_de_pago'];
+    banco                       = json['banco'];      
+    tipoDeCuenta                = json['tipo_de_cuenta'];
+    numeroDeCuenta              = json['numero_de_cuenta'];
+    certificacionBancariaRoute  = json['certificacion_bancaria'];
+    ccFrontalRoute              = json['cc_frontal'];
+    ccAtrasRoute                = json['cc_atras'];
   }
 
   Map<String, dynamic> toJson(){
@@ -55,6 +76,14 @@ class TiendaModel{
     jsonObject['horario_id'] = '$horarioId';
     jsonObject['direccion_id'] = '$direccionId';
     jsonObject['tipo_de_pago'] = '$tipoDePago';
+    if(banco != null)
+      jsonObject['banco']       = banco;
+    if(tipoDeCuenta != null)
+      jsonObject['tipo_de_cuenta'] = tipoDeCuenta;
+    if(numeroDeCuenta != null)
+      jsonObject['numero_de_cuenta'] = numeroDeCuenta;
+    if(certificacionBancariaRoute != null)
+      jsonObject['certificacion_bancaria'] = certificacionBancariaRoute;
     if(ccFrontalRoute != null)
       jsonObject['cc_frontal'] = ccFrontalRoute;
     if(ccAtrasRoute != null)
