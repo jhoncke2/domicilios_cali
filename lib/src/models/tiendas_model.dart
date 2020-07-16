@@ -1,5 +1,8 @@
 import 'dart:core';
 
+import 'package:domicilios_cali/src/models/horarios_model.dart';
+import 'package:domicilios_cali/src/models/lugares_model.dart';
+
 class TiendasModel {
   List<TiendaModel> tiendas = new List();
   /* ***********************************************
@@ -32,6 +35,8 @@ class TiendaModel{
   int userId;
   int horarioId;
   int direccionId;
+  HorarioModel horario;
+  LugarModel direccion;
   String tipoDePago;
   String banco;
   String tipoDeCuenta;
@@ -57,8 +62,14 @@ class TiendaModel{
   TiendaModel.fromJsonMap(Map<String, dynamic> json){
     id                          = json['id'];
     userId                      = json['user_id'];
-    horarioId                   = json['horario_id'];
-    direccionId                 = json['direccion_id'];
+    if(json['horario_id'] != null)
+      horarioId                  = json['horario_id'];
+    if(json['direccion_id'] != null)
+      direccionId                = json['direccion_id'];
+    if(json['horario'] != null)
+      horario                   = HorarioModel.fromJsonMap(json['horario']);
+    if(json['direccion'] != null)
+      direccion                 = LugarModel.fromJsonMap(json['direccion']);
     tipoDePago                  = json['tipo_de_pago'];
     banco                       = json['banco'];      
     tipoDeCuenta                = json['tipo_de_cuenta'];

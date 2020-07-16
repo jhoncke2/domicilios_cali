@@ -1,3 +1,5 @@
+import 'package:domicilios_cali/src/models/horarios_model.dart';
+import 'package:mime_type/mime_type.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
@@ -5,43 +7,87 @@ import 'dart:io';
 import 'package:domicilios_cali/src/models/tiendas_model.dart';
 
 class TiendaProvider{
-  final _serviceRoute = 'https://codecloud.xyz/api/tiendas';
+  final _apiRoute = 'https://codecloud.xyz/api';
 
-  Future<Map<String, dynamic>> crearTienda(String token, TiendaModel tienda, File ccFrontal, File ccAtras)async{
-    Map<String, dynamic> headers = {
+  Future<Map<String, dynamic>> crearTienda(String token, TiendaModel tienda, File ccFrontal, File ccAtras, File certificacionBancaria)async{
+    Map<String, String> headers = {
       'Authorization':'Bearer $token',
       'Content-Type':'application/x-www-form-urlencoded'
     };
-    Map<String, dynamic> body = {
-      'cc_atras':ccAtras,
-      'cc_frontal':ccFrontal,
-      'horario_id':tienda.horarioId,
-      'direccion_id':tienda.direccionId,
+    Map<String, String> body = {
+      'horario_id':tienda.horarioId.toString(),
+      'direccion_id':tienda.direccionId.toString(),
       'tipo_de_pago':tienda.tipoDePago
     };
 
-    final response = await http.post(
-      _serviceRoute,
-      headers: headers,
-      body: body
+
+    var request = http.MultipartRequest('POST', Uri.parse('$_apiRoute/tiendas'));
+    if(tienda.tipoDePago == 'pago_electronico'){
+      body['banco'] = tienda.banco;
+      body['tipo_de_cuenta'] = tienda.tipoDeCuenta;
+      body['numero_de_cuenta'] = tienda.numeroDeCuenta;
+      //retorna algo como: image/jpeg
+      request.files.add(
+        http.MultipartFile(
+          'certificacion_bancaria',
+          certificacionBancaria.readAsBytes().asStream(),
+          certificacionBancaria.lengthSync(),
+          filename: certificacionBancaria.path.split('/').last
+        )
+      );
+    }
+
+    request.files.add(
+      http.MultipartFile(
+        'cc_frontal',
+        ccFrontal.readAsBytes().asStream(),
+        ccFrontal.lengthSync(),
+        filename: ccFrontal.path.split('/').last
+      )
     );
-    Map<String, dynamic> decodedResponse = json.decode(response.body);
-    return decodedResponse;
+    request.files.add(
+      http.MultipartFile(
+        'cc_atras',
+        ccAtras.readAsBytes().asStream(),
+        ccAtras.lengthSync(),
+        filename: ccAtras.path.split('/').last
+      )
+    );
+    request.fields.addAll(
+      body
+    );
+    request.headers.addAll(headers);
+    final streamResponse = await request.send();
+    final response = await http.Response.fromStream(streamResponse);
+    try{
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      return {
+        'status':'ok',
+        'tienda':decodedResponse['tienda']
+      };
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
   }
 
   Future<Map<String, dynamic>> cargarTienda(String token)async{
     final response = await http.get(
-      _serviceRoute,
+      '$_apiRoute/tiendas',
       headers:{
         'Authorization':'Bearer $token'
       }
     );
     try{
-      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      Map<String, dynamic> decodedResponse = {};
+      if(response.body != "")
+        decodedResponse = json.decode(response.body);
       if(decodedResponse['status'] == null)
         return {
           'status':'ok',
-          'tienda':decodedResponse
+          'tienda':decodedResponse['data']
         };
       else
         return decodedResponse;
@@ -50,9 +96,35 @@ class TiendaProvider{
         'status':'err',
         'message':err
       };
-    }
-    
-    
+    } 
   }
 
+  Future<Map<String, dynamic>> crearHorario(String token, HorarioModel horarioModel)async{
+
+    Map<String, dynamic> body = horarioModel.toJson();
+    
+    final response = await http.post(
+      '$_apiRoute/horario/store',
+      headers: {
+        'Authorization':'Bearer $token'
+      },
+      body: body
+    );
+    
+    try{
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      if(decodedResponse['tienda']!=null){
+        return {
+          'status':'ok',
+          'content':decodedResponse['tienda']
+        }; 
+      }
+      return decodedResponse;
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+  }
 }

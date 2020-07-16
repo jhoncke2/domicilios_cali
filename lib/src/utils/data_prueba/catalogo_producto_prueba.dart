@@ -13,7 +13,7 @@ class CatalogoProductoPrueba{
     'Guitarra eléctrica Gibson Sx-22',
     //ropa
     'Camisa negra talla M',
-    'Máscara de caballo',
+    'Chaleco color gris',
     'Saco negro',
     'pantalón corriente',
     //medicina
@@ -79,7 +79,7 @@ class CatalogoProductoPrueba{
     'https://clasesdeguitarra.com.co/wp-content/uploads/2016/08/gibson-Sg-instant.jpg',
     //ropa
     'https://www.stickpng.com/assets/images/580b57fbd9996e24bc43bf55.png',
-    'https://www.realistic-masks.com/media/catalog/product/cache/6/image/1024x768/9df78eab33525d08d6e5fb8d27136e95/h/o/horse_head_mask.jpg',
+    'https://www.disfrazjaiak.com/7865-large_default/chaleco-negro-infantil.jpg',
     'https://http2.mlstatic.com/blazer-hombre-chaqueta-elegante-saco-excelente-calidad-D_NQ_NP_978911-MCO31118254930_062019-F.webp',
     'https://www.centraldesuministrosgs.com/wp-content/uploads/2018/03/DSC04732-1.jpg',
     //medicina
@@ -112,7 +112,7 @@ class CatalogoProductoPrueba{
     'Guitarra eléctrica gibson modelo clásico con madera de abedul, 22 trastes, puente de tremolo, paquete de cuerdas de repuesto, correa con broche de seguridad.',
     //ropa
     'Camisa negra, 100% algodón, 4 botones, manga larga, 2 botones en cada manga.',
-    'Casco oscuro de placas lvl 55, con una reducción de peso del 20%',
+    'Chaleco medianamente elegante color gris',
     'Atuendo de T-rex talla M, impermeable, aislamiento del exterior garantizado. Ideal para salir a hacer compras.',
     'Un pantalón corriente talla M para cualquier ocasión',
     //medicina

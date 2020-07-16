@@ -52,8 +52,8 @@ class LugaresBloc{
     Map<String, dynamic> response = await _lugaresProvider.crearLugar(lugar, token);
     if(response['status'] == 'ok'){
       await cargarLugares(token);
+      response['content'] = LugarModel.fromJsonMap(response['content']);
     }
-    response['content'] = LugarModel.fromJsonMap(response['content']);
     return response;
     
   }

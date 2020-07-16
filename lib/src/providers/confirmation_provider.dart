@@ -83,7 +83,6 @@ class ConfirmationProvider{
       headers: headers,
       body:body
     );
-    print('resultado: $answer');
     try{
       return json.decode(answer.body);
     }catch(err){
@@ -110,7 +109,6 @@ class ConfirmationProvider{
         'code': code
       }
     );
-    print('resultado: $answer');
     try{
       return json.decode(answer.body);
     }catch(err){

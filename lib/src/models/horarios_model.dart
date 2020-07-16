@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'dart:convert';
 
 class HorariosModel {
   List<HorarioModel> lugares = new List();
@@ -90,22 +88,38 @@ class HorarioModel{
     Map<String, dynamic> jsonObject = {};
     if(id != null)
       jsonObject['id'] = '$id';
-    jsonObject['lunes_inicio']      = lunesInicio;
-    jsonObject['lunes_final']       = lunesFinal;
-    jsonObject['martes_inicio']     = martesInicio;
-    jsonObject['martes_final']      = martesFinal;
-    jsonObject['miercoles_inicio']  = miercolesInicio;
-    jsonObject['miercoles_final']   = miercolesFinal;
-    jsonObject['jueves_inicio']     = juevesInicio;
-    jsonObject['jueves_final']      = juevesFinal;
-    jsonObject['viernes_inicio']    = viernesInicio;
-    jsonObject['viernes_final']     = viernesFinal;
-    jsonObject['sabado_inicio']     = sabadoInicio;
-    jsonObject['sabado_final']      = sabadoFinal;
-    jsonObject['domingo_inicio']    = domingoInicio;
-    jsonObject['domingo_final']     = domingoFinal;
-    jsonObject['festivos_inicio']   = festivosInicio;
-    jsonObject['festivos_final']    = festivosFinal;
+    if(lunesInicio != null)
+      jsonObject['lunes_inicio']      = lunesInicio;
+    if(lunesFinal != null)
+      jsonObject['lunes_final']       = lunesFinal;
+    if(martesInicio != null)
+      jsonObject['martes_inicio']     = martesInicio;
+    if(martesFinal != null)
+      jsonObject['martes_final']      = martesFinal;
+    if(miercolesInicio != null)
+      jsonObject['miercoles_inicio']  = miercolesInicio;
+    if(miercolesFinal != null)
+      jsonObject['miercoles_final']   = miercolesFinal;
+    if(juevesInicio != null)
+      jsonObject['jueves_inicio']     = juevesInicio;
+    if(juevesFinal != null)
+      jsonObject['jueves_final']      = juevesFinal;
+    if(viernesInicio != null)
+      jsonObject['viernes_inicio']    = viernesInicio;
+    if(viernesFinal != null)
+      jsonObject['viernes_final']     = viernesFinal;
+    if(sabadoInicio != null)
+      jsonObject['sabado_inicio']     = sabadoInicio;
+    if(sabadoFinal != null)
+      jsonObject['sabado_final']      = sabadoFinal;
+    if(domingoInicio != null)
+      jsonObject['domingo_inicio']    = domingoInicio;
+    if(domingoFinal != null)
+      jsonObject['domingo_final']     = domingoFinal;
+    if(festivosInicio != null)
+      jsonObject['festivos_inicio']   = festivosInicio;
+    if(festivosFinal != null)
+      jsonObject['festivos_final']    = festivosFinal;
     return jsonObject;
   }
 

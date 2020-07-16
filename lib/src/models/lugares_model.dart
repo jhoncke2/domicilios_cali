@@ -53,7 +53,8 @@ class LugarModel{
     ciudad                        = jsonObject['ciudad'];
     observaciones                 = jsonObject['observaciones'];
     tipo                          = jsonObject['tipo'];
-    rango                         = jsonObject['rango'];
+    
+    rango                         = int.parse(jsonObject['rango'].toString());
     elegido                       = (jsonObject['elegido'] == 1 )? true : false ;
   }
 
@@ -70,7 +71,7 @@ class LugarModel{
     jsonObject['observaciones'] = observaciones;
     jsonObject['tipo'] = tipo;
     if(rango!=null)
-      jsonObject['rango'] = rango;
+      jsonObject['rango'] = '$rango';
     if(elegido != null)
       jsonObject['elegido'] = '$elegido';
     return jsonObject;

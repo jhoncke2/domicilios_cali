@@ -1,20 +1,29 @@
 import 'dart:io';
-
-import 'package:http/http.dart' as http;
-import 'package:domicilios_cali/src/models/usuarios_model.dart';
-import 'package:domicilios_cali/src/utils/data_prueba/usuarios_prueba.dart';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class UsuarioProvider with UsuariosPrueba{
+class UsuarioProvider{
   final _apiUrl = 'https://codecloud.xyz/api';
 
-  UsuarioProvider(){
-    
+  Future<Map<String, dynamic>> register(String name, String email, String phone, String password, String passwordConfirmation)async{
+    final answer = await http.post(
+      '$_apiUrl/register',
+      body:{
+        'name':name,
+        'email':email,
+        'phone':phone,
+        'password':password,
+        'password_confirmation':passwordConfirmation
+      }
+    );
+    if(answer.body != null)
+      return json.decode(answer.body);
+    return {
+      'status':'err',
+      'message':'ocurrió algún error al tratar de crear el usuario'
+    };
   }
 
-  @override
-  // TODO: implement usuarios
-  List<Map<String, Object>> get usuarios => super.usuarios;
 
   Future<Map<String, dynamic>> login( String email, String password)async{
     final loginUrl = '$_apiUrl/login';
@@ -42,41 +51,56 @@ class UsuarioProvider with UsuariosPrueba{
 
   Future<Map<String, dynamic>> getUserByToken(String token)async{
     final respuesta = await http.get(
-      '${_apiUrl}/seeUserAuth',
+      '$_apiUrl/seeUserAuth',
       headers: {
         "Authorization": 'Bearer $token'
       }
     );
-    Map<String, dynamic> decodedResp = json.decode(respuesta.body)['user'];
+    Map<String, dynamic> decodedResp = json.decode(respuesta.body)['data'];
     return decodedResp;
   }
 
-  Future<Map<String, dynamic>> register(String name, String email, String phone, String password, String passwordConfirmation)async{
-    final answer = await http.post(
-      '$_apiUrl/register',
-      body:{
-        'name':name,
-        'email':email,
-        'phone':phone,
-        'password':password,
-        'password_confirmation':passwordConfirmation
-      }
-    );
-    if(answer.body != null)
-      return json.decode(answer.body);
-    return {
-      'status':'err',
-      'message':'ocurrió algún error al tratar de crear el usuario'
+  Future<Map<String, dynamic>> cambiarNombreYAvatar(String token, int perfilId, String name, File avatar)async{
+    Map<String, String> headers = {
+      'Authorization':'Bearer $token',
+      'Content-Type':'application/x-www-form-urlencoded'
     };
+
+    var request = http.MultipartRequest('POST', Uri.parse('$_apiUrl/perfil/update'));
+    if(avatar != null){
+      request.files.add(
+        http.MultipartFile(
+          'avatar',
+          avatar.readAsBytes().asStream(),
+          avatar.lengthSync(),
+          filename: avatar.path.split('/').last
+        )
+      );
+    }
+    request.fields.addAll({
+      'name':name
+    });
+
+    request.headers.addAll(headers);
+    final streamResponse = await request.send();
+    final response = await http.Response.fromStream(streamResponse);
+    try{
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      return {
+        'status':'ok',
+        'tienda':decodedResponse['tienda']
+      };
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
   }
 
   Future<Map<String, dynamic>> cambiarFoto(String token, File foto)async{
     return null;
   }
-  
-
-  //prueba
-  UsuarioModel get usuarioLoginPrueba => UsuarioModel.fromJsonMap(super.usuarios[0]);
 
   //*********************************** 
   //  Recuperar contraseña

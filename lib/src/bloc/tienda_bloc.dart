@@ -19,20 +19,29 @@ class TiendaBloc{
   bool enCreacion = false;
   File ccAtras;
   File ccDelantera;
+  File certificacionBancaria;
 
-  Future<Map<String, dynamic>> crearTienda(String token, TiendaModel tienda, File ccFrontal, File ccAtras)async{
-    Map<String, dynamic> response = await _tiendaProvider.crearTienda(token, tienda, ccFrontal, ccAtras);
+  Future<Map<String, dynamic>> crearTienda(String token)async{
+    Map<String, dynamic> response = await _tiendaProvider.crearTienda(token, tienda, ccDelantera, ccAtras, certificacionBancaria);
     return response;
   }
 
   Future<Map<String, dynamic>> cargarTienda(String token)async{
     Map<String, dynamic> response = await _tiendaProvider.cargarTienda(token);
+    
     if(response['status'] == 'ok'){
-      TiendaModel tienda = TiendaModel.fromJsonMap( response['tienda']);
+      tienda = TiendaModel();
+      if(response['tienda'] != null)
+        tienda = TiendaModel.fromJsonMap( response['tienda']);
       _tiendaController.sink.add(tienda);
     }else{
-      _tiendaController.sink.add(null);
+      _tiendaController.sink.add(TiendaModel());
     }
+    return response;
+  }
+
+  Future<Map<String, dynamic>> crearHorario(String token){
+    Future<Map<String, dynamic>> response = _tiendaProvider.crearHorario(token, horarioTienda);
     return response;
   }
 

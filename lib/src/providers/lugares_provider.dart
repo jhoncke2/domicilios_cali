@@ -17,7 +17,6 @@ class LugaresProvider with LugaresPrueba{
         'Authorization':'Bearer $token'
       }
     );
-    print(response);
     Map<String, dynamic> decodedResponse = json.decode(response.body);
     return decodedResponse['direcciones'];
   }
@@ -29,7 +28,6 @@ class LugaresProvider with LugaresPrueba{
   }
 
   Future<Map<String, dynamic>> crearLugar(LugarModel lugar, String token)async{
-    print(lugar);
     try{
       final response = await http.post(
         _serviceRoute,
@@ -39,7 +37,6 @@ class LugaresProvider with LugaresPrueba{
           //'Content-Type':'application/json'
         }
       );
-      print(response);
       Map<String, dynamic> decodedResponse = json.decode(response.body);
       if(decodedResponse['status']==null){
         return {
@@ -65,13 +62,7 @@ class LugaresProvider with LugaresPrueba{
         'Authorization':'Bearer $token'
       }
     );
-    print('**********************');
-    print('desde elegir lugar response: ');
-    print(response.toString());
     Map<String, dynamic> decodedResponse = json.decode(response.body);
-    print('***********************');
-    print('elegir lugar decodedResponse: ');
-    print(decodedResponse.toString());
   }
 
   Future<Map<String, dynamic>> latLong(int idLugar, String token, double latitud, double longitud)async{

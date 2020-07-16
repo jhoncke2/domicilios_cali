@@ -1,7 +1,8 @@
 import 'dart:io';
+import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/models/horarios_model.dart';
+import 'package:domicilios_cali/src/pages/home_page.dart';
 import 'package:flutter/material.dart';
-
 import 'package:domicilios_cali/src/bloc/tienda_bloc.dart';
 import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
 import 'package:domicilios_cali/src/widgets/header_widget.dart';
@@ -12,6 +13,7 @@ import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
 import 'package:domicilios_cali/src/utils/data_prueba/usuarios_prueba.dart';
 import 'package:domicilios_cali/src/utils/data_prueba/datos_tienda_prueba.dart' as datosTiendaPrueba;
+import 'package:domicilios_cali/src/utils/generic_utils.dart' as utils;
 class PerfilPage extends StatefulWidget with UsuariosPrueba{
   static final route = 'perfil';
   @override
@@ -20,8 +22,8 @@ class PerfilPage extends StatefulWidget with UsuariosPrueba{
 
 class _PerfilPageState extends State<PerfilPage> {
   //en creación de tienda
-  File avatar;
-  String _urlAvatar;
+  File _avatar;
+  String _nombre;
   //fin de en creación de tienda
 
   GoogleMapController _mapController;
@@ -50,6 +52,7 @@ class _PerfilPageState extends State<PerfilPage> {
     
     UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
     String token = usuarioBloc.token;
+    LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
     TiendaBloc tiendaBloc = Provider.tiendaBloc(context);
     tiendaBloc.cargarTienda(token);
     //lugaresBloc.cargarLugares(usuarioBloc.token);
@@ -57,12 +60,12 @@ class _PerfilPageState extends State<PerfilPage> {
     if(_listviewHoraItems.length == 0)
       _generarStringItemsHoras(size);
     return Scaffold(
-      body: _crearElementos(size, usuarioBloc, tiendaBloc, token),
+      body: _crearElementos(context, size, usuarioBloc, lugaresBloc, tiendaBloc, token),
       bottomNavigationBar: BottomBarWidget(),
     );
   }
 
-  Widget _crearElementos(Size size, UsuarioBloc usuarioBloc, TiendaBloc tiendaBloc, String token){
+  Widget _crearElementos(BuildContext context, Size size, UsuarioBloc usuarioBloc, LugaresBloc lugaresBloc, TiendaBloc tiendaBloc, String token){
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal:size.width * 0.05),
@@ -76,15 +79,16 @@ class _PerfilPageState extends State<PerfilPage> {
               stream: tiendaBloc.tiendaStream,
               builder: (BuildContext context, AsyncSnapshot snapshot){
                 if(snapshot.hasData){
+
                   List<Widget> listViewItems = [];
-                  _agregarItemsCliente(size, usuarioBloc, tiendaBloc, listViewItems);
+                  _agregarItemsCliente(context, size, usuarioBloc, tiendaBloc, listViewItems);
                   if(snapshot.data != null && snapshot.data.id != null)          
                     _agregarItemsTienda(size, tiendaBloc, listViewItems, snapshot.data.direccion);
                   else if(tiendaBloc.enCreacion)
                     _agregarItemsTienda(size, tiendaBloc, listViewItems, tiendaBloc.direccionTienda);
                   listViewItems.add(
                     Center(
-                      child: _crearBotonSubmit(size, tiendaBloc, token),
+                      child: _crearBotonSubmit(size, lugaresBloc, tiendaBloc, token),
                     )
                   );
                   return Container(
@@ -110,7 +114,7 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
-  void _agregarItemsCliente(Size size, UsuarioBloc usuarioBloc, TiendaBloc tiendaBloc, List<Widget> items){
+  void _agregarItemsCliente(BuildContext context, Size size, UsuarioBloc usuarioBloc, TiendaBloc tiendaBloc, List<Widget> items){
     items.add(
       _crearTitulo(size)
     );
@@ -120,7 +124,13 @@ class _PerfilPageState extends State<PerfilPage> {
       )
     );
     items.add(
-      _crearFoto(size, tiendaBloc),
+
+      _crearAvatar(context, size, usuarioBloc, usuarioBloc.usuario.avatar),
+    );
+    items.add(
+      SizedBox(
+        height: size.height * 0.02,
+      )
     );
     items.add(
       _crearEspacioDato(size, 'Nombre', usuarioBloc.usuario.name)
@@ -158,11 +168,11 @@ class _PerfilPageState extends State<PerfilPage> {
       ),
     );
     items.add(
-      _crearCampoHorarios(size, tiendaBloc),
+      _crearCampoHorario(size, tiendaBloc),
     );
     items.add(
       SizedBox(
-        height: size.height * 0.05
+        height: size.height * 0.02
       ),
     );
     items.add(
@@ -205,9 +215,20 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
-  Widget _crearFoto(Size size, TiendaBloc tiendaBloc){
+  Widget _crearAvatar(BuildContext context, Size size, UsuarioBloc usuarioBloc, String avatarUrl){
     //aún falta completar
-    Widget imagenWidget;
+    Widget avatarWidget;
+    
+    if(usuarioBloc.usuario.avatar != null && usuarioBloc.usuario.avatar != '')
+    {
+      avatarWidget = FadeInImage(
+        width: size.width * 0.45,
+        height: size.height * 0.15,
+        fit: BoxFit.fill,
+        image: (_avatar != null)? NetworkImage(avatarUrl) : AssetImage('assets/placeholder_images/user.png'),
+        placeholder: AssetImage('assets/placeholder_images/user_icon.png'),
+      );
+    }
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal:size.width * 0.22),
@@ -219,15 +240,25 @@ class _PerfilPageState extends State<PerfilPage> {
             width: size.width * 0.45,
             height: size.height * 0.15,
             fit: BoxFit.fill,
-            image: (_urlAvatar != null)? NetworkImage(_urlAvatar) : AssetImage('assets/placeholder_images/user.png'),
-            placeholder: AssetImage('assets/placeholder_images/user.png'),
+            image: (_avatar == null)? NetworkImage(avatarUrl) : FileImage(_avatar),
+            placeholder: AssetImage('assets/placeholder_images/user_icon.png'),
           ),
         ),
         onPressed: (){
-          
+          subirFotoAvatar(context, size);
         },
       ),
     );
+  }
+
+  void subirFotoAvatar(BuildContext context, Size size)async{
+    Map<String, File> imagenMap = {};
+    await utils.tomarFotoDialog(context, size, imagenMap);
+    _avatar = imagenMap['imagen'];
+    setState(() {
+      
+    });
+    
   }
   
   Widget _crearEspacioDato(Size size, String nombreDato, String dato){
@@ -247,6 +278,59 @@ class _PerfilPageState extends State<PerfilPage> {
         ),
         Container(
           width: size.width * 0.8,
+          height: size.height * 0.047,
+          child: TextFormField(
+            style: TextStyle(
+              color: Colors.black
+            ),
+            initialValue: dato,
+            enabled: (nombreDato == 'Nombre')? true : false,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(
+                vertical: size.height * 0.0025,
+                horizontal: size.width * 0.025
+              ),
+              filled: true,
+              fillColor: Colors.grey.withOpacity(0.25),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  width: 0.001,
+                  color: Colors.green.withOpacity(0.9),
+                ),
+                  borderRadius: BorderRadius.circular(
+                  size.width * 0.1
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red.withOpacity(0.85),
+                  width: size.width * 0.0001
+                ),
+                borderRadius: BorderRadius.circular(
+                  size.width * 0.1
+                ),
+              ),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red.withOpacity(0.85),
+                  width: size.width * 0.0001
+                ),
+                borderRadius: BorderRadius.circular(
+                  size.width * 0.1
+                ),
+              )
+            ),
+            onChanged: (String newValue){
+              if(nombreDato == 'Nombre'){
+                _nombre = newValue;
+              }
+            },
+          ),
+        ),
+
+        /*
+        Container(
+          width: size.width * 0.8,
           padding: EdgeInsets.symmetric(vertical: size.height * 0.005, horizontal: size.width * 0.035),
           decoration: BoxDecoration(
             color: Colors.grey.withOpacity(0.15),
@@ -260,6 +344,7 @@ class _PerfilPageState extends State<PerfilPage> {
             ),
           ),
         ),
+        */
       ],
     );
   }
@@ -314,7 +399,7 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
-  Widget _crearCampoHorarios(Size size, TiendaBloc tiendaBloc){
+  Widget _crearCampoHorario(Size size, TiendaBloc tiendaBloc){
     List<Widget> horariosDiasItems = [];
     horariosDiasItems.add(
       Text(
@@ -337,7 +422,7 @@ class _PerfilPageState extends State<PerfilPage> {
   }
 
   Widget _crearHorarioDia(Size size, TiendaBloc tiendaBloc, int diaIndex){
-    HorarioModel horarioTienda = tiendaBloc.horarioTienda;
+    HorarioModel horarioTienda = tiendaBloc.horarioTienda?? tiendaBloc.tienda.horario;
     String horaInicio;
     String horaFin;
     String dia;
@@ -406,7 +491,6 @@ class _PerfilPageState extends State<PerfilPage> {
                         color: Colors.black.withOpacity(0.9)
                       )
                     ),
-                    
                   )
                   : Icon(
                     Icons.check_circle_outline,
@@ -427,8 +511,7 @@ class _PerfilPageState extends State<PerfilPage> {
                 ),
               ],
             ),
-          ),
-          
+          ),  
           SizedBox(
             width: size.width * 0.001,
           ),
@@ -518,7 +601,9 @@ class _PerfilPageState extends State<PerfilPage> {
       ),
     );
   }
-  /**
+
+
+  /*
    * *params:
    *    * tipoHora: <"hora_inicio" | "hora_fin">
    *      
@@ -530,7 +615,7 @@ class _PerfilPageState extends State<PerfilPage> {
       height: size.height * 0.075,
       width: size.width * 0.19,
       child: ListView(
-        padding: EdgeInsets.all(0.0),
+        padding: EdgeInsets.all(0),
         scrollDirection: Axis.vertical,
         children: _listviewHoraItems.map((String hora){
           return Container(
@@ -544,9 +629,9 @@ class _PerfilPageState extends State<PerfilPage> {
                   fontSize: size.width * 0.032
                 ),
               ),
-              onPressed: (){
-                _guardarHorariosPorIndex(tiendaBloc, horarioTienda, diaIndex, hora, tipoHora);
-              },
+              onPressed: ((tiendaBloc.enCreacion)? 
+              ()=>_guardarHorariosPorIndex(tiendaBloc, horarioTienda, diaIndex, hora, tipoHora)
+              :null),
             ),
           );
         }).toList(),
@@ -717,6 +802,7 @@ class _PerfilPageState extends State<PerfilPage> {
       );
     });
     return PopupMenuButton<String>(
+      //enabled: false,
       onSelected: (String selected){
         if(tipoPopUp == 'banco')
           tiendaBloc.tienda.banco = selected;
@@ -815,6 +901,8 @@ class _PerfilPageState extends State<PerfilPage> {
         ),
         onChanged: (String newValue){
           tiendaBloc.tienda.numeroDeCuenta = newValue;
+          if(newValue != '')
+            tiendaBloc.tienda.tipoDePago = 'pago_electronico';
           setState(() {
             
           });
@@ -848,7 +936,27 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
+  /**
+   * *params:
+   *  *tipoImagen: <"copia de cédula" | "certificación bancaria">
+   */
   Widget _crearAdjuntarImagen(Size size, TiendaBloc tiendaBloc, String tipoImagen){
+    Function onPressedFunction;
+    if(tiendaBloc.enCreacion)
+      onPressedFunction = (){
+        switch(tipoImagen){
+          case 'copia de cédula':
+            if(tiendaBloc.ccDelantera == null)
+              _adjuntarFoto(context, size, tiendaBloc, 'cedula_delantera');
+            else
+              _adjuntarFoto(context, size, tiendaBloc, 'cedula_trasera');
+            break;
+          case 'certificación bancaria':
+            _adjuntarFoto(context, size, tiendaBloc, 'certificacion_bancaria');
+            break;
+        }
+      };
+    
     return Row(
       children: <Widget>[
         Text(
@@ -867,14 +975,37 @@ class _PerfilPageState extends State<PerfilPage> {
             color: Colors.grey.withOpacity(0.8),
             size: size.width * 0.085,
           ),
-          onPressed: (){
-          },
+          onPressed: onPressedFunction
         )
       ],
     );
   }
 
-  Widget _crearBotonSubmit(Size size, TiendaBloc tiendaBloc, String token){
+  void _adjuntarFoto(BuildContext context, Size size, TiendaBloc tiendaBloc, String tipoFoto)async{
+    try{
+      Map<String, File> imagenMap = {};
+      await utils.tomarFotoDialog(context, size, imagenMap);
+      if(imagenMap['imagen'] != null){
+        switch(tipoFoto){
+          case 'cedula_delantera':
+            tiendaBloc.ccDelantera = imagenMap['imagen'];
+            break;
+          case 'cedula_trasera':
+            tiendaBloc.ccAtras = imagenMap['imagen'];
+            break;
+          case 'certificacion_bancaria':
+            tiendaBloc.certificacionBancaria = imagenMap['imagen'];
+            break;
+        }
+        print(tiendaBloc);
+      }
+    }catch(err){
+      print(err);
+    }
+  }
+
+
+  Widget _crearBotonSubmit(Size size, LugaresBloc lugaresBloc, TiendaBloc tiendaBloc, String token){
     return FlatButton(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(size.width * 0.04),
@@ -892,12 +1023,30 @@ class _PerfilPageState extends State<PerfilPage> {
         ),
       ),
       onPressed: (){
-        _guardarDatos(tiendaBloc, token);
+        _guardarDatos(lugaresBloc, tiendaBloc, token);
       },
     );
   }
 
-  void _guardarDatos(TiendaBloc tiendaBloc, String token){
+  void _guardarDatos(LugaresBloc lugaresBloc, TiendaBloc tiendaBloc, String token)async{
+    Map<String, dynamic> direccionResponse = await lugaresBloc.crearLugar( tiendaBloc.direccionTienda , token);
+    
+    if(direccionResponse['status'] == 'ok'){
+      tiendaBloc.direccionTienda = direccionResponse['content'];
+      tiendaBloc.tienda.direccionId = direccionResponse['content'].id;
+      Map<String, dynamic> horarioResponse = await tiendaBloc.crearHorario(token);
+
+      if(horarioResponse['status'] == 'ok'){
+        tiendaBloc.tienda.horarioId = horarioResponse['content']['id'];
+        Map<String, dynamic> tiendaResponse = await tiendaBloc.crearTienda(token);
+        
+        if(tiendaResponse['status'] == 'ok')
+        {
+          Navigator.of(context).pushReplacementNamed(HomePage.route);
+        }
+      }
+      
+    }
     
   }
 

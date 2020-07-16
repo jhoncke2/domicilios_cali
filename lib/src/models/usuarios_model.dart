@@ -36,12 +36,20 @@ class UsuarioModel{
   });
 
   UsuarioModel.fromJsonMap(Map<String, dynamic> json){
+    
     id            = json['id'];
     name          = json['name'];
     email         = json['email'];
-    avatar        = json['avatar'];
+    _formatAvatar(json['avatar']);
     phone         = json['phone'].toString();
     phoneVerify   = (json['phone_verify']==1)? true : false;
+
+  }
+
+  void _formatAvatar(String serverUrl){
+    String urlBase = 'https://codecloud.xyz';
+    //serverUrl = serverUrl.replaceFirst('public', '');
+    avatar = urlBase + serverUrl;
 
   }
 
