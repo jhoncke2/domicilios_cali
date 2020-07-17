@@ -1,5 +1,7 @@
 import 'dart:core';
 
+import 'package:domicilios_cali/src/models/horarios_model.dart';
+import 'package:domicilios_cali/src/models/tiendas_model.dart';
 import 'package:domicilios_cali/src/utils/data_prueba/catalogo_producto_prueba.dart';
 //importaciones locales
 
@@ -24,11 +26,11 @@ class ProductosModel with CatalogoProductoPrueba{
       _productosPrueba.add(
         ProductoModel(
           id: i,
-          nombre: nombres[i],
-          precio: precios[i],
-          vendedorId: i % 5,
+          name: nombres[i],
+          precio: precios[i].toInt(),
+          tiendaId: i % 5,
           imagenUrl: imagenesUrls[i],
-          descripcion: descripciones[i],
+          description: descripciones[i],
           categoria: categorias[i],
           calificacion: calificaciones[i],
         )
@@ -45,34 +47,63 @@ class ProductosModel with CatalogoProductoPrueba{
 
 class ProductoModel{
   int id;
-  String nombre;
-  double precio;
-  int vendedorId;
-  String imagenUrl;
-  String descripcion;
-  String categoria;
+  String name;
+  int precio;
+  String tipo;
+  String description;
   double calificacion;
+
+  TiendaModel store;
+  Map<String, dynamic> category;
+  List<Map<String, dynamic>> photos;
+
+  //por desechar
+  String imagenUrl;
+  int tiendaId;
+  String categoria;
+
+  //por agregar
+  int stock;
+  Map<String, dynamic> programado;
+  HorarioModel horario;
+  
 
   ProductoModel({
     this.id,
-    this.nombre,
+    this.name,
     this.precio,
-    this.vendedorId,
-    this.imagenUrl,
-    this.descripcion,
-    this.categoria,
+    this.tipo,
+    this.description,
     this.calificacion,
+
+    this.store,
+    this.category,
+    this.photos,
+
+    this.imagenUrl,
+    this.tiendaId,
+    this.categoria,
   });
 
   ProductoModel.fromJsonMap(Map<String, dynamic> json){
-    id           = json['id'];
-    nombre       = json['nombre'];
-    precio       = json['precio'];
-    descripcion  = json['descripcion'];
-    vendedorId   = json['vendedor_id'];
-    imagenUrl    = json['imagen_url'];
-    descripcion  = json['descripcion'];
-    categoria    = json['categoria'];
-    calificacion = json['calificacion'];
+    id            = json['id'];
+    name          = json['name'];
+    precio        = json['precio'];
+    tipo          = json['tipo'];
+    description   = json['description'];  
+    calificacion  = json['calificacion'];
+
+    store         = TiendaModel.fromJsonMap(json['store']);
+    category      = json['category'];
+    //para evitar problema de compatibilidad entre List<dynamic>(lista vacia) y List<Map<String, dynamic>>
+    photos        = (json['photos'] as List).cast<Map<String, dynamic>>().toList();
+    photos.forEach((Map<String, dynamic> photo){
+      photo['url'] = formatPhotoUrl(photo['url']);
+    });
+  }
+
+  String formatPhotoUrl(String photoUrl){
+    String url = 'https://codecloud.xyz$photoUrl';
+    return url;
   }
 }

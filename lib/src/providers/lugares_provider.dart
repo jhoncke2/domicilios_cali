@@ -2,9 +2,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:domicilios_cali/src/models/lugares_model.dart';
-import 'package:domicilios_cali/src/utils/data_prueba/lugares_prueba.dart';
 
-class LugaresProvider with LugaresPrueba{
+class LugaresProvider{
   final _serviceRoute = 'https://codecloud.xyz/api/direcciones';
   final _serviceDireccionRoute = 'https://codecloud.xyz/api/direccion';
   List<LugarModel> _lugares;
@@ -19,12 +18,6 @@ class LugaresProvider with LugaresPrueba{
     );
     Map<String, dynamic> decodedResponse = json.decode(response.body);
     return decodedResponse['direcciones'];
-  }
-
-  Future<List<LugarModel>> cargarLugaresByUserId(int id)async{
-    if(_lugares == null)
-      _lugares = LugaresModel.fromJsonList(super.lugares).lugares;
-    return _lugares;
   }
 
   Future<Map<String, dynamic>> crearLugar(LugarModel lugar, String token)async{

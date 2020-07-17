@@ -29,21 +29,9 @@ class _PerfilPageState extends State<PerfilPage> {
   GoogleMapController _mapController;
   List<String> _listviewHoraItems = [];
 
-  //prueba
-  LugarModel direccionTiendaPrueba;
   
   @override
   void initState() {
-    direccionTiendaPrueba = LugarModel(
-      pais: 'Colombia',
-      ciudad: 'Bogotá',
-      direccion: 'Avenida calle 40 # 13 - 73',
-      observaciones: '',
-      tipo: 'tienda',
-      rango: 150,
-      latitud: -70.5,
-      longitud: 35.05
-    );
     super.initState();
   }
 
@@ -54,7 +42,7 @@ class _PerfilPageState extends State<PerfilPage> {
     String token = usuarioBloc.token;
     LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
     TiendaBloc tiendaBloc = Provider.tiendaBloc(context);
-    tiendaBloc.cargarTienda(token);
+    //tiendaBloc.cargarTienda(token);
     //lugaresBloc.cargarLugares(usuarioBloc.token);
     Size size = MediaQuery.of(context).size;
     if(_listviewHoraItems.length == 0)
@@ -88,7 +76,7 @@ class _PerfilPageState extends State<PerfilPage> {
                     _agregarItemsTienda(size, tiendaBloc, listViewItems, tiendaBloc.direccionTienda);
                   listViewItems.add(
                     Center(
-                      child: _crearBotonSubmit(size, lugaresBloc, tiendaBloc, token),
+                      child: _crearBotonSubmit(size, usuarioBloc, lugaresBloc, tiendaBloc, token),
                     )
                   );
                   return Container(
@@ -802,7 +790,7 @@ class _PerfilPageState extends State<PerfilPage> {
       );
     });
     return PopupMenuButton<String>(
-      //enabled: false,
+      enabled: (tiendaBloc.enCreacion),
       onSelected: (String selected){
         if(tipoPopUp == 'banco')
           tiendaBloc.tienda.banco = selected;
@@ -860,10 +848,12 @@ class _PerfilPageState extends State<PerfilPage> {
     return Container(
       width: size.width * 0.45,
       height: size.height * 0.047,
-      child: TextField(
+      child: TextFormField(
         style: TextStyle(
           color: Colors.black
         ),
+        enabled: (tiendaBloc.enCreacion),
+        initialValue: tiendaBloc.tienda.numeroDeCuenta??'',
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(
             vertical: size.height * 0.0025,
@@ -1005,7 +995,7 @@ class _PerfilPageState extends State<PerfilPage> {
   }
 
 
-  Widget _crearBotonSubmit(Size size, LugaresBloc lugaresBloc, TiendaBloc tiendaBloc, String token){
+  Widget _crearBotonSubmit(Size size, UsuarioBloc usuarioBloc, LugaresBloc lugaresBloc, TiendaBloc tiendaBloc, String token){
     return FlatButton(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(size.width * 0.04),
@@ -1023,14 +1013,26 @@ class _PerfilPageState extends State<PerfilPage> {
         ),
       ),
       onPressed: (){
-        _guardarDatos(lugaresBloc, tiendaBloc, token);
+        _guardarDatos(usuarioBloc, lugaresBloc, tiendaBloc, token);
       },
     );
   }
 
-  void _guardarDatos(LugaresBloc lugaresBloc, TiendaBloc tiendaBloc, String token)async{
+  void _guardarDatos(UsuarioBloc usuarioBloc, LugaresBloc lugaresBloc, TiendaBloc tiendaBloc, String token)async{
+    if(tiendaBloc.enCreacion){
+      _crearTienda(usuarioBloc, lugaresBloc, tiendaBloc, token);
+    }
+    else{
+      if(_nombre != null || _avatar != null)
+      _actualizarNombreYAvatar(usuarioBloc, token);
+    }
+      
+
+
+  }
+
+  void _crearTienda(UsuarioBloc usuarioBloc, LugaresBloc lugaresBloc, TiendaBloc tiendaBloc, String token)async{
     Map<String, dynamic> direccionResponse = await lugaresBloc.crearLugar( tiendaBloc.direccionTienda , token);
-    
     if(direccionResponse['status'] == 'ok'){
       tiendaBloc.direccionTienda = direccionResponse['content'];
       tiendaBloc.tienda.direccionId = direccionResponse['content'].id;
@@ -1047,7 +1049,16 @@ class _PerfilPageState extends State<PerfilPage> {
       }
       
     }
-    
+  }
+
+  void _actualizarNombreYAvatar(UsuarioBloc usuarioBloc, String token)async{
+    Map<String, dynamic> response = await usuarioBloc.cambiarNombreYAvatar(token, usuarioBloc.usuario.id, (_nombre??usuarioBloc.usuario.name), _avatar);
+    if(response['status'] == 'ok'){
+      usuarioBloc.cargarUsuario(usuarioBloc.token);
+      setState(() {
+        
+      });
+    }
   }
 
   void _generarStringItemsHoras(Size size){

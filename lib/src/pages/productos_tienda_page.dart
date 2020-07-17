@@ -1,8 +1,11 @@
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
+import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
-import 'package:domicilios_cali/src/widgets/DrawerWidget.dart';
-import 'package:domicilios_cali/src/widgets/productos/productos_widget.dart';
+import 'package:domicilios_cali/src/models/productos_model.dart';
+import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
+import 'package:domicilios_cali/src/widgets/header_widget.dart';
+import 'package:domicilios_cali/src/widgets/productos/producto_tienda_card_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,66 +14,113 @@ class ProductosTiendaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
-    LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
-    //por el momento
-    lugaresBloc.cargarLugares(usuarioBloc.token);
-    //por el momento
-    
+    ProductosBloc productosBloc = Provider.productosBloc(context);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            'Mis productos',
-            style: TextStyle(
-              fontSize: size.width * 0.055,
-              color: Colors.white.withOpacity(0.8),
-            ),
-          )
+      body: _crearElementos(context, size, productosBloc),
+      bottomNavigationBar: BottomBarWidget(),
+    );
+  }
+
+  Widget _crearElementos(BuildContext context, Size size, ProductosBloc productosBloc){
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(
+            height: size.height * 0.065,
+          ),
+          HeaderWidget(),
+          SizedBox(
+            height: size.height * 0.03,
+          ),
+          _crearTitulo(size),
+          SizedBox(
+            height: size.height * 0.02,
+          ),
+          _crearBotonAgregar(context, size),
+          SizedBox(
+            height: size.height * 0.015,
+          ),
+          _crearListviewProductos(size, productosBloc),
+        ],
+      ),
+    );
+  }
+
+  Widget _crearTitulo(Size size){
+    return Text(
+      'Productos',
+      style: TextStyle(
+        color: Colors.black.withOpacity(0.8),
+        fontSize: size.width * 0.06,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  Widget _crearBotonAgregar(BuildContext context, Size size, ){
+    return FlatButton(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(size.width * 0.04),
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: size.width * 0.05,
+        vertical: size.height * 0.006
+      ),
+      color: Colors.grey.withOpacity(0.62),
+      child: Text(
+        'Crear nuevo producto',
+        style: TextStyle(
+          fontSize: size.width * 0.05,
+          color: Colors.black.withOpacity(0.8)
         ),
       ),
-      drawer: DrawerWidget(),
-      body: Stack(
-        children: <Widget>[
-          _crearFondo(context),
-          _crearElementos(context, size, lugaresBloc),
-        ],
-      ),
+      onPressed: (){
+        _crearProducto(context);
+      },
     );
   }
 
-  Widget _crearFondo(BuildContext context){
-    final size = MediaQuery.of(context).size;
-    return Container(
-      width: double.infinity,
-      height: size.height,
-      decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor,
-      ),
+  Widget _crearListviewProductos(Size size, ProductosBloc productosBloc){
+    return StreamBuilder(
+      stream: productosBloc.productosTiendaStream,
+      builder: (BuildContext context, AsyncSnapshot<List<ProductoModel>> snapshot){
+        if(snapshot.hasData){
+          List<Widget> items = snapshot.data.map((ProductoModel producto){
+            return ProductoTiendaCardWidget(producto);
+          }).toList();
+
+          return Container(
+            height: size.height * 0.59,
+            child: ListView(
+              padding: EdgeInsets.symmetric(
+                horizontal: size.width * 0.12
+              ),
+              children: items,
+            ),
+          );
+        }else{
+          return Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Theme.of(context).primaryColor,
+            ),
+          );
+        }
+      },
     );
   }
 
-  Widget _crearElementos(BuildContext context, Size size, LugaresBloc lugaresBloc){
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(0.0),
-      
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [  
-          SizedBox(height: size.height * 0.01,),
-          _crearFiltros(context, size),
-          SizedBox(height: size.height * 0.01,),
-          ProductosWidget(
-            widthPercent: 1,
-            heightPercent: 0.72,
-          ),
-          _crearBotonAgregar(context, size)
-        ],
-      ),
-    );
+  void _crearProducto(BuildContext context){
+
   }
-  
-  Widget _crearFiltros(BuildContext context, Size size){
+
+}
+
+
+/*
+Widget _crearFiltros(BuildContext context, Size size){
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -105,25 +155,4 @@ class ProductosTiendaPage extends StatelessWidget {
       ],
     );
   }
-
-  Widget _crearBotonAgregar(BuildContext context, Size size){
-    return Container(
-      width: size.width,
-      child: RaisedButton(
-        padding: EdgeInsets.symmetric(vertical: size.height * 0.02, horizontal: size.width * 0.1),
-        color: Theme.of(context).secondaryHeaderColor,
-        child: Text(
-          'Agregar producto',
-          style: TextStyle(
-            fontSize: size.width * 0.071,
-            color: Colors.white54,
-          ),
-        ),
-        onPressed: (){
-          print('Agregar producto');
-        },
-      ),
-    );
-  }
-
-}
+*/

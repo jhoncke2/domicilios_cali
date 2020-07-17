@@ -25,6 +25,7 @@ class UsuarioModel{
   String avatar;
   String phone;
   bool phoneVerify;
+  bool hasStore;
 
   UsuarioModel({
     this.id,
@@ -33,6 +34,7 @@ class UsuarioModel{
     this.avatar,
     this.phone,
     this.phoneVerify,
+    this.hasStore
   });
 
   UsuarioModel.fromJsonMap(Map<String, dynamic> json){
@@ -43,6 +45,7 @@ class UsuarioModel{
     _formatAvatar(json['avatar']);
     phone         = json['phone'].toString();
     phoneVerify   = (json['phone_verify']==1)? true : false;
+    hasStore      = (json['has_store']);
 
   }
 

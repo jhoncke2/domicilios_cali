@@ -60,7 +60,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
         Container(
           padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
           child: Text(
-            producto.nombre,
+            producto.name,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: size.width * 0.055,
@@ -74,7 +74,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
         Container(
           padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
           child: Text(
-            producto.descripcion,
+            producto.description,
             textAlign: TextAlign.justify,
             style: TextStyle(
               fontSize: size.width * 0.04,

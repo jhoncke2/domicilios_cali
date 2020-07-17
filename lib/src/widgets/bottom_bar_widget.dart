@@ -5,8 +5,8 @@ import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/pages/direccion_create_page.dart';
 import 'package:domicilios_cali/src/pages/favoritos_page.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
-import 'package:domicilios_cali/src/pages/pasos_crear_tienda_page.dart';
 import 'package:domicilios_cali/src/pages/perfil_page.dart';
+import 'package:domicilios_cali/src/pages/productos_tienda_page.dart';
 import 'package:flutter/material.dart';
 class BottomBarWidget extends StatefulWidget {
   @override
@@ -95,6 +95,8 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
   }
 
   Future<void> _mostrarMenu(BuildContext context, Size size, UsuarioBloc usuarioBloc, NavigationBloc navigationBloc, String token, int newIndex)async{
+    
+    List<PopupMenuEntry<String>> menuItems = _agregarMenuItems(size, usuarioBloc, navigationBloc, token);
     String valor = await showMenu<String>(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -109,49 +111,7 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
         size.width - 1, 
         size.height * 0.855
       ),
-      items: [
-        PopupMenuItem(
-          enabled: false,
-          value: 'imagen',
-          child: Container(
-            padding: EdgeInsets.only(bottom:size.height * 0.045),
-            child: Center(
-              child: Image.asset(
-                'assets/iconos/logo_porta_01.png',
-                fit: BoxFit.fill,
-                width: size.width * 0.37,
-                height: size.height * 0.074,
-              ),
-            ),
-          ),
-        ),
-        PopupMenuItem(
-          value: 'perfil',
-          height: size.height * 0.08,
-          child: _crearChildPopUpMenuItem(size, 0, 'Perfil', Icons.person),
-        ),
-        PopupMenuItem(
-          value: 'favoritos',
-          child: _crearChildPopUpMenuItem(size, 1, 'Favoritos', Icons.favorite),
-          height: size.height * 0.08,
-        ),
-        PopupMenuItem(
-          value: 'tienda',
-          child: _crearChildPopUpMenuItem(size, 2, 'Ofrecer productos para venta', Icons.monetization_on),
-          height: size.height * 0.08,
-        ),
-        PopupMenuItem(
-          value: 'salir',
-          child: _crearChildPopUpMenuItem(size, 3, 'Salir', Icons.open_in_new),
-          height: size.height * 0.08,     
-        ),
-        PopupMenuItem(
-          value: 'bottom',
-          enabled: false,
-          height: size.height * 0.387,
-          child: Container(),
-        )
-      ],
+      items: menuItems,
     );
     if(valor!=null){
       navigationBloc.index = newIndex;
@@ -173,6 +133,15 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
           Navigator.of(context).pushNamed(PerfilPage.route);
           
         break;
+      case 'productos':
+        Navigator.of(context).pushNamed(ProductosTiendaPage.route);
+        break;
+      case 'solicitud_de_pedidos':
+        break;
+      case 'ventas':
+        break;
+      case 'domiciliarios':
+        break;
       case 'salir':
         _logOut(usuarioBloc, navigationBloc, token);
         break;
@@ -180,15 +149,92 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
         break; 
     }   
   }
+
+  List<PopupMenuEntry<String>> _agregarMenuItems(Size size, UsuarioBloc usuarioBloc, NavigationBloc navigationBloc, String token){
+    List<PopupMenuEntry<String>> items = [
+      PopupMenuItem<String>(
+        enabled: false,
+        value: 'imagen',
+        child: Container(
+          padding: EdgeInsets.only(bottom:size.height * 0.045),
+          child: Center(
+            child: Image.asset(
+              'assets/iconos/logo_porta_01.png',
+              fit: BoxFit.fill,
+              width: size.width * 0.37,
+              height: size.height * 0.074,
+            ),
+          ),
+        ),
+      ),
+      PopupMenuItem<String>(
+        value: 'perfil',
+        height: size.height * 0.08,
+        child: _crearChildPopUpMenuItem(size, usuarioBloc, 0, 'Perfil', Icons.person),
+      ),
+      PopupMenuItem<String>(
+        value: 'favoritos',
+        child: _crearChildPopUpMenuItem(size, usuarioBloc, 1, 'Favoritos', Icons.favorite),
+        height: size.height * 0.08,
+      ),
+      PopupMenuItem<String>(
+        value: 'tienda',
+        enabled: !usuarioBloc.usuario.hasStore,
+        child: _crearChildPopUpMenuItem(size, usuarioBloc, 2, 'Ofrecer productos para venta', Icons.monetization_on),
+        height: size.height * 0.08,
+      ),
+    ];
+
+    if(usuarioBloc.usuario.hasStore){
+      items.addAll([
+        PopupMenuItem<String>(
+          value: 'productos',
+          child: _crearChildPopUpMenuItem(size, usuarioBloc, 3, 'Productos', Icons.monetization_on),
+          height: size.height * 0.055,
+        ),
+        PopupMenuItem<String>(
+          value: 'solicitud_de_pedidos',
+          child: _crearChildPopUpMenuItem(size, usuarioBloc, 4, 'Solicitud de pedidos', Icons.monetization_on),
+          height: size.height * 0.055,
+        ),
+        PopupMenuItem<String>(
+          value: 'ventas',
+          child: _crearChildPopUpMenuItem(size, usuarioBloc, 5, 'Ventas', Icons.monetization_on),
+          height: size.height * 0.055,
+        ),
+        PopupMenuItem<String>(
+          value: 'domiciliarios',
+          child: _crearChildPopUpMenuItem(size, usuarioBloc, 6, 'Domiciliarios', Icons.monetization_on),
+          height: size.height * 0.055,
+        ),
+      ]);
+    }
+
+    items.addAll([
+      PopupMenuItem<String>(
+          value: 'salir',
+          child: _crearChildPopUpMenuItem(size, usuarioBloc, 7, 'Salir', Icons.open_in_new),
+          height: size.height * 0.08,     
+        ),
+        PopupMenuItem<String>(
+          value: 'bottom',
+          enabled: false,
+          height: ((usuarioBloc.usuario.hasStore)? size.height * 0.16: size.height * 0.387),
+          child: Container(),
+        )
+    ]);
+    return items;
+  }
   
-  Widget _crearChildPopUpMenuItem(Size size, int index, String nombre, IconData icono){
+  Widget _crearChildPopUpMenuItem(Size size, UsuarioBloc usuarioBloc, int index, String nombre, IconData icono){
+    bool esTiendaSubItem = (usuarioBloc.usuario.hasStore && 2 < index && index < 7);
     return Container(
-      height: size.height * 0.08,
-      margin: EdgeInsets.all(0.0),
+      height: size.height * (esTiendaSubItem? 0.055 : 0.08),
+      margin: (esTiendaSubItem)?EdgeInsets.only(left: size.width * 0.06):EdgeInsets.all(0.0),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.grey.withOpacity(((index < 3)? 0.45: 0.0)),
+            color: Colors.grey.withOpacity(((usuarioBloc.usuario.hasStore && index < 7)? 0.45: 0.0)),
             width: 1.35
           )
         )
@@ -206,11 +252,14 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
               fontWeight: FontWeight.bold,
             ),
           ),
+          ((!esTiendaSubItem)?
           Icon(
             icono,
             size: size.width * 0.058,
             color: Colors.grey.withOpacity(0.85),
-          ),
+          )
+          : SizedBox()
+          )
         ],
       ),
     );

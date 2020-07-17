@@ -1,5 +1,7 @@
 import 'dart:ui';
+import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/bloc/tienda_bloc.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_confirmacion_celular_page.dart';
@@ -266,8 +268,14 @@ class _LoginPageState extends State<LoginPage> {
 
   void _clickSubmmit(BuildContext context, UsuarioBloc usuarioBloc)async{
     Map<String, dynamic> respuesta = await usuarioBloc.login(_emailValue, _passwordValue);
-    if(usuarioBloc.usuario.phoneVerify)
+    TiendaBloc tiendaBloc = Provider.tiendaBloc(context);
+    ProductosBloc productosBloc = Provider.productosBloc(context);
+    if(usuarioBloc.usuario.phoneVerify){
+      await tiendaBloc.cargarTienda(usuarioBloc.token);
+      await productosBloc.cargarProductosTienda(usuarioBloc.token);
       Navigator.pushReplacementNamed(context, HomePage.route, arguments: respuesta['user']);
+    }
+      
     else
       Navigator.pushNamed(context, PasosConfirmacionCelularPage.route);
   }

@@ -134,7 +134,7 @@ class _FavoritosPageState extends State<FavoritosPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                producto.nombre,
+                producto.name,
                 style: TextStyle(
                   fontSize: size.width * 0.048,
                   color: Colors.black.withOpacity(0.75)

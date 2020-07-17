@@ -34,8 +34,15 @@ class UsuarioProvider{
         "password":password
       }
     );
-    Map<String, dynamic> decodedResp = json.decode(respuesta.body);
-    return decodedResp;
+    try{
+      Map<String, dynamic> decodedResp = json.decode(respuesta.body);
+      return decodedResp;
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
   }
 
   Future<Map<String, dynamic>> logOut(String token)async{
@@ -56,17 +63,28 @@ class UsuarioProvider{
         "Authorization": 'Bearer $token'
       }
     );
-    Map<String, dynamic> decodedResp = json.decode(respuesta.body)['data'];
-    return decodedResp;
+    try{
+      Map<String, dynamic> decodedResp = json.decode(respuesta.body)['data'];
+      
+      return decodedResp;
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+    
+    
   }
 
-  Future<Map<String, dynamic>> cambiarNombreYAvatar(String token, int perfilId, String name, File avatar)async{
+  Future<Map<String, dynamic>> cambiarNombreYAvatar(String token, int userId, String name, File avatar)async{
     Map<String, String> headers = {
       'Authorization':'Bearer $token',
       'Content-Type':'application/x-www-form-urlencoded'
     };
 
-    var request = http.MultipartRequest('POST', Uri.parse('$_apiUrl/perfil/update'));
+    var request = http.MultipartRequest('POST', Uri.parse('$_apiUrl/perfil/update/$userId'));
+
     if(avatar != null){
       request.files.add(
         http.MultipartFile(
@@ -80,15 +98,15 @@ class UsuarioProvider{
     request.fields.addAll({
       'name':name
     });
-
     request.headers.addAll(headers);
     final streamResponse = await request.send();
     final response = await http.Response.fromStream(streamResponse);
     try{
       Map<String, dynamic> decodedResponse = json.decode(response.body);
+
       return {
         'status':'ok',
-        'tienda':decodedResponse['tienda']
+        'content':decodedResponse
       };
     }catch(err){
       return {

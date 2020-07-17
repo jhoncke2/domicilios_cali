@@ -44,7 +44,7 @@ class ProductoCardWidget extends StatelessWidget {
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: size.width  * 0.27),
               child: Text(
-                producto.nombre,
+                producto.name,
                 style: TextStyle(
                   fontSize: size.width * 0.04,
                   fontWeight: FontWeight.normal,

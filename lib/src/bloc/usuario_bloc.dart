@@ -16,9 +16,9 @@ class UsuarioBloc{
   Future<Map<String, dynamic>> login(String email, String password)async{
     Map<String, dynamic> respuesta = await _usuarioProvider.login(email, password);
     if(respuesta['status']=='ok'){
-      Map<String, dynamic> user = await _usuarioProvider.getUserByToken(respuesta['token']);
-      usuario = UsuarioModel.fromJsonMap(user);
+
       token = respuesta['token'];
+      await cargarUsuario(token);
       return{
         'status':'ok',
         'token':token,
@@ -26,6 +26,11 @@ class UsuarioBloc{
       };
     }
     return respuesta;
+  }
+
+  Future<void> cargarUsuario(String pToken)async{
+    Map<String, dynamic> user = await _usuarioProvider.getUserByToken(pToken);
+    usuario = UsuarioModel.fromJsonMap(user);
   }
 
   Future<Map<String, dynamic>> register(String name, String email, String phone, String password, String passwordConfirmation)async{
@@ -46,6 +51,11 @@ class UsuarioBloc{
       this.token = null;
     }
 
+  }
+
+  Future<Map<String, dynamic>> cambiarNombreYAvatar(String token, int userId, String name, File avatar)async{
+    Map<String, dynamic> response = await _usuarioProvider.cambiarNombreYAvatar(token, userId, name, avatar);
+    return response;
   }
 
   Future<Map<String, dynamic>> cambiarFoto(String token, File foto)async{

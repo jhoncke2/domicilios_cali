@@ -140,7 +140,7 @@ class _HistorialPageState extends State<HistorialPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                producto.nombre,
+                producto.name,
                 style: TextStyle(
                   fontSize: size.width * 0.049,
                   color: Colors.black.withOpacity(0.85)
