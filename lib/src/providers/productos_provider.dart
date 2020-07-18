@@ -4,10 +4,11 @@ import 'dart:convert';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
 
 class ProductosProvider{
-  final _serviceRoute = 'https://codecloud.xyz/api/products';
+  final _productosServiceRoute = 'https://codecloud.xyz/api/products';
+  final _categoriasServiceRoute = 'https://codecloud.xyz/api/categories';
   Future<Map<String, dynamic>> cargarProductosByToken(String token)async{
     final response = await http.get(
-      _serviceRoute,
+      _productosServiceRoute,
       headers: {
         'Authorization': 'Bearer $token'
       }
@@ -23,6 +24,24 @@ class ProductosProvider{
         'status':'err',
         'message':err
       };
+    }
+  }
+
+  Future<Map<String, dynamic>> cargarCategorias(String token)async{
+    final response = await http.get(
+      _categoriasServiceRoute,
+      headers: {
+        'Authorization':'Bearer $token'
+      }
+    );
+    try{
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      return{
+        'status':'ok',
+        'categories':decodedResponse
+      };
+    }catch(err){
+
     }
   }
 }

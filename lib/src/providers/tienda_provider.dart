@@ -101,8 +101,7 @@ class TiendaProvider{
 
   Future<Map<String, dynamic>> crearHorario(String token, HorarioModel horarioModel)async{
 
-    Map<String, dynamic> body = horarioModel.toJson();
-    
+    Map<String, dynamic> body = horarioModel.toJson(); 
     final response = await http.post(
       '$_apiRoute/horario/store',
       headers: {

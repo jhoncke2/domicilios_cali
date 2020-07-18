@@ -19,7 +19,7 @@ class LugaresBloc{
 
   //Stream<Lugar> get lugaresStream => _lugaresController.stream;
 
-  /**
+  /*
    * Falta implementar el parámetro usuarioId
    */
   Future<void> cargarLugares(String token)async{

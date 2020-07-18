@@ -60,5 +60,6 @@ class Provider extends InheritedWidget{
     _lugaresBloc.dispose();
     _usuarioBloc.dispose();
     _confirmationBloc.dispose();
+    _productosBloc.dispose();
   }
 }

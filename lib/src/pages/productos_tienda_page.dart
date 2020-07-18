@@ -3,6 +3,7 @@ import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/productos_model.dart';
+import 'package:domicilios_cali/src/pages/producto_create_page.dart';
 import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
 import 'package:domicilios_cali/src/widgets/header_widget.dart';
 import 'package:domicilios_cali/src/widgets/productos/producto_tienda_card_widget.dart';
@@ -113,7 +114,7 @@ class ProductosTiendaPage extends StatelessWidget {
   }
 
   void _crearProducto(BuildContext context){
-
+    Navigator.of(context).pushNamed(ProductoCreatePage.route);
   }
 
 }
