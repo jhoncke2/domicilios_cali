@@ -86,7 +86,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                           )
                           :null
                           ),
-                        color: (lugar.elegido)? Color.fromRGBO(192, 214, 81, 1) : Colors.white,
+                        color: (lugar.elegido)? Theme.of(context).secondaryHeaderColor : Colors.white,
                       ),
                     ),
                     SizedBox(

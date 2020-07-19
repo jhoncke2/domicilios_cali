@@ -269,10 +269,8 @@ class _LoginPageState extends State<LoginPage> {
   void _clickSubmmit(BuildContext context, UsuarioBloc usuarioBloc)async{
     Map<String, dynamic> respuesta = await usuarioBloc.login(_emailValue, _passwordValue);
     TiendaBloc tiendaBloc = Provider.tiendaBloc(context);
-    ProductosBloc productosBloc = Provider.productosBloc(context);
     if(usuarioBloc.usuario.phoneVerify){
       await tiendaBloc.cargarTienda(usuarioBloc.token);
-      await productosBloc.cargarProductosTienda(usuarioBloc.token);
       Navigator.pushReplacementNamed(context, HomePage.route, arguments: respuesta['user']);
     }
       

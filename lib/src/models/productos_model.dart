@@ -102,8 +102,21 @@ class ProductoModel{
     });
   }
 
+  Map<String, String> toJson(){
+    Map<String, String> json = {};
+    json['name'] = name;
+    json['description'] = description;
+    json['precio'] = precio.toString();
+    json['tipo'] = tipo;
+    return json;
+  }
+
   String formatPhotoUrl(String photoUrl){
     String url = 'https://codecloud.xyz$photoUrl';
     return url;
+  }
+
+  bool get listoParaCrear{
+    return (name != null && description != null && precio != null && tipo != null);
   }
 }

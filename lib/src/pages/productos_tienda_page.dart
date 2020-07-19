@@ -14,8 +14,9 @@ class ProductosTiendaPage extends StatelessWidget {
   static final route = 'productos_tienda';
   @override
   Widget build(BuildContext context) {
-    UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
     ProductosBloc productosBloc = Provider.productosBloc(context);
+    UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
+    productosBloc.cargarProductosTienda(usuarioBloc.token);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: _crearElementos(context, size, productosBloc),

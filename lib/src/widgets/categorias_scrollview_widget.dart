@@ -1,3 +1,6 @@
+import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
+import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:domicilios_cali/src/utils/data_prueba/catalogo_producto_prueba.dart';
@@ -10,9 +13,20 @@ class CategoriasScrollviewWidget extends StatefulWidget with CatalogoProductoPru
   Scrollview de categorias para la lista de productos
 */
 class _CategoriasScrollviewWidgetState extends State<CategoriasScrollviewWidget> {
+  BuildContext context;
+  Size size;
+  UsuarioBloc usuarioBloc;
+  String token;
+  ProductosBloc productosBloc;
   @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+  Widget build(BuildContext appContext) {
+    context = appContext;
+    size = MediaQuery.of(context).size;
+    usuarioBloc = Provider.usuarioBloc(context);
+    token = usuarioBloc.token;
+    productosBloc = Provider.productosBloc(context);
+    productosBloc.cargarCategorias();
+    
     return Container(
       height: size.height * 0.14,
        child: Column(
@@ -32,17 +46,44 @@ class _CategoriasScrollviewWidgetState extends State<CategoriasScrollviewWidget>
           SizedBox(
             height: size.height * 0.003,
           ),
-          _crearListView(size),
+          _crearListView(),
         ],
       ),
     );
   }
 
-  Widget _crearListView(Size size){
-    List<String> categorias = widget.categoriasUnitarias;
-    List<Container> categoriasItems = [];
-    for(int i = 0; i < categorias.length; i++){
-      categoriasItems.add(
+  Widget _crearListView(){
+    
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: productosBloc.categoriasStream,
+      builder: (context, snapshot) {
+        if(snapshot.hasData){
+          List<Widget> listviewItems = _crearListviewItems(snapshot.data);
+          return Container(
+            height: size.height * 0.1,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: listviewItems, 
+            ),
+          );
+        }else{
+          return Container(
+            height: size.height * 0.1,
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.5),
+            ),
+          );
+        }
+        
+      }
+    );
+  }
+
+  List<Widget> _crearListviewItems(List<Map<String, dynamic>> categories){
+    print(Icons.home.fontFamily);
+    List<Widget> categoriesWidgets = [];
+    for(int i = 0; i < categories.length; i++){
+      categoriesWidgets.add(
         Container(
           margin: EdgeInsets.symmetric(horizontal: size.width * 0.01),
           width: size.width * 0.2,
@@ -52,42 +93,30 @@ class _CategoriasScrollviewWidgetState extends State<CategoriasScrollviewWidget>
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Icon(
-                widget.categoriasIconos[i],
+                IconData(
+                  int.parse(categories[i]['icon']),
+                  fontFamily: 'MaterialIcons'
+                ),
                 color: Colors.white.withOpacity(0.9),
                 size: size.width * 0.11,
               ),
               ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: size.width  * 0.25),
-              child: Text(
-                categorias[i],
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
-                  fontSize: size.width * 0.028,
-                  fontWeight: FontWeight.normal,
+                constraints: BoxConstraints(maxWidth: size.width  * 0.25),
+                child: Text(
+                  categories[i]['name'],
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: size.width * 0.028,
+                    fontWeight: FontWeight.normal,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
-            ),
-            /*
-            Text(
-              categorias[i],
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.9),
-                fontSize: size.width * 0.027
-              ),
-            )
-            */
             ],
           ),
         )
       );
     }
-    return Container(
-      height: size.height * 0.1,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: categoriasItems, 
-      ),
-    );
+    return categoriesWidgets;
   }
 }

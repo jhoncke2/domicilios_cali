@@ -1,6 +1,8 @@
 import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/tienda_bloc.dart';
+import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
+import 'package:domicilios_cali/src/models/productos_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -17,24 +19,34 @@ class ProductoCreatePage extends StatefulWidget with CatalogoProductoPrueba{
 
 class _ProductoCreatePageState extends State<ProductoCreatePage>{
   BuildContext context;
+  Size size;
+  String token;
   TiendaBloc tiendaBloc;
   ProductosBloc productosBloc;
 
+  List<Map<String, dynamic>> _categories;
+
   List<File> _photos;
-  String _dropdownCategoriaValue = '';
+  ProductoModel _producto;
+  int _dropdownCategoryValue;
   String _nombreValue = '';
 
   @override
-  void initState() { 
+  void initState(){
+    _categories = [];
+    _producto = new ProductoModel(
+      tipo: 'normal'
+    ); 
     _photos = [];
-    _dropdownCategoriaValue = widget.categoriasUnitarias[0];
+    //_dropdownCategoriaValue = widget.categoriasUnitarias[0];
     super.initState(); 
   }
 
   @override
   Widget build(BuildContext appContext) {
     context = appContext;
-    Size size = MediaQuery.of(context).size;
+    size = MediaQuery.of(context).size;
+    token = Provider.usuarioBloc(context).token;
     productosBloc = Provider.productosBloc(context);
     tiendaBloc = Provider.tiendaBloc(context);
     return Scaffold(
@@ -72,11 +84,12 @@ class _ProductoCreatePageState extends State<ProductoCreatePage>{
         _crearInputDescripcion(size),
         SizedBox(
           height: size.height * 0.035,
-        ),
+        ),    
         Divider(
           color: Colors.black.withOpacity(0.8),
           height: size.height * 0.015,
         ),
+        _crearSwitchTipoProducto(),
         SizedBox(
           height: size.height * 0.015,
         ),
@@ -147,8 +160,8 @@ class _ProductoCreatePageState extends State<ProductoCreatePage>{
           icon: Icon(
             Icons.add_box,         
           ),
-          color: Theme.of(context).primaryColor.withOpacity(0.9),
-          iconSize: size.width * 0.12,
+          color: Theme.of(context).secondaryHeaderColor.withOpacity(0.75),
+          iconSize: size.width * 0.145,
           onPressed: (){
             _subirImagenes(context, size);
           },
@@ -180,54 +193,73 @@ class _ProductoCreatePageState extends State<ProductoCreatePage>{
   }
 
   Widget _crearDropdownCategorias(Size size){
-    List<DropdownMenuItem<String>> items = widget.categoriasUnitarias.map((String categoria){
-      return DropdownMenuItem<String>(
-        child: Text(
-          categoria,
-          style: TextStyle(
-            color: Colors.black.withOpacity(0.8),
-            fontSize: size.width * 0.045,
-          ),
-        ),
-        value: categoria,
-      );
-      
-    }).toList();
-    print('items: $items');
 
     return Center(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 0.0),
-        width: size.width * 0.5,
-        child: DropdownButtonFormField(
-          decoration: InputDecoration(           
-            contentPadding: EdgeInsets.all(0.0),
-            labelText: 'categoria',
-            labelStyle: TextStyle(
-              color: Colors.black.withOpacity(0.85),
-              fontSize: size.width * 0.043
-            ),
-            enabledBorder: InputBorder.none
-          ),
-          value: _dropdownCategoriaValue,
-          hint: Text(
-            'categoria',
-            style: TextStyle(
-              color: Colors.black.withOpacity(0.8),
-              fontSize: size.width * 0.042
-            ),
-          ),
-          
-          items: items,
-          onChanged: (String newValue){
-            _dropdownCategoriaValue = newValue;
-            setState(() {
-              
-            });
-          },
+        width: size.width * 0.3,
+        child: StreamBuilder<List<Map<String, dynamic>>>(
+          stream: productosBloc.categoriasStream,
+          builder: (BuildContext appContext, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+            if(snapshot.hasData){
+              List<DropdownMenuItem<int>> categoriesItems = _crearCategoriesItems(snapshot.data);
+              return DropdownButtonFormField<int>(            
+                decoration: InputDecoration(
+                  enabled: true,
+                  contentPadding: EdgeInsets.all(0.0),
+                  //labelText: 'categoria',
+                  labelStyle: TextStyle(
+                    color: Colors.black.withOpacity(0.85),
+                    fontSize: size.width * 0.043
+                  ),
+                  enabledBorder: InputBorder.none
+                ),
+                value: _dropdownCategoryValue,
+                hint: Text(
+                  'categoria',
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(0.8),
+                    fontSize: size.width * 0.042
+                  ),
+                ),
+                
+                items: categoriesItems,
+                onChanged: (int newValue){
+                  _dropdownCategoryValue = newValue;
+                  setState(() {
+                    
+                  });
+                },
+              );
+            }else{
+              return CircularProgressIndicator(
+                backgroundColor: Theme.of(context).primaryColor,
+              );
+            }
+          }
         ),
       ),
     );
+  }
+
+  List<DropdownMenuItem<int>> _crearCategoriesItems(List<Map<String, dynamic>> categories){
+    //_dropdownCategoryValue = categories[0]['id'];
+    List<DropdownMenuItem<int>> categoriesItems = [];
+    categories.forEach((Map<String, dynamic> category){
+      categoriesItems.add(
+        DropdownMenuItem<int>(
+          child: Text(
+            category['name'],
+            style: TextStyle(
+              color: Colors.black.withOpacity(0.8),
+              fontSize: size.width * 0.043,
+            ),
+          ),
+          value: category['id'],
+        )
+      );
+    });
+    return categoriesItems;
   }
 
   Widget _crearInputNombre(Size size){
@@ -242,6 +274,9 @@ class _ProductoCreatePageState extends State<ProductoCreatePage>{
               color: Colors.black.withOpacity(0.67)
             )
           ),
+          onChanged: (String newValue){
+            _producto.name = newValue;
+          },
         ),
       ),
     );
@@ -259,6 +294,9 @@ class _ProductoCreatePageState extends State<ProductoCreatePage>{
               color: Colors.black.withOpacity(0.67)
             )
           ),
+          onChanged: (String newValue){
+            _producto.description = newValue;
+          },
         ),
       ),
     );
@@ -280,7 +318,54 @@ class _ProductoCreatePageState extends State<ProductoCreatePage>{
               Icons.attach_money
             )
           ),
+          onChanged: (String newValue){
+            _producto.precio = int.parse(newValue);
+          },
         ),
+      ),
+    );
+  }
+
+  Widget _crearSwitchTipoProducto(){
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Producto \n venta diaria',
+            style: TextStyle(
+              color: Colors.black.withOpacity(0.8),
+              fontSize: size.width * 0.04
+            ),
+          ),
+          SizedBox(
+            width: size.width * 0.03,
+          ),
+          Switch(
+            value: (_producto.tipo == 'programado'),
+            inactiveThumbColor: Colors.white,
+            activeColor: Colors.white,
+            focusColor: Colors.white,
+            activeTrackColor: Theme.of(context).secondaryHeaderColor,
+            inactiveTrackColor: Theme.of(context).secondaryHeaderColor,
+            onChanged: (bool selected){
+              _producto.tipo = (selected)? 'programado' : 'normal';
+              setState(() {
+                
+              });
+            },
+          ),
+          SizedBox(
+            width: size.width * 0.03,
+          ),
+          Text(
+            'Producto \n programado',
+            style: TextStyle(
+              color: Colors.black.withOpacity(0.8),
+              fontSize: size.width * 0.04
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -328,9 +413,18 @@ class _ProductoCreatePageState extends State<ProductoCreatePage>{
           ),
         ),    
         onPressed: (){
-
+          _submit();
         },
       ),
     );
+  }
+
+  void _submit()async{
+    if(_producto.listoParaCrear && _photos.length > 0 && _dropdownCategoryValue != null){
+      Map<String, dynamic> response = await productosBloc.crearProducto(token, _producto, _photos, _dropdownCategoryValue);
+      if(response['status'] != null){
+        Navigator.of(context).pop();
+      }
+    }
   }
 }

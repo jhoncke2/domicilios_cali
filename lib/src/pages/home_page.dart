@@ -1,4 +1,5 @@
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
+import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
 import 'package:domicilios_cali/src/widgets/categorias_scrollview_widget.dart';
@@ -15,25 +16,30 @@ class HomePage extends StatefulWidget with MenuCategorias{
 }
 
 class _HomePageState extends State<HomePage> with MenuCategorias{
+  BuildContext context;
+  Size size;
+  String token;
+  LugaresBloc lugaresBloc;
   /*
   No entiendo por qué no se quieren subir los cambios
   */
   @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    String token = Provider.usuarioBloc(context).token;
-    LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
+  Widget build(BuildContext appContext) {
+    context = appContext;
+    size = MediaQuery.of(context).size;
+    token = Provider.usuarioBloc(context).token;
+    lugaresBloc = Provider.lugaresBloc(context);
 
     return Scaffold(
       bottomNavigationBar: BottomBarWidget(),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 0),
-        child: _crearElementos(context, size, lugaresBloc, token),
+        child: _crearElementos(),
       ),
     );
   }
 
-  Widget _crearElementos(BuildContext context, Size size, LugaresBloc lugaresBloc, String token){
+  Widget _crearElementos(){
     return Column(
       children: <Widget>[
         //_crearMenuCategorias(size),

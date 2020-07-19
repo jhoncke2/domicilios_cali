@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
           //backgroundColor: Color.fromRGBO(240, 200, 102, 1),
           primaryColor: Color.fromRGBO(103, 58, 183, 1),
           backgroundColor: Color.fromRGBO(255, 255, 255, 1),   
-          secondaryHeaderColor: Color.fromRGBO(0, 150, 136, 1),
+          secondaryHeaderColor: Color.fromRGBO(192, 214, 81, 1),
           //primaryColor: Colors.white,
           //secondaryHeaderColor: Color.fromRGBO(134, 174, 188, 1),//azul grisaseo
           //secondaryHeaderColor: Color.fromRGBO(240, 190, 92, 1),//orange
