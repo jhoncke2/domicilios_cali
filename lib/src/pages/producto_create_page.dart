@@ -73,7 +73,11 @@ class _ProductoCreatePageState extends State<ProductoCreatePage>{
         SizedBox(
           height: size.height * 0.055,
         ),
-        _crearDropdownCategorias(size),
+        _crearPopUpTiempoEntrega(90),
+        SizedBox(
+          height: size.height * 0.01,
+        ),
+        _crearDropdownCategorias(),
         SizedBox(
           height: size.height * 0.01,
         ),
@@ -188,11 +192,99 @@ class _ProductoCreatePageState extends State<ProductoCreatePage>{
     }
   }
 
-  Widget _crearPopUpCategorias(Size size){
-    List<PopupMenuEntry<int>> categoriasItems = [];
+  Widget _crearPopUpTiempoEntrega(int maximoMinutos){
+    List<PopupMenuEntry<int>> tiempoEntregaItems = [];
+    for(int i = 10; i <= maximoMinutos; i+=10){
+      tiempoEntregaItems.add(
+        PopupMenuItem<int>(
+          height: size.height * 0.05,
+          value: i,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                width: size.width * 0.095,
+                height: size.height * 0.03,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: ((_producto.tiempoDeEntrega == i)?
+                    null
+                    : Border.all(
+                      width: 1,
+                      color: Colors.black.withOpacity(0.9)
+                    )
+                    
+                    ),
+                  color: (_producto.tiempoDeEntrega == i)? Theme.of(context).secondaryHeaderColor : Colors.white,
+                ),
+              ),
+              SizedBox(
+                width: size.width * 0.025,
+              ),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: size.width  * 0.45),
+                child: Text(
+                  '$i minutos',
+                  style: TextStyle(
+                    fontSize: size.width * 0.04,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        )
+      );
+    }
+    return Center(
+      child: Container(
+        width: size.width * 0.5,
+        child: PopupMenuButton<int>(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(size.width * 0.04),
+
+          ),
+          enabled: true,
+          offset: Offset(
+            size.width * 0.1,
+            size.height * 0.04
+          ),
+          itemBuilder: (BuildContext context){
+            return tiempoEntregaItems;
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                ((_producto.tiempoDeEntrega == null)?
+                  'Tiempo de entrega'
+                  :'${_producto.tiempoDeEntrega} minutos'),
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.8),
+                  fontSize: size.width * 0.04
+                ),
+              ),
+              Icon(
+                Icons.arrow_drop_down,
+                color: Colors.black.withOpacity(0.8),
+                size: size.height * 0.035,
+              )
+            ],
+          ),
+          onSelected: (int newValue){
+            _producto.tiempoDeEntrega = newValue;
+            setState(() {
+              
+            });
+          },
+        ),
+      ),
+    );
   }
 
-  Widget _crearDropdownCategorias(Size size){
+  Widget _crearDropdownCategorias(){
 
     return Center(
       child: Container(
@@ -396,7 +488,7 @@ class _ProductoCreatePageState extends State<ProductoCreatePage>{
       ),
     );
   }
-
+  
   Widget _crearBotonSubmit(Size size){
     return Center(
       child: FlatButton(
@@ -422,7 +514,7 @@ class _ProductoCreatePageState extends State<ProductoCreatePage>{
   void _submit()async{
     if(_producto.listoParaCrear && _photos.length > 0 && _dropdownCategoryValue != null){
       Map<String, dynamic> response = await productosBloc.crearProducto(token, _producto, _photos, _dropdownCategoryValue);
-      if(response['status'] != null){
+      if(response['status'] != null){    
         Navigator.of(context).pop();
       }
     }

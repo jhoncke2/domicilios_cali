@@ -46,6 +46,7 @@ class UsuarioModel{
     phone         = json['phone'].toString();
     phoneVerify   = (json['phone_verify']==1)? true : false;
     hasStore      = (json['has_store']);
+    
 
   }
 

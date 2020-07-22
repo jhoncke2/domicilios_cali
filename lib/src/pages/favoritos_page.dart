@@ -1,4 +1,7 @@
+import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
+import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/models/productos_model.dart';
+import 'package:domicilios_cali/src/pages/producto_detail_page.dart';
 import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
 import 'package:domicilios_cali/src/widgets/header_widget.dart';
 import 'package:flutter/material.dart';
@@ -9,17 +12,22 @@ class FavoritosPage extends StatefulWidget {
 }
 
 class _FavoritosPageState extends State<FavoritosPage> {
+  BuildContext context;
+  Size size;
+  ProductosBloc productosBloc;
+
   @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    ProductosModel productosModel = ProductosModel.prueba();
+  Widget build(BuildContext appContext) {
+    context = appContext;
+    size = MediaQuery.of(context).size;
+    productosBloc = Provider.productosBloc(context);
     return Scaffold(
-      body: _crearElementos(size, productosModel),
+      body: _crearElementos(),
       bottomNavigationBar: BottomBarWidget(),
     );
   }
 
-  Widget _crearElementos(Size size, ProductosModel productosModel){
+  Widget _crearElementos(){
     return Container(
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.08),
       child: Column(
@@ -31,14 +39,14 @@ class _FavoritosPageState extends State<FavoritosPage> {
           SizedBox(
             height: size.height * 0.01,
           ),
-          _crearTitulo(size),
-          _crearListViewFavoritos(size, productosModel),
+          _crearTitulo(),
+          _crearListViewFavoritos(),
         ],
       ),
     );
   }
 
-  Widget _crearTitulo(Size size){
+  Widget _crearTitulo(){
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -67,37 +75,49 @@ class _FavoritosPageState extends State<FavoritosPage> {
     );
   }
 
-  Widget _crearListViewFavoritos(Size size, ProductosModel productosModel){
-    List<ProductoModel> favoritos = _generarFavoritos(productosModel);
-    List<Widget> listViewItems = [];
-    favoritos.forEach((ProductoModel producto){
-      listViewItems.add(
-        _crearProductoFavorito(size, producto)
-      );
-      
-      listViewItems.add(
-        Divider(
-          color: Colors.grey.withOpacity(0.275),
-          height: size.height * 0.045,
-          thickness: size.height * 0.0028,
-          indent: size.width * 0.15,
-          endIndent: size.width * 0.15,
-        )
-      );
-      listViewItems.add(
-        SizedBox(
-          height: size.height * 0.022,
-        )
-      );
-      
-    });
+  Widget _crearListViewFavoritos(){    
     
-    return Container(
-      height: size.height * 0.67,
-      child: ListView(
-        padding: EdgeInsets.only(top:size.height * 0.045, bottom: size.height * 0.02),
-        children: listViewItems,
-      ),
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: productosBloc.favoritosStream,
+      builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+        if(snapshot.hasData){
+          List<Widget> listViewItems = [];
+          snapshot.data.forEach((Map<String, dynamic> favorito){
+            listViewItems.add(
+              _crearProductoFavorito(size, favorito)
+            );
+            
+            listViewItems.add(
+              Divider(
+                color: Colors.grey.withOpacity(0.275),
+                height: size.height * 0.045,
+                thickness: size.height * 0.0028,
+                indent: size.width * 0.15,
+                endIndent: size.width * 0.15,
+              )
+            );
+            listViewItems.add(
+              SizedBox(
+                height: size.height * 0.022,
+              )
+            );
+            
+          });
+          return Container(
+            height: size.height * 0.67,
+            child: ListView(
+              padding: EdgeInsets.only(top:size.height * 0.045, bottom: size.height * 0.02),
+              children: listViewItems,
+            ),
+          );
+        }
+        else{
+          return CircularProgressIndicator(
+            backgroundColor: Theme.of(context).primaryColor,
+          );
+        }
+          
+      }
     );
   }
 
@@ -116,47 +136,66 @@ class _FavoritosPageState extends State<FavoritosPage> {
     return favoritos;
   }
 
-  Widget _crearProductoFavorito(Size size, ProductoModel producto){
-    return Container(
-      child: Row(
-        children: <Widget>[
-          FadeInImage(
-            width: size.width * 0.3,
-            height: size.height * 0.115,
-            fit: BoxFit.fill,
-            placeholder: AssetImage('assets/placeholder_images/domicilio_icono_2.jpg'),
-            image: NetworkImage(producto.imagenUrl),
-          ),
-          SizedBox(
-            width: size.width * 0.038,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                producto.name,
-                style: TextStyle(
-                  fontSize: size.width * 0.048,
-                  color: Colors.black.withOpacity(0.75)
+  Widget _crearProductoFavorito(Size size, Map<String, dynamic> favorito){
+    ProductoModel producto = ProductoModel.fromJsonMap(favorito['product']);
+
+    return GestureDetector(
+      child: Container(
+        child: Row(
+          children: <Widget>[
+            FadeInImage(
+              width: size.width * 0.3,
+              height: size.height * 0.115,
+              fit: BoxFit.fill,
+              placeholder: AssetImage('assets/placeholder_images/domicilio_icono_2.jpg'),
+              image: NetworkImage(producto.photos[0]['url']),
+            ),
+            SizedBox(
+              width: size.width * 0.038,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: size.width  * 0.47),
+                  child: Text(
+                    producto.name,
+                    style: TextStyle(
+                      fontSize: size.width * 0.048,
+                      color: Colors.black.withOpacity(0.75)
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              //Completar después:
-              Text(
-                'Andrés Tresado',
-                style: TextStyle(
-                  fontSize: size.width * 0.041,
-                  color: Colors.black.withOpacity(0.75)
+                
+                //Completar después:
+                Text(
+                  'Andrés Tresado',
+                  style: TextStyle(
+                    fontSize: size.width * 0.041,
+                    color: Colors.black.withOpacity(0.75)
+                  ),
                 ),
-              ),
-              Icon(
-                Icons.favorite,
-                size: size.width * 0.073,
-                color: Colors.red,
-              )
-            ],
-          )
-        ],
-      )
+                Icon(
+                  Icons.favorite,
+                  size: size.width * 0.073,
+                  color: Colors.red,
+                )
+              ],
+            )
+          ],
+        )
+      ),
+      onTap: (){
+        print(favorito);
+        Navigator.of(context).pushNamed(
+          ProductoDetailPage.route, 
+          arguments: {
+            'tipo':'favorito',
+            'value':favorito
+          }
+        );
+      },
     );
   }
 }

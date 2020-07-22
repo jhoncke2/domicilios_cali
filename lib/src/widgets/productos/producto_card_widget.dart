@@ -1,10 +1,11 @@
+import 'package:domicilios_cali/src/models/productos_model.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
 //Importaciones locales
 import 'package:domicilios_cali/src/pages/producto_detail_page.dart';
 class ProductoCardWidget extends StatelessWidget {
 
-  final producto;
+  ProductoModel producto;
   final percentageWidthScreen;
 
   ProductoCardWidget({
@@ -19,7 +20,7 @@ class ProductoCardWidget extends StatelessWidget {
     try{
        fadeInImage = FadeInImage(
         fit: BoxFit.fill,
-        image: NetworkImage(producto.imagenUrl),
+        image: NetworkImage(producto.photos[0]['url']),
         placeholder: AssetImage('assets/placeholder_images/domicilio_icono_2.jpg'),
       );
     }catch(err){
@@ -56,7 +57,7 @@ class ProductoCardWidget extends StatelessWidget {
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: size.width  * 0.27),
               child: Text(
-                '${producto.categoria.toString()}',
+                '${producto.category['name']}',
                 style: TextStyle(
                   fontSize: size.width * 0.033,
                   fontWeight: FontWeight.normal,
@@ -103,7 +104,14 @@ class ProductoCardWidget extends StatelessWidget {
         ),
       ),
       onTap: (){
-        Navigator.pushNamed(context, ProductoDetailPage.route, arguments: producto);
+        Navigator.pushNamed(
+          context, 
+          ProductoDetailPage.route, 
+          arguments: {
+            'tipo':'normal', 
+            'value':producto
+          }
+        );
       },
     );
   }

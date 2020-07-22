@@ -24,7 +24,7 @@ final resenhas = [
     "nombre_usuario":"Hector Cido Calles",
     'url_foto':'https://i.ytimg.com/vi/k8ntBdvvQRU/maxresdefault.jpg',
     "fecha":"10-feb-2020",
-    "comentario":"El producto es excelente, pero el domiciliario me recordó a mi ex.",
+    "comentario":"El producto es excelente, la domiciliaria está mejor.",
     "calificacion": 4.1,
   },
   {

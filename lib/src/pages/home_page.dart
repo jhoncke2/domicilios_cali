@@ -1,6 +1,7 @@
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
 import 'package:domicilios_cali/src/widgets/categorias_scrollview_widget.dart';
 import 'package:domicilios_cali/src/widgets/header_widget.dart';
@@ -19,7 +20,9 @@ class _HomePageState extends State<HomePage> with MenuCategorias{
   BuildContext context;
   Size size;
   String token;
+  UsuarioBloc usuarioBloc;
   LugaresBloc lugaresBloc;
+  ProductosBloc productosBloc;
   /*
   No entiendo por qué no se quieren subir los cambios
   */
@@ -28,7 +31,11 @@ class _HomePageState extends State<HomePage> with MenuCategorias{
     context = appContext;
     size = MediaQuery.of(context).size;
     token = Provider.usuarioBloc(context).token;
+    usuarioBloc = Provider.usuarioBloc(context);
     lugaresBloc = Provider.lugaresBloc(context);
+    productosBloc = Provider.productosBloc(context);
+    if(usuarioBloc.usuario != null)
+      productosBloc.cargarFavoritos(token);
 
     return Scaffold(
       bottomNavigationBar: BottomBarWidget(),

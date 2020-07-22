@@ -1,5 +1,8 @@
 import 'dart:ui';
 import 'package:badges/badges.dart';
+import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
+import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,21 +18,42 @@ class ProductoDetailPage extends StatefulWidget {
 }
 
 class _ProductoDetailPageState extends State<ProductoDetailPage> {
+  BuildContext context; 
+  Size size;
+  UsuarioBloc usuarioBloc;
+  ProductosBloc productosBloc;
+
+  bool _esFavorito;
   //test
   double _promedioPuntajePrueba = 4.1;
 
   //Código
-  ProductoModel producto;
+  int _favoritoId;
+  ProductoModel _producto;
   //unidades a pedir
   int _cantidadUnidades = 1;
 
   @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    producto = ModalRoute.of(context).settings.arguments;
+  Widget build(BuildContext appContext) {
+    context = appContext;
+    size = MediaQuery.of(context).size;
+    usuarioBloc = Provider.usuarioBloc(context);
+    productosBloc = Provider.productosBloc(context);
+    Map<String, dynamic> argument = ModalRoute.of(context).settings.arguments;
+    if(argument['tipo'] == 'favorito'){
+      if(_esFavorito == null)
+        _esFavorito = true;
+      _favoritoId = argument['value']['id'];
+      _producto  = ProductoModel.fromJsonMap(argument['value']['product']);
+    }else{
+      _producto  = argument['value'];
+      if(_esFavorito == null)
+        _verificarSiEsFavorito();
+    }
+    _producto;
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: _crearElementos(context, size, producto),
+      body: _crearElementos(context, size, _producto),
       bottomNavigationBar: BottomBarWidget(),
     );
   }
@@ -50,7 +74,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
             width: size.width * 0.8,
             height: size.height * 0.25,
             fit: BoxFit.cover,
-            image: NetworkImage(producto.imagenUrl),
+            image: NetworkImage(producto.photos[0]['url']),
             placeholder: AssetImage('assets/placeholder_images/domicilio_icono.png')
           ),
         ),
@@ -125,6 +149,11 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
     );
   }
 
+  void _probarLast()async{
+    bool favoritos =  await productosBloc.favoritosStream.isEmpty;
+    print(favoritos);
+  }
+
   Widget _crearTitulo(Size size){
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -147,13 +176,76 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
             fontSize: size.width * 0.075
           ),
         ),
-        SizedBox(
-          width: size.width * 0.1,
+        (
+          (usuarioBloc.usuario != null)?
+            IconButton(
+              icon: (
+                (_esFavorito)?
+                Icon(Icons.favorite)
+                :Icon(Icons.favorite_border)
+              ),
+              color: Colors.redAccent,
+              iconSize: size.width * 0.072,
+              onPressed: (){
+                _crearOEliminarFavorito((_esFavorito)? 'eliminar' : 'crear');   
+              },
+            )
+          :SizedBox(
+            width: size.width * 0.1,
+          )
         ),
 
       ],
     );
   }
+  /**
+   * params:
+   *  *accion: <"crear"|"eliminar">
+   */
+  void _crearOEliminarFavorito(String accion)async{
+    if(accion == 'crear'){
+      Map<String, dynamic> response = await productosBloc.crearFavorito(usuarioBloc.token, usuarioBloc.usuario.id, _producto.id);
+      if(response['status'] == 'ok'){
+        _esFavorito = true;
+        setState(() {
+          
+        });
+      }    
+    }
+    else{
+      Map<String, dynamic> response = await productosBloc.eliminarFavorito(usuarioBloc.token, _favoritoId);
+      if(response['status'] == 'ok'){
+        _esFavorito = false;
+        setState(() {
+          
+        });
+      }
+    }
+  }
+
+  void _verificarSiEsFavorito()async{
+    if(_favoritoId != null){
+      _esFavorito = true;
+      return;
+    }
+    _esFavorito = false;
+    List<Map<String, dynamic>> favoritos = await productosBloc.favoritosStream.lastWhere((List<Map<String, dynamic>> favoritos){
+
+    });
+    print('****favoritos:');
+    print(favoritos);
+     for(int i = 0; i < favoritos.length; i++){
+       if(favoritos[i]['product']['id'] == _producto.id){
+         _esFavorito = true;
+         _favoritoId = favoritos[i]['id'];
+         break;
+       }        
+     }
+     setState(() {
+       
+     });
+  }
+
 
   Widget _crearTablaValorCantidad(BuildContext context, Size size){
     return Table(
@@ -191,7 +283,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
             Container(
               padding: EdgeInsets.only(top:size.height * 0.015),
               child: Text(
-                '\$${producto.precio * _cantidadUnidades}',
+                '\$${_producto.precio * _cantidadUnidades}',
                 textAlign: TextAlign.center, 
                 style: TextStyle(
                   fontSize: size.width * 0.045
@@ -235,8 +327,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
                   icon: Icon(
                     Icons.add,
                     size: size.height * 0.035,
-                  ),
-                  
+                  ),              
                   onPressed: (){
                     setState(() {
                       _cantidadUnidades++;
@@ -265,7 +356,6 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
             
           ]
         )
-
       ],
     );
   }

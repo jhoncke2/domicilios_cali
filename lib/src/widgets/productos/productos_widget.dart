@@ -1,3 +1,5 @@
+import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
+import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/models/productos_model.dart';
 import 'package:flutter/material.dart';
 //Importaciones
@@ -25,6 +27,12 @@ class ProductosWidget extends StatefulWidget {
 }
 
 class _ProductosWidgetState extends State<ProductosWidget> {
+  BuildContext context;
+  Size size;
+
+  ProductosBloc productosBloc;
+
+
   ProductosModel _productosModel;
   List<ProductoModel> _productosAMostrar;
   @override
@@ -35,31 +43,49 @@ class _ProductosWidgetState extends State<ProductosWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: size.width * widget.horizontalMarginPercent),
-      padding: EdgeInsets.symmetric(vertical: 0),
-      //0.18 es el porcentaje de width de pantalla que tiene cada card (?).
-      height: size.height * widget.heightPercent,
-      width: size.width,     
-      decoration: BoxDecoration(
-        color: Colors.white70,
-      ),
-      /**
-       * En 2 casos lo necesito scrollable, en 1 no
-       */
-      child: GridView.count(
-          padding: EdgeInsets.symmetric(vertical: size.height * 0.035),
-          crossAxisCount: 3,
-          mainAxisSpacing: size.width * 0.028,
-          crossAxisSpacing: size.height * 0.03,
-          childAspectRatio: 0.58,
-          children: _productosAMostrar.map((producto) => ProductoCardWidget(producto: producto,)).toList(),
-      ),
-    );
+  Widget build(BuildContext appContext) {
+    context = appContext;
+    size = MediaQuery.of(context).size;
+    productosBloc = Provider.productosBloc(context);
+    productosBloc.cargarProductosPublic();
+    return _crearStreamBuilder();
   }
 
+  Widget _crearStreamBuilder(){
+    return StreamBuilder(
+      stream: productosBloc.productosPublicStream,
+      builder: (BuildContext appContext, AsyncSnapshot<List<ProductoModel>> snapshot){
+        if(snapshot.hasData){
+          return Container(
+            margin: EdgeInsets.symmetric(horizontal: size.width * widget.horizontalMarginPercent),
+            padding: EdgeInsets.symmetric(vertical: 0),
+            //0.18 es el porcentaje de width de pantalla que tiene cada card (?).
+            height: size.height * widget.heightPercent,
+            width: size.width,     
+            decoration: BoxDecoration(
+              color: Colors.white70,
+            ),
+            /**
+             * En 2 casos lo necesito scrollable, en 1 no
+             */
+            child: GridView.count(
+                padding: EdgeInsets.symmetric(vertical: size.height * 0.035),
+                crossAxisCount: 3,
+                mainAxisSpacing: size.width * 0.028,
+                crossAxisSpacing: size.height * 0.03,
+                childAspectRatio: 0.58,
+                children: snapshot.data.map((ProductoModel producto) => ProductoCardWidget(producto: producto,)).toList(),
+            ),
+          );
+        }else{
+          return CircularProgressIndicator(
+            backgroundColor: Theme.of(context).primaryColor,
+          );
+        }
+        
+      },
+    );
+  }
   /*
   child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

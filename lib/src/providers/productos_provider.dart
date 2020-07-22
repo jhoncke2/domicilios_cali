@@ -8,9 +8,10 @@ class ProductosProvider{
 
   final _productosPublicServiceRoute = 'https://codecloud.xyz/api/products/public';
   final _productosServiceRoute = 'https://codecloud.xyz/api/products';
+  final _productosFavoritosRoute = 'https://codecloud.xyz/api/user-products/favorite';
   final _categoriasServiceRoute = 'https://codecloud.xyz/api/category/public';
 
-  Future<Map<String, dynamic>> cargarProductoPublic()async{
+  Future<Map<String, dynamic>> cargarProductosPublic()async{
     final response = await http.get(
       _productosPublicServiceRoute
     );
@@ -33,7 +34,7 @@ class ProductosProvider{
       'Authorization':'Bearer $token',
       'Content-Type':'application/x-www-form-urlencoded'
     };
-
+    
     Map<String, String> fields = producto.toJson();
     fields['category_id'] = categoryId.toString();
     var request = await http.MultipartRequest(
@@ -89,19 +90,93 @@ class ProductosProvider{
     }
   }
 
+  Future<Map<String, dynamic>> cargarFavoritos(String token)async{
+    final response = await http.get(
+      _productosFavoritosRoute,
+      headers: {
+        'Authorization':'Bearer $token'
+      }
+    );
+
+    try{
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      return {
+        'status':'ok',
+        'favoritos':decodedResponse['data']
+      };
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> crearFavorito(String token, int clienteId, int productoId)async{
+    final response = await http.post(
+      _productosFavoritosRoute,
+      headers:{
+        'Authorization':'Bearer $token'
+      },
+      body: {
+        'cliente_id':clienteId.toString(),
+        'producto_id':productoId.toString()
+      }
+    );
+
+    try{
+      final decodedResponse = json.decode(response.body);
+      return {
+        'status':'ok',
+        'data':decodedResponse
+      };
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> eliminarFavorito(String token, int favoritoId)async{
+    final response = await http.delete(
+      '$_productosFavoritosRoute/$favoritoId',
+      headers:{
+        'Authorization':'Bearer $token'
+      }
+    );
+
+    try{
+      final decodedResponse = json.decode(response.body);
+      if(decodedResponse == "true" || decodedResponse == true){
+        return {
+          'status':'ok'
+        };
+      }else{
+        return {
+          'status':'err',
+          'message':decodedResponse
+        };
+      }
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+  }
+
   Future<Map<String, dynamic>> cargarCategorias()async{
     final response = await http.get(
       _categoriasServiceRoute,
-    );
+    ); 
     try{
-
       List<Map<String, dynamic>> decodedResponse = (json.decode(response.body) as List).cast<Map<String, dynamic>>();
       return{
-        'status':'ok',
+        'status':'ok', 
         'categorias':decodedResponse
       };
     }catch(err){
-
       return {
         'status':'err',
         'message':err

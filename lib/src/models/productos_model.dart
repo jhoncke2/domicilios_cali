@@ -51,10 +51,12 @@ class ProductoModel{
   int precio;
   String tipo;
   String description;
+  int tiempoDeEntrega;
   double calificacion;
 
   TiendaModel store;
   Map<String, dynamic> category;
+  HorarioModel horario;
   List<Map<String, dynamic>> photos;
 
   //por desechar
@@ -64,9 +66,7 @@ class ProductoModel{
 
   //por agregar
   int stock;
-  Map<String, dynamic> programado;
-  HorarioModel horario;
-  
+  Map<String, dynamic> programado; 
 
   ProductoModel({
     this.id,
@@ -75,9 +75,11 @@ class ProductoModel{
     this.tipo,
     this.description,
     this.calificacion,
+    this.tiempoDeEntrega,
 
     this.store,
     this.category,
+    this.horario,
     this.photos,
 
     this.imagenUrl,
@@ -86,20 +88,30 @@ class ProductoModel{
   });
 
   ProductoModel.fromJsonMap(Map<String, dynamic> json){
-    id            = json['id'];
-    name          = json['name'];
-    precio        = json['precio'];
-    tipo          = json['tipo'];
-    description   = json['description'];  
-    calificacion  = json['calificacion'];
-
-    store         = TiendaModel.fromJsonMap(json['store']);
-    category      = json['category'];
+    id              = json['id'];
+    name            = json['name'];
+    precio          = json['precio'];
+    tipo            = json['tipo'];
+    description     = json['description'];
+    calificacion    = (json['calificacion'])??1.0;
+    tiempoDeEntrega = int.parse(json['tiempo_de_entrega']);
+    store           = TiendaModel.fromJsonMap(json['store']);
+    category        = json['category'];
+    if(json['horario'] != null)
+      horario = json['horario'];
     //para evitar problema de compatibilidad entre List<dynamic>(lista vacia) y List<Map<String, dynamic>>
-    photos        = (json['photos'] as List).cast<Map<String, dynamic>>().toList();
-    photos.forEach((Map<String, dynamic> photo){
-      photo['url'] = formatPhotoUrl(photo['url']);
-    });
+    photos = [];
+    List<Map<String, dynamic>> photosMap          = (json['photos'] as List).cast<Map<String, dynamic>>().toList();
+    
+    photosMap.forEach((Map<String, dynamic> photo){
+      photos.add(
+        {
+          'id':photo['id'],
+          'producto_id':photo['producto_id'],
+          'url':_formatPhotoUrl( photo['url'] )
+        }
+      );
+    }); 
   }
 
   Map<String, String> toJson(){
@@ -108,10 +120,11 @@ class ProductoModel{
     json['description'] = description;
     json['precio'] = precio.toString();
     json['tipo'] = tipo;
+    json['tiempo_de_entrega'] = tiempoDeEntrega.toString();
     return json;
   }
 
-  String formatPhotoUrl(String photoUrl){
+  String _formatPhotoUrl(String photoUrl){
     String url = 'https://codecloud.xyz$photoUrl';
     return url;
   }
