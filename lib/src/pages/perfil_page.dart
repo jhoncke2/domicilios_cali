@@ -204,19 +204,6 @@ class _PerfilPageState extends State<PerfilPage> {
   }
 
   Widget _crearAvatar(BuildContext context, Size size, UsuarioBloc usuarioBloc, String avatarUrl){
-    //aún falta completar
-    Widget avatarWidget;
-    
-    if(usuarioBloc.usuario.avatar != null && usuarioBloc.usuario.avatar != '')
-    {
-      avatarWidget = FadeInImage(
-        width: size.width * 0.45,
-        height: size.height * 0.15,
-        fit: BoxFit.fill,
-        image: (_avatar != null)? NetworkImage(avatarUrl) : AssetImage('assets/placeholder_images/user.png'),
-        placeholder: AssetImage('assets/placeholder_images/user_icon.png'),
-      );
-    }
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal:size.width * 0.22),
@@ -226,7 +213,7 @@ class _PerfilPageState extends State<PerfilPage> {
         child: ClipOval(
           child: FadeInImage(
             width: size.width * 0.45,
-            height: size.height * 0.15,
+            height: size.height * 0.175,
             fit: BoxFit.fill,
             image: (_avatar == null)? NetworkImage(avatarUrl) : FileImage(_avatar),
             placeholder: AssetImage('assets/placeholder_images/user_icon.png'),
@@ -556,7 +543,7 @@ class _PerfilPageState extends State<PerfilPage> {
         size.height * -0.1,
       ),
       child: Container(
-        width: size.width * 0.265,
+        width: size.width * 0.255,
         height: size.height * 0.032,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(size.width * 0.04),
@@ -573,7 +560,7 @@ class _PerfilPageState extends State<PerfilPage> {
             Text( 
              hora,
               style: TextStyle(
-                fontSize: size.width * 0.03,
+                fontSize: size.width * 0.029,
                 color: Colors.black.withOpacity(0.8)
               ),
             )
@@ -582,7 +569,7 @@ class _PerfilPageState extends State<PerfilPage> {
             Icon(
               Icons.arrow_drop_down,
               color: Colors.grey.withOpacity(0.9),
-              size: size.width * 0.079,
+              size: size.width * 0.075,
             ),
           ],
         ),
@@ -590,39 +577,45 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
-
   /*
    * *params:
    *    * tipoHora: <"hora_inicio" | "hora_fin">
    *      
    */
   Widget _crearListViewHora(Size size, TiendaBloc tiendaBloc, HorarioModel horarioTienda, int diaIndex, String tipoHora){
-    return Container(
-      margin: EdgeInsets.all(0),
-      padding: EdgeInsets.all(0),
-      height: size.height * 0.075,
-      width: size.width * 0.19,
-      child: ListView(
+    
+    return MediaQuery.removePadding(
+      context: context,
+      removeTop: true,
+      removeRight: true,
+      removeLeft: true,
+      child: Container(
+        margin: EdgeInsets.all(0),
         padding: EdgeInsets.all(0),
-        scrollDirection: Axis.vertical,
-        children: _listviewHoraItems.map((String hora){
-          return Container(
-            height: size.height * 0.029,
-            child: FlatButton(
-              padding: EdgeInsets.symmetric(horizontal:0, vertical: size.height * 0.004),
-              child: Text(
-                hora,
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.8),
-                  fontSize: size.width * 0.032
+        height: size.height * 0.075,
+        width: size.width * 0.19,
+        child: ListView(
+          padding: EdgeInsets.all(0),
+          scrollDirection: Axis.vertical,
+          children: _listviewHoraItems.map((String hora){
+            return Container(
+              height: size.height * 0.029,
+              child: FlatButton(
+                padding: EdgeInsets.symmetric(horizontal:0, vertical: size.height * 0.004),
+                child: Text(
+                  hora,
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(0.8),
+                    fontSize: size.width * 0.032
+                  ),
                 ),
+                onPressed: ((tiendaBloc.enCreacion)? 
+                ()=>_guardarHorariosPorIndex(tiendaBloc, horarioTienda, diaIndex, hora, tipoHora)
+                :null),
               ),
-              onPressed: ((tiendaBloc.enCreacion)? 
-              ()=>_guardarHorariosPorIndex(tiendaBloc, horarioTienda, diaIndex, hora, tipoHora)
-              :null),
-            ),
-          );
-        }).toList(),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
@@ -1044,6 +1037,9 @@ class _PerfilPageState extends State<PerfilPage> {
         
         if(tiendaResponse['status'] == 'ok')
         {
+          Provider.navigationBloc(context).reiniciarIndex();
+          await usuarioBloc.cargarUsuario(token);
+          await lugaresBloc.cargarLugares(token);
           Navigator.of(context).pushReplacementNamed(HomePage.route);
         }
       }

@@ -58,7 +58,7 @@ class _ProductoTiendaCardWidgetState extends State<ProductoTiendaCardWidget> {
              ),
            ),
            Text(
-             'Cantidad disponible: ${(widget.producto.stock??0)}',
+             'Cantidad disponible: ${(widget.producto.stock??10)}',
              style: TextStyle(
                fontSize: size.width * 0.041,
                color: Colors.black.withOpacity(0.9)

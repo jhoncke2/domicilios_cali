@@ -10,10 +10,14 @@ class ProductosProvider{
   final _productosServiceRoute = 'https://codecloud.xyz/api/products';
   final _productosFavoritosRoute = 'https://codecloud.xyz/api/user-products/favorite';
   final _categoriasServiceRoute = 'https://codecloud.xyz/api/category/public';
+  final _productosTiendaRoute = 'https://codecloud.xyz/api/tienda/products';
 
   Future<Map<String, dynamic>> cargarProductosPublic()async{
     final response = await http.get(
-      _productosPublicServiceRoute
+      _productosPublicServiceRoute,
+      headers: {
+        'Access-Control-Allow-Origin':'*'
+      }
     );
     try{
       Map<String, dynamic> decodedResponse = json.decode(response.body);
@@ -37,7 +41,7 @@ class ProductosProvider{
     
     Map<String, String> fields = producto.toJson();
     fields['category_id'] = categoryId.toString();
-    var request = await http.MultipartRequest(
+    var request = http.MultipartRequest(
       'POST', 
       Uri.parse(_productosServiceRoute)
     );
@@ -51,10 +55,10 @@ class ProductosProvider{
         filename: photo.path.split('/').last
       );
     }));
-
-    final streamResponse = await request.send();
-    final response = await http.Response.fromStream(streamResponse);
+    
     try{
+      final streamResponse = await request.send();
+      final response = await http.Response.fromStream(streamResponse);
       Map<String, dynamic> decodedResponse = json.decode(response.body);
       return {
         'status':'ok',
@@ -73,7 +77,9 @@ class ProductosProvider{
     final response = await http.get(
       _productosServiceRoute,
       headers: {
-        'Authorization': 'Bearer $token'
+        'Authorization': 'Bearer $token',
+        'Access-Control-Allow-Origin':'*'
+
       }
     );
     try{
@@ -81,6 +87,27 @@ class ProductosProvider{
       return {
         'status':'ok',
         'productos':decodedResponse['data']
+      };
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> cargarProductosTienda(int tiendaId)async{
+    final response = await http.get(
+      '$_productosTiendaRoute/$tiendaId',
+      headers: {
+        'Access-Control-Allow-Origin':'*'
+      }
+    );
+    try{
+      final decodedResponse = json.decode(response.body);
+      return {
+        'status':'ok',
+        'productos':decodedResponse
       };
     }catch(err){
       return {

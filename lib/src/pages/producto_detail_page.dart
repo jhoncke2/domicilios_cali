@@ -1,9 +1,11 @@
 import 'dart:ui';
 import 'package:badges/badges.dart';
+import 'package:domicilios_cali/src/bloc/pedidos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
+import 'package:domicilios_cali/src/widgets/custom_widgets/custom_popup_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +24,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
   Size size;
   UsuarioBloc usuarioBloc;
   ProductosBloc productosBloc;
+  PedidosBloc pedidosBloc;
 
   bool _esFavorito;
   //test
@@ -39,7 +42,9 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
     size = MediaQuery.of(context).size;
     usuarioBloc = Provider.usuarioBloc(context);
     productosBloc = Provider.productosBloc(context);
+    pedidosBloc = Provider.pedidosBloc(context);
     Map<String, dynamic> argument = ModalRoute.of(context).settings.arguments;
+    
     if(argument['tipo'] == 'favorito'){
       if(_esFavorito == null)
         _esFavorito = true;
@@ -79,7 +84,20 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
           ),
         ),
         SizedBox(
-          height: size.height * 0.025,
+          height: size.height * 0.01,
+        ),
+        Center(
+          child: Text(
+            'Tiempo máximo de entrega: ${_producto.tiempoDeEntrega} minutos',
+            style: TextStyle(
+              fontSize: size.width * 0.031,
+              fontWeight: FontWeight.bold,
+              color: Colors.black.withOpacity(0.75)
+            ),
+          ),
+        ),
+        SizedBox(
+          height: size.height * 0.015,
         ),
         Container(
           padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
@@ -87,8 +105,8 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
             producto.name,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: size.width * 0.055,
-              color: Colors.black.withOpacity(0.73)
+              fontSize: size.width * 0.06,
+              color: Colors.black
             ),
           ),
         ),
@@ -113,25 +131,9 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
           child: _crearTablaValorCantidad(context, size),
         ),
         SizedBox(
-          height: size.height * 0.025,
+          height: size.height * 0.04,
         ),
-        Container(
-          padding: EdgeInsets.only(left: size.width * 0.045),
-          margin: EdgeInsets.only(right: size.width * 0.38),
-          child: FlatButton(
-            padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
-            child: Text(
-              'Programar entrega',
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.7),
-                fontSize: size.width * 0.04,
-              ),
-            ),
-            onPressed: (){
-
-            },
-          ),
-        ),
+        _crearBotonSubmit(),
         SizedBox(
           height: size.height * 0.01,
         ),
@@ -141,7 +143,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
         SizedBox(
           height: size.height * 0.015,
         ),
-        _crearResenhas(size),
+        _crearResenhas(),
         SizedBox(
           height: size.height * 0.035,
         ),
@@ -162,18 +164,18 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
           iconSize: size.width * 0.06,
           icon: Icon(
             Icons.arrow_back_ios,
-            color: Colors.grey.withOpacity(0.8),
+            color: Colors.grey,
           ),
           onPressed: (){
             Navigator.pop(context);
           },
-        ),
-        
+        ),     
         Text(
-          'Elmo Staza',
+          _producto.store.userName,
           style: TextStyle(
-            color: Colors.black.withOpacity(0.8),
-            fontSize: size.width * 0.075
+            color: Colors.black.withOpacity(0.9),
+            fontWeight: FontWeight.bold,
+            fontSize: size.width * 0.07
           ),
         ),
         (
@@ -229,9 +231,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
       return;
     }
     _esFavorito = false;
-    List<Map<String, dynamic>> favoritos = await productosBloc.favoritosStream.lastWhere((List<Map<String, dynamic>> favoritos){
-
-    });
+    List<Map<String, dynamic>> favoritos = await productosBloc.favoritosStream.last;
     print('****favoritos:');
     print(favoritos);
      for(int i = 0; i < favoritos.length; i++){
@@ -263,9 +263,11 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
           ),
           children: <Widget>[
             Text(
-              'Valor',
+              'Valor unitario',
               textAlign: TextAlign.center,
               style: TextStyle(
+                color: Colors.black,
+
                 fontSize: size.width * 0.044,
               ),
             ),
@@ -283,59 +285,20 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
             Container(
               padding: EdgeInsets.only(top:size.height * 0.015),
               child: Text(
-                '\$${_producto.precio * _cantidadUnidades}',
+                //'\$${_producto.precio * _cantidadUnidades}',
+                '${_producto.precio}',
                 textAlign: TextAlign.center, 
                 style: TextStyle(
                   fontSize: size.width * 0.045
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  width: size.width * 0.13,
-                  child: IconButton(
-                    color: Colors.black.withOpacity(0.8),
-                    icon: Icon(
-                      Icons.remove,
-                      size: size.height * 0.035,
-                    ),     
-                    onPressed: (){
-                     if(_cantidadUnidades > 1){
-                       setState((){
-                        _cantidadUnidades--;
-                      });
-                     }
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: size.width * 0.012,
-                ),
-                Text(
-                  _cantidadUnidades.toString(),                  
-                  style: TextStyle(
-                    fontSize: size.width * 0.045
-                  ),
-                ),
-                SizedBox(
-                  width: size.width * 0.012,
-                ),
-                IconButton(
-                  color: Colors.black.withOpacity(0.8),
-                  icon: Icon(
-                    Icons.add,
-                    size: size.height * 0.035,
-                  ),              
-                  onPressed: (){
-                    setState(() {
-                      _cantidadUnidades++;
-
-                    });
-                  },
-                ),
-              ],
+            Center(
+              child: Container(
+                padding: EdgeInsets.only(top: size.height * 0.015),
+                width: size.width * 0.12,
+                child: _crearPopupCantidad(30),
+              ),
             )
           ]
         ),
@@ -348,7 +311,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
                   'unidades',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: size.width * 0.045,
+                    fontSize: size.width * 0.042,
                   ),
                 ),
               ],
@@ -360,7 +323,145 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
     );
   }
 
-  Widget _crearResenhas(Size size){
+  Widget _crearPopupCantidad(int maximoCantidad){
+    List<PopupMenuEntry<int>> popupMenuItems = [];
+    popupMenuItems.add(
+      PopupMenuItem<int>(
+        enabled: false,
+        height: size.height * 0.3,
+        value: 0,
+        child: _crearListViewCantidad(20),
+      )
+    );
+    return PopupMenuButton<int>(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(size.width * 0.04)
+      ),
+      itemBuilder: (BuildContext context){
+        return popupMenuItems;
+      },
+      child: Row(
+        children: <Widget>[
+          Text(
+            '$_cantidadUnidades',
+            style: TextStyle(
+              fontSize: size.width * 0.045,
+              color: Colors.black
+            ),
+          ),
+          Icon(
+            Icons.arrow_drop_down,
+            size: size.width * 0.065,
+            color: Colors.grey,
+          )
+        ],
+      ),
+      onSelected: (int newValue){
+        setState(() {
+          Navigator.of(context).pop();
+        });
+      },
+    );
+  }
+
+  Widget _crearListViewCantidad(int cantidadMaxima){
+    List<Widget> cantidadFlatButtonItems = [];
+    for(int i = 1; i <= cantidadMaxima; i++){
+      cantidadFlatButtonItems.add(
+        Container(
+          padding: EdgeInsets.all(0.0),
+          height: size.height * 0.038,
+          child: FlatButton(
+            
+            padding: EdgeInsets.symmetric(
+              horizontal:0, 
+              vertical: size.height * 0.004
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.all(0.0),
+                  width: size.width * 0.095,
+                  height: size.height * 0.025,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: ((i == _cantidadUnidades )?
+                      null
+                      :Border.all(
+                        width: 1,
+                        color: Colors.black
+                      )
+                    ),
+                    color: (i == _cantidadUnidades)? Theme.of(context).secondaryHeaderColor : Colors.white,
+                  ),
+                ),
+                Text(
+                  '$i',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: size.width * 0.036
+                  ),
+                ),
+              ] 
+            ),
+            onPressed: (){
+              _cantidadUnidades = i;
+              setState(() {
+                Navigator.of(context).pop();
+              });
+            }
+          ),
+          
+        )
+      );
+    }
+    return Container(
+      margin: EdgeInsets.all(0),
+      padding: EdgeInsets.all(0),
+      height: size.height * 0.3,
+      width: size.width * 0.19,
+      child: ListView(
+        padding: EdgeInsets.all(0),
+        scrollDirection: Axis.vertical,
+        children: cantidadFlatButtonItems,
+      ),
+    );
+  }
+
+  Widget _crearCustomPopupCantidad(){
+    
+    return Stack(
+      children: <Widget>[
+        Container(
+          color: Colors.blueAccent,
+          height: size.height * 0.2,
+        ),
+        Positioned(
+          right: size.width * 0.4,
+          top: size.height * 0.4, 
+          child: CustomPopupWidget(
+            show: true,
+            items: [1, 2, 3, 4, 5, 6, 7, 8],
+            builderFunction: (context, item) {
+              return ListTile(
+                title: Text(
+                  item.toString(),
+                  style: TextStyle(
+                    fontSize: size.width * 0.04,
+                    color: Colors.black
+                  ),
+                ),
+                onTap: () {}
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _crearResenhas(){
     List<Widget> _columnChildren = [
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -368,7 +469,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
           Text(
             'Reseñas',
             style: TextStyle(
-              color: Colors.black.withOpacity(0.8),
+              color: Colors.black,
               fontSize: size.width * 0.06
             ),
           ),
@@ -449,14 +550,14 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
                       Text(
                         resenha['nombre_usuario'],
                         style: TextStyle(
-                          color: Colors.black.withOpacity(0.85),
+                          color: Colors.black,
                           fontSize: size.width * 0.046,
                         ),
                       ),
                       Text(
                         resenha['fecha'],
                         style: TextStyle(
-                          color: Colors.black.withOpacity(0.8),
+                          color: Colors.black,
                           fontSize: size.width * 0.035,
                         ),
                       ),
@@ -506,7 +607,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
           Text(
             resenha['comentario'],
             style: TextStyle(
-              color: Colors.black.withOpacity(0.8),
+              color: Colors.black,
               fontSize: size.width * 0.04,
             ),
             textAlign: TextAlign.justify,
@@ -514,5 +615,37 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
         ],
       ),
     );
+  }
+
+  Widget _crearBotonSubmit(){
+    return Center(
+      child: FlatButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(size.width * 0.045),
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: size.width * 0.045,
+          vertical: size.height * 0.007
+        ),
+        color: Colors.grey.withOpacity(0.62),
+        child: Text(
+          'Agregar a pedidos',
+          style: TextStyle(
+            fontSize: size.width * 0.05,
+            color: Colors.black.withOpacity(0.8)
+          ),
+        ),
+        onPressed: (){
+          _guardarDatos();
+        },
+      ),
+    );
+  }
+
+  void _guardarDatos()async{
+    pedidosBloc.agregarProductosAPedido({
+      'cantidad':_cantidadUnidades,
+      'producto':_producto,
+    });
   }
 }

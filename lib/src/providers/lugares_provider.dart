@@ -8,7 +8,7 @@ class LugaresProvider{
   final _serviceDireccionRoute = 'https://codecloud.xyz/api/direccion';
   List<LugarModel> _lugares;
 
-  Future<List<dynamic>> cargarLugares(String token)async{
+  Future<Map<String, dynamic>> cargarLugares(String token)async{
     //a modo de prueba, mientras se implementa el crud
     final response = await http.get(
       _serviceRoute,
@@ -16,8 +16,19 @@ class LugaresProvider{
         'Authorization':'Bearer $token'
       }
     );
-    Map<String, dynamic> decodedResponse = json.decode(response.body);
-    return decodedResponse['direcciones'];
+    try{
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      return {
+        'status':'ok',
+        'direcciones':decodedResponse['direcciones']
+      };
+    }catch(err){
+      return {
+        'status':'err',
+        'message':'err'
+      };
+    }
+    
   }
 
   Future<Map<String, dynamic>> crearLugar(LugarModel lugar, String token)async{
@@ -70,9 +81,20 @@ class LugaresProvider{
         'longitud': '$longitud'
       }
     );
-
-    final decodedData = json.decode(response.body);
-    return decodedData;
+    try{
+      Map<String, dynamic> decodedData = json.decode(response.body);
+      return {
+        'status':'ok',
+        'direccion':decodedData['direccion']
+      };
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+    
+    
   }
   
   Future<Map<String, dynamic>> editarLugar(LugarModel lugar, String token)async{

@@ -1,7 +1,6 @@
 import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/tienda_bloc.dart';
-import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/productos_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -514,7 +513,8 @@ class _ProductoCreatePageState extends State<ProductoCreatePage>{
   void _submit()async{
     if(_producto.listoParaCrear && _photos.length > 0 && _dropdownCategoryValue != null){
       Map<String, dynamic> response = await productosBloc.crearProducto(token, _producto, _photos, _dropdownCategoryValue);
-      if(response['status'] != null){    
+      if(response['status'] != null){  
+        await productosBloc.cargarProductosTienda(tiendaBloc.tienda.id);  
         Navigator.of(context).pop();
       }
     }

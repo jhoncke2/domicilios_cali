@@ -19,8 +19,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String _emailValue = 'yonandres97@gmail.com';
-  String _passwordValue = '12345678';
+  String _emailValue = 'oskrjag@gmail.com';
+  String _passwordValue = '87654321';
+  //String _emailValue = '';
+  //String _passwordValue = '';
 
   @override
   Widget build(BuildContext context) {
@@ -271,6 +273,7 @@ class _LoginPageState extends State<LoginPage> {
     TiendaBloc tiendaBloc = Provider.tiendaBloc(context);
     if(usuarioBloc.usuario.phoneVerify){
       await tiendaBloc.cargarTienda(usuarioBloc.token);
+      Provider.navigationBloc(context).reiniciarIndex();
       Navigator.pushReplacementNamed(context, HomePage.route, arguments: respuesta['user']);
     }
       

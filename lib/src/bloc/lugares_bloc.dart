@@ -22,12 +22,20 @@ class LugaresBloc{
   /*
    * Falta implementar el parámetro usuarioId
    */
-  Future<void> cargarLugares(String token)async{
-    final lugaresResponse = await _lugaresProvider.cargarLugares(token);
-    LugaresModel lugares = LugaresModel.fromJsonList(lugaresResponse);
-    _lugaresController.sink.add(lugares.getLugares());
-    LugarModel elegido = lugares.getLugares().singleWhere((element) => element.elegido);
-    _elegidoController.sink.add(elegido);
+  Future<Map<String, dynamic>> cargarLugares(String token)async{
+    Map<String, dynamic> response = await _lugaresProvider.cargarLugares(token);
+    if(response['status'] == 'ok'){
+      LugaresModel lugares = LugaresModel.fromJsonList(response['direcciones']);
+      if(lugares.getLugares().length == 0){
+        return {
+          'status':'no_direcciones'
+        };
+      }
+      _lugaresController.sink.add(lugares.getLugares());
+      LugarModel elegido = lugares.getLugares().singleWhere((element) => element.elegido)?? null;
+      _elegidoController.sink.add(elegido);
+    }
+    return response;
   }
 
   Future<void> editarLugar(LugarModel lugar, String token)async{

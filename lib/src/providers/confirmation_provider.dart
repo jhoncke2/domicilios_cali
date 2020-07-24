@@ -98,18 +98,19 @@ class ConfirmationProvider{
   //**********************************
 
   Future<Map<String, dynamic>> enviarCodigoConfirmarPhone(String token, int id, String code)async{
-    final resetCodeUrl = '$_apiUrl/phone/code/verify';
+    final conrifmarPhoneUrl = '$_apiUrl/phone/code/verify';
     final answer = await http.post(
-      resetCodeUrl,
+      conrifmarPhoneUrl,
       headers: {
         'Authorization':'Bearer $token'
       },
       body:{
-        'id':id.toString(),
+        'id':id.toString() ,
         'code': code
       }
     );
     try{
+      
       return json.decode(answer.body);
     }catch(err){
       return {

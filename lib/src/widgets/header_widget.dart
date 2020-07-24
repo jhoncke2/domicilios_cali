@@ -10,15 +10,30 @@ class HeaderWidget extends StatefulWidget {
 }
 
 class _HeaderWidgetState extends State<HeaderWidget> {
+  bool _primerBuild;
   @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
-    UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
-    String token = usuarioBloc.token;
-    if(usuarioBloc.usuario != null)
-      lugaresBloc.cargarLugares(token);
+  void initState() { 
+    super.initState(); 
+    _primerBuild = true;
+  }
 
+  BuildContext context; 
+  Size size;
+  UsuarioBloc usuarioBloc;
+  String token;
+  LugaresBloc lugaresBloc;
+  @override
+  Widget build(BuildContext appContext) {
+    context = appContext;
+    size = MediaQuery.of(context).size;
+    lugaresBloc = Provider.lugaresBloc(context);
+    usuarioBloc = Provider.usuarioBloc(context);
+    token = usuarioBloc.token;
+    if(_primerBuild){
+      _cargarLugares();
+      _primerBuild = false;
+    }    
+    
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -186,5 +201,13 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         );
       },
     );
+  }
+
+  void _cargarLugares()async{
+    if(usuarioBloc.usuario != null && usuarioBloc.usuario.phoneVerify){
+      Map<String, dynamic> response = await lugaresBloc.cargarLugares(token);
+      if(response['status'] == 'no_direcciones')
+        Navigator.of(context).pushReplacementNamed(DireccionCreatePage.route, arguments: 'cliente_nuevo');
+    }
   }
 }

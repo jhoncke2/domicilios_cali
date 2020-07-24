@@ -1,6 +1,7 @@
 import 'package:domicilios_cali/src/bloc/confirmation_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
+import 'package:domicilios_cali/src/pages/direccion_create_page.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
 import 'package:flutter/material.dart';
 class PasosConfirmacionCelularPage extends StatefulWidget {
@@ -69,7 +70,6 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
   Widget _crearElementosContenido(Size size, ConfirmationBloc confirmationBloc, UsuarioBloc usuarioBloc){
     return Expanded(   
       child: Container(
-        
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -154,8 +154,11 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
 
   void _verificarCodigo(ConfirmationBloc confirmationBloc, UsuarioBloc usuarioBloc)async{
     Map<String, dynamic> resultado = await confirmationBloc.enviarCodigoConfirmarPhone(usuarioBloc.token, usuarioBloc.usuario.id, _codigoValue);
-    if(resultado['status'] == 'ok')
-      Navigator.of(context).pushReplacementNamed(HomePage.route);
+    if(resultado['status'] == 'ok'){
+      Provider.navigationBloc(context).reiniciarIndex();
+      Navigator.of(context).pushReplacementNamed(DireccionCreatePage.route, arguments: 'cliente_nuevo');
+    }
+      
   }
 
   Widget _crearBotonReenviarCodigo(Size size, UsuarioBloc usuarioBloc, ConfirmationBloc confirmationBloc){

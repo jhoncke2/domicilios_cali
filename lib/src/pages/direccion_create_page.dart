@@ -1,7 +1,9 @@
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/lugares_model.dart';
 import 'package:domicilios_cali/src/pages/direccion_create_mapa_page.dart';
+import 'package:domicilios_cali/src/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:domicilios_cali/src/utils/google_services.dart' as googleServices;
@@ -16,7 +18,14 @@ class DireccionCreatePage extends StatefulWidget {
 }
 
 class _DireccionCreatePageState extends State<DireccionCreatePage> {
+  BuildContext context;
+  Size size;
+  UsuarioBloc usuarioBloc;
+  String token;
+  LugaresBloc lugaresBloc;
+
   LugarModel lugar = LugarModel();
+  bool _cuentaRecienCreada = false;
   String _tipoDireccion;
   String _ciudadValue;
   String _viaPrincipalValue;
@@ -33,14 +42,21 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final usuarioBloc = Provider.usuarioBloc(context);
-    final lugaresBloc = Provider.lugaresBloc(context);
+  Widget build(BuildContext appContext) {
+    context = appContext;
+    size = MediaQuery.of(context).size;
+    usuarioBloc = Provider.usuarioBloc(context);
+    token = usuarioBloc.token;
+    lugaresBloc = Provider.lugaresBloc(context);
     _tipoDireccion = ModalRoute.of(context).settings.arguments;
+    if(_tipoDireccion == 'cliente_nuevo'){
+      _tipoDireccion = 'cliente';
+      _cuentaRecienCreada = true;
+    }
+      
     print(ModalRoute.of(context).settings);
 
-    String token = usuarioBloc.token;
-    Size size = MediaQuery.of(context).size;
+    
     return  Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -99,13 +115,17 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
             color: Colors.black.withOpacity(0.6),
           ),
           onPressed: (){
-            Navigator.pop(context);
+            if(_cuentaRecienCreada){
+              _backNavigatorRecienCreada();
+            }
+            else
+              Navigator.pop(context);
           },
         ),
         Text(
           ((_tipoDireccion == 'cliente')? 'Nueva dirección' : 'Dirección de tienda'),
           style: TextStyle(
-            fontSize: size.width * 0.063,
+            fontSize: size.width * 0.058,
             color: Colors.black.withOpacity(0.8),
             fontWeight: FontWeight.bold
           ),
@@ -115,6 +135,11 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
         )
       ],
     );
+  }
+
+  void _backNavigatorRecienCreada()async{
+    await usuarioBloc.logOut(token);
+    Navigator.pushReplacementNamed(context, HomePage.route);
   }
 
   Widget _crearInputCiudad(Size size){
@@ -358,7 +383,7 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
     //Lo quité. Estar pendiente.
     //widget.lugar.elegido = false;
     var componente;
-    for(int i = 0; i < 6; i++){
+    for(int i = 0; i < 5; i++){
       switch(i){
         case 0:
           componente = {
@@ -442,9 +467,13 @@ class _DireccionCreatePageState extends State<DireccionCreatePage> {
     if(_tipoDireccion == 'cliente'){
       print(lugar);
       Map<String, dynamic> response = await lugaresBloc.crearLugar(lugar, token);
-      if(response['status'] == 'ok')
+      if(response['status'] == 'ok'){
         lugarArguments = response['content'];
-      
+        if(_cuentaRecienCreada)
+          await Provider.usuarioBloc(context).cargarUsuario(token);
+        if(_tipoDireccion == 'cliente')
+          await lugaresBloc.cargarLugares(token);
+      }
     }
     
     Navigator.of(context).pushReplacementNamed(

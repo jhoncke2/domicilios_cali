@@ -27,19 +27,21 @@ class ProductosWidget extends StatefulWidget {
 }
 
 class _ProductosWidgetState extends State<ProductosWidget> {
+  bool _primerBuild;
+
   BuildContext context;
   Size size;
 
   ProductosBloc productosBloc;
-
-
   ProductosModel _productosModel;
   List<ProductoModel> _productosAMostrar;
+
   @override
   void initState() { 
     super.initState();
     _productosModel = new ProductosModel.prueba();
     _productosAMostrar = _productosModel.productosPrueba;
+    _primerBuild = true;
   }
 
   @override
@@ -47,7 +49,10 @@ class _ProductosWidgetState extends State<ProductosWidget> {
     context = appContext;
     size = MediaQuery.of(context).size;
     productosBloc = Provider.productosBloc(context);
-    productosBloc.cargarProductosPublic();
+    if(_primerBuild){
+      productosBloc.cargarProductosPublic();
+      _primerBuild = false;
+    }
     return _crearStreamBuilder();
   }
 

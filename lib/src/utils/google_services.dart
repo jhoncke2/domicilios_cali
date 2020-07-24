@@ -6,13 +6,15 @@ final _equivalenciasComponentes = {
   'departamento':'administrative_area',
   'ciudad':'locality',
   'via_principal':'route',
-  'numero_domiciliario':'route'
+  //'via_secundaria':'route',
+  'numero_casa':'route'
 };
 
 final _geoCoding = new GoogleMapsGeocoding(apiKey: 'AIzaSyDg08rC6Ek2BrH69UsVTfUSYLSBusfGQ-Q');
 
 Future<LatLng> getUbicacionConComponentesDireccion(List<Map<String, dynamic>> componentes)async{
   //final _geoCoding = new GoogleMapsGeocoding(apiKey: 'AIzaSyDg08rC6Ek2BrH69UsVTfUSYLSBusfGQ-Q');
+  List<Component> googleComponents = _fromMapToComponent(componentes);
   GeocodingResponse response = await _geoCoding.searchByComponents(_fromMapToComponent(componentes));
   List<GeocodingResult> results = response.results;
   if(results != null && results.length > 0){
@@ -31,7 +33,7 @@ List<Component> _fromMapToComponent(List<Map<String,dynamic>> mapComponents){
     String nombre = element['nombre'];
     String valor = element['valor'];
     Component componente;
-    if( !(['via_secundaria', 'numero_domiciliario'].contains(nombre)) ){
+    if( !(['via_secundaria', 'numero_casa'].contains(nombre)) ){
       componente = Component(
         _equivalenciasComponentes[nombre],
         valor
@@ -39,7 +41,7 @@ List<Component> _fromMapToComponent(List<Map<String,dynamic>> mapComponents){
       componentes.add(componente);
     }else if(nombre == 'via_secundaria'){
       streetNumber += '$valor - ';
-    }else if(nombre == 'numero_domiciliario'){
+    }else if(nombre == 'numero_casa'){
       streetNumber += valor;
       componente = Component(
         _equivalenciasComponentes[nombre],

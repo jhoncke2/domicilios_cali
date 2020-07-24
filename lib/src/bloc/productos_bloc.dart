@@ -24,8 +24,8 @@ class ProductosBloc{
     return response;
   }
 
-  Future<Map<String, dynamic>> cargarProductosTienda(String token)async{
-    Map<String, dynamic> response = await _productosProvider.cargarProductosByToken(token);
+  Future<Map<String, dynamic>> cargarProductosTienda(int tiendaId)async{
+    Map<String, dynamic> response = await _productosProvider.cargarProductosTienda(tiendaId);
     if(response['status'] == 'ok'){
       final productosModel = ProductosModel.fromJsonList(response['productos']);
       _productosTiendaController.sink.add(productosModel.productos);

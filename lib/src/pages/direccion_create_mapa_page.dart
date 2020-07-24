@@ -65,7 +65,12 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
           SizedBox(
             height: size.height * 0.015,
           ),
-          _crearInputRadio(size),
+          (
+            (_routeSettings['tipo_direccion'] == 'tienda')?
+            _crearInputRadio(size)
+            :Container()
+          )
+          
         ],
       ),
     );
@@ -240,7 +245,8 @@ class _DireccionCreateMapaPageState extends State<DireccionCreateMapaPage> {
         _ubicacionCambio = true;
         _lugar.latitud = newPosition.latitude;
         _lugar.longitud = newPosition.longitude;
-        _agregarCircle();
+        if(_routeSettings['tipo_direccion'] == 'tienda')
+          _agregarCircle();
         setState(() {
           
         });

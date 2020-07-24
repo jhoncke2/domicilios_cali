@@ -27,14 +27,15 @@ class UsuarioProvider{
 
   Future<Map<String, dynamic>> login( String email, String password)async{
     final loginUrl = '$_apiUrl/login';
-    final respuesta = await http.post(
-      loginUrl,
-      body: {
-        "email":email,
-        "password":password
-      }
-    );
+    
     try{
+      final respuesta = await http.post(
+        loginUrl,
+        body: {
+          "email":email,
+          "password":password
+        }
+      );
       Map<String, dynamic> decodedResp = json.decode(respuesta.body);
       return decodedResp;
     }catch(err){
@@ -46,24 +47,34 @@ class UsuarioProvider{
   }
 
   Future<Map<String, dynamic>> logOut(String token)async{
-    final respuesta = await http.post(
-      '$_apiUrl/logout',
-      body: {
-        "token":token
-      }
-    );
-    Map<String, dynamic> decodedMap = json.decode(respuesta.body);
-    return decodedMap;
+    try{
+      final respuesta = await http.post(
+        '$_apiUrl/logout',
+        body: {
+          "token":token
+        }
+      );
+      Map<String, dynamic> decodedMap = json.decode(respuesta.body);
+      return decodedMap;
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+    
+    
   }
 
   Future<Map<String, dynamic>> getUserByToken(String token)async{
-    final respuesta = await http.get(
-      '$_apiUrl/seeUserAuth',
-      headers: {
-        "Authorization": 'Bearer $token'
-      }
-    );
+    
     try{
+      final respuesta = await http.get(
+        '$_apiUrl/seeUserAuth',
+        headers: {
+          "Authorization": 'Bearer $token'
+        }
+      );
       Map<String, dynamic> decodedResp = json.decode(respuesta.body)['data'];
       
       return decodedResp;
@@ -99,9 +110,10 @@ class UsuarioProvider{
       'name':name
     });
     request.headers.addAll(headers);
-    final streamResponse = await request.send();
-    final response = await http.Response.fromStream(streamResponse);
+    
     try{
+      final streamResponse = await request.send();
+      final response = await http.Response.fromStream(streamResponse);
       Map<String, dynamic> decodedResponse = json.decode(response.body);
 
       return {

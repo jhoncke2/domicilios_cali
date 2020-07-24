@@ -1,6 +1,7 @@
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/bloc/tienda_bloc.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/models/productos_model.dart';
 import 'package:domicilios_cali/src/pages/producto_create_page.dart';
@@ -12,12 +13,25 @@ import 'package:flutter/material.dart';
 
 class ProductosTiendaPage extends StatelessWidget {
   static final route = 'productos_tienda';
+
+  BuildContext context;
+  Size size;
+  UsuarioBloc usuarioBloc;
+  ProductosBloc productosBloc;
+  TiendaBloc tiendaBloc;
+  
   @override
-  Widget build(BuildContext context) {
-    ProductosBloc productosBloc = Provider.productosBloc(context);
-    UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
-    productosBloc.cargarProductosTienda(usuarioBloc.token);
-    Size size = MediaQuery.of(context).size;
+  Widget build(BuildContext appContext) {
+    context = appContext;
+    productosBloc = Provider.productosBloc(context);
+    usuarioBloc = Provider.usuarioBloc(context);
+    tiendaBloc = Provider.tiendaBloc(context);
+    
+    size = MediaQuery.of(context).size;
+
+    productosBloc.cargarProductosTienda(tiendaBloc.tienda.id);
+
+
     return Scaffold(
       body: _crearElementos(context, size, productosBloc),
       bottomNavigationBar: BottomBarWidget(),
@@ -95,7 +109,7 @@ class ProductosTiendaPage extends StatelessWidget {
           }).toList();
 
           return Container(
-            height: size.height * 0.59,
+            height: size.height * 0.58,
             child: ListView(
               padding: EdgeInsets.symmetric(
                 horizontal: size.width * 0.12

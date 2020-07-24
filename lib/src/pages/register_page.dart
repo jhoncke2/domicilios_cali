@@ -14,11 +14,17 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  String _nombreValue = 'Elsa Camuelas';
-  String _emailVaue = 'yonandres97@gmail.com';
-  String _phoneValue = '3213569599';
-  String _passwordValue = '12345678';
-  String _confirmatedPasswordValue = '12345678';
+  //String _nombreValue = 'Armando Casas';
+  //String _emailVaue = 'oskrjag@gmail.com';
+  //String _phoneValue = '3015377921';
+  //String _passwordValue = '12345678';
+  //String _confirmatedPasswordValue = '12345678';
+
+  String _nombreValue = '';
+  String _emailVaue = '';
+  String _phoneValue = '';
+  String _passwordValue = '';
+  String _confirmatedPasswordValue = '';
   
   @override
   Widget build(BuildContext context) {

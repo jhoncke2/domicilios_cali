@@ -170,7 +170,7 @@ class _FavoritosPageState extends State<FavoritosPage> {
                 
                 //Completar después:
                 Text(
-                  'Andrés Tresado',
+                  producto.store.userName,
                   style: TextStyle(
                     fontSize: size.width * 0.041,
                     color: Colors.black.withOpacity(0.75)

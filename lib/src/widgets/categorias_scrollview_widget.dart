@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:domicilios_cali/src/utils/data_prueba/catalogo_producto_prueba.dart';
 class CategoriasScrollviewWidget extends StatefulWidget with CatalogoProductoPrueba{
-
   @override
   _CategoriasScrollviewWidgetState createState() => _CategoriasScrollviewWidgetState();
 }
@@ -13,11 +12,20 @@ class CategoriasScrollviewWidget extends StatefulWidget with CatalogoProductoPru
   Scrollview de categorias para la lista de productos
 */
 class _CategoriasScrollviewWidgetState extends State<CategoriasScrollviewWidget> {
+  bool _primerBuild;
+
   BuildContext context;
   Size size;
   UsuarioBloc usuarioBloc;
   String token;
   ProductosBloc productosBloc;
+
+  @override
+  void initState() { 
+    super.initState();
+    _primerBuild = true;
+  }
+
   @override
   Widget build(BuildContext appContext) {
     context = appContext;
@@ -25,8 +33,11 @@ class _CategoriasScrollviewWidgetState extends State<CategoriasScrollviewWidget>
     usuarioBloc = Provider.usuarioBloc(context);
     token = usuarioBloc.token;
     productosBloc = Provider.productosBloc(context);
-    productosBloc.cargarCategorias();
-    
+    if(_primerBuild){
+      productosBloc.cargarCategorias();
+      _primerBuild = false;
+    }
+      
     return Container(
       height: size.height * 0.14,
        child: Column(

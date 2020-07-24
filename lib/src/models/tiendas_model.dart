@@ -44,6 +44,7 @@ class TiendaModel{
   String certificacionBancariaRoute;
   String ccFrontalRoute;
   String ccAtrasRoute;
+  String userName;
 
   TiendaModel({
     this.id,
@@ -56,7 +57,8 @@ class TiendaModel{
     this.numeroDeCuenta,
     this.certificacionBancariaRoute,
     this.ccFrontalRoute,
-    this.ccAtrasRoute
+    this.ccAtrasRoute,
+    this.userName
   });
 
   TiendaModel.fromJsonMap(Map<String, dynamic> json){
@@ -77,6 +79,7 @@ class TiendaModel{
     certificacionBancariaRoute  = json['certificacion_bancaria'];
     ccFrontalRoute              = json['cc_frontal'];
     ccAtrasRoute                = json['cc_atras'];
+    userName                    = json['name_user'];
   }
 
   Map<String, dynamic> toJson(){

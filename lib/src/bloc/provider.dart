@@ -1,6 +1,7 @@
 import 'package:domicilios_cali/src/bloc/confirmation_bloc.dart';
 import 'package:domicilios_cali/src/bloc/lugares_bloc.dart';
 import 'package:domicilios_cali/src/bloc/navigation_bloc.dart';
+import 'package:domicilios_cali/src/bloc/pedidos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/tienda_bloc.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
@@ -13,6 +14,7 @@ class Provider extends InheritedWidget{
   final _navigationBloc = new NavigationBloc();
   final _confirmationBloc = new ConfirmationBloc();
   final _productosBloc = new ProductosBloc();
+  final _pedidosBloc = new PedidosBloc();
 
   static Provider _instancia;
 
@@ -56,10 +58,15 @@ class Provider extends InheritedWidget{
     return context.dependOnInheritedWidgetOfExactType<Provider>()._productosBloc;
   }
 
+  static PedidosBloc pedidosBloc(BuildContext context){
+    return context.dependOnInheritedWidgetOfExactType<Provider>()._pedidosBloc;
+  }
+
   void dispose(){
     _lugaresBloc.dispose();
     _usuarioBloc.dispose();
     _confirmationBloc.dispose();
     _productosBloc.dispose();
+    _pedidosBloc.dispose();
   }
 }

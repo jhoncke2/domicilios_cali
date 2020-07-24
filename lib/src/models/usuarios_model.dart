@@ -46,12 +46,10 @@ class UsuarioModel{
     phone         = json['phone'].toString();
     phoneVerify   = (json['phone_verify']==1)? true : false;
     hasStore      = (json['has_store']);
-    
-
   }
 
   void _formatAvatar(String serverUrl){
-    String urlBase = 'https://codecloud.xyz';
+    String urlBase = 'https://codecloud.xyz/';
     //serverUrl = serverUrl.replaceFirst('public', '');
     avatar = urlBase + serverUrl;
 
