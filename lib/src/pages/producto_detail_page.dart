@@ -643,9 +643,12 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
   }
 
   void _guardarDatos()async{
-    pedidosBloc.agregarProductosAPedido({
+    await pedidosBloc.agregarProductoAPedido({
       'cantidad':_cantidadUnidades,
-      'producto':_producto,
+      'precio':_producto.precio,
+      'data_product':_producto,
     });
+    Navigator.of(context).pop();
+    //await pedidosBloc
   }
 }

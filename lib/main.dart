@@ -3,7 +3,7 @@ import 'package:domicilios_cali/src/pages/cuenta_page.dart';
 import 'package:domicilios_cali/src/pages/direccion_create_mapa_page.dart';
 import 'package:domicilios_cali/src/pages/direccion_create_page.dart';
 import 'package:domicilios_cali/src/pages/favoritos_page.dart';
-import 'package:domicilios_cali/src/pages/historial_page.dart';
+import 'package:domicilios_cali/src/pages/pedidos_page.dart';
 import 'package:domicilios_cali/src/pages/mapa_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_confirmacion_celular_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_crear_tienda_page.dart';
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
           PasosRecuperarPasswordPage.route:(BuildContext context)=>PasosRecuperarPasswordPage(),
           PasosConfirmacionCelularPage.route:(BuildContext context)=>PasosConfirmacionCelularPage(),
           HomePage.route:(BuildContext context)=>HomePage(),
-          HistorialPage.route:(BuildContext context)=>HistorialPage(),
+          PedidosPage.route:(BuildContext context)=>PedidosPage(),
           CuentaPage.route:(BuildContext context)=>CuentaPage(),
           PerfilPage.route:(BuildContext context)=>PerfilPage(),
           PasosCrearTiendaPage.route:(BuildContext context)=>PasosCrearTiendaPage(),
