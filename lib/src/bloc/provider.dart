@@ -5,6 +5,7 @@ import 'package:domicilios_cali/src/bloc/pedidos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/tienda_bloc.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
+import 'package:domicilios_cali/src/bloc/push_notifications_bloc.dart';
 import 'package:flutter/cupertino.dart';
 
 class Provider extends InheritedWidget{
@@ -15,6 +16,7 @@ class Provider extends InheritedWidget{
   final _confirmationBloc = new ConfirmationBloc();
   final _productosBloc = new ProductosBloc();
   final _pedidosBloc = new PedidosBloc();
+  final _pushNotificationsBloc = new PushNotificationsBloc();
 
   static Provider _instancia;
 
@@ -62,11 +64,16 @@ class Provider extends InheritedWidget{
     return context.dependOnInheritedWidgetOfExactType<Provider>()._pedidosBloc;
   }
 
+  static PushNotificationsBloc pushNotificationsBloc(BuildContext context){
+    return context.dependOnInheritedWidgetOfExactType<Provider>()._pushNotificationsBloc;
+  }
+
   void dispose(){
     _lugaresBloc.dispose();
     _usuarioBloc.dispose();
     _confirmationBloc.dispose();
     _productosBloc.dispose();
     _pedidosBloc.dispose();
+    _pushNotificationsBloc.dispose();
   }
 }

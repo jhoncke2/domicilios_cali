@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:domicilios_cali/src/providers/push_notifications_provider.dart';
 import 'package:http/http.dart' as http;
 
 class UsuarioProvider{
@@ -77,7 +78,10 @@ class UsuarioProvider{
       );
       Map<String, dynamic> decodedResp = json.decode(respuesta.body)['data'];
       
-      return decodedResp;
+      return {
+        'status':'ok',
+        'user':decodedResp
+      };
     }catch(err){
       return {
         'status':'err',
@@ -185,5 +189,39 @@ class UsuarioProvider{
       'status':'err',
       'message':answer.reasonPhrase
     };
+  }
+
+  Future<String> getNewMobileToken()async{
+    return PushNotificationsProvider.getMobileToken();
+  }
+
+  Future<Map<String, dynamic>> actualizarMobileToken(String loginToken, String mobileToken, int userId)async{
+    try{
+      final response = await http.post(
+        '$_apiUrl/mobile_token',
+        headers: {
+          'Authorization':'Bearer $loginToken'
+        },
+        body: {
+          'user_id': userId,
+          'mobile_token':mobileToken
+        }
+      );
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      return {
+        'status':'ok',
+        'data':decodedResponse
+      };
+    }on HttpException catch(err){
+      return {
+        'status':'http_error',
+        'message':err,
+      };
+    }catch(err){
+      return {
+        'status':'error',
+        'message':err
+      };
+    }
   }
 }

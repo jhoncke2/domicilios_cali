@@ -11,6 +11,7 @@ import 'package:domicilios_cali/src/pages/pasos_recuperar_password_page.dart';
 import 'package:domicilios_cali/src/pages/perfil_page.dart';
 import 'package:domicilios_cali/src/pages/producto_create_page.dart';
 import 'package:domicilios_cali/src/pages/splash_screen_page.dart';
+import 'package:domicilios_cali/src/providers/push_notifications_provider.dart';
 import 'package:flutter/material.dart';
 //importaciones locales
 import 'package:domicilios_cali/src/pages/home_page.dart';
@@ -25,7 +26,19 @@ void main()async{
    runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
+  @override
+  void initState() { 
+    super.initState();
+    _instanciarReaccionAPushNotifications();
+  }
+
   @override
   Widget build(BuildContext context){
     /**
@@ -90,5 +103,13 @@ class MyApp extends StatelessWidget {
     );
   }
 
+  void _instanciarReaccionAPushNotifications()async{
+    final pushNotificationsProvider = new PushNotificationsProvider();
+    pushNotificationsProvider.initNotificationsReceiver();
+    pushNotificationsProvider.pushMessagesStream.listen((Map<String, dynamic> data){
+      print('Recibiendo data de push notification en el main:');
+      print(data);
+    });
+  }
 }
 

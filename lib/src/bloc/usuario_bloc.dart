@@ -3,6 +3,7 @@ import 'package:rxdart/rxdart.dart';
 
 import 'package:domicilios_cali/src/models/usuarios_model.dart';
 import 'package:domicilios_cali/src/providers/usuario_provider.dart';
+import 'package:domicilios_cali/src/providers/push_notifications_provider.dart';
 class UsuarioBloc{
   final _usuarioProvider = new UsuarioProvider();
 
@@ -16,7 +17,6 @@ class UsuarioBloc{
   Future<Map<String, dynamic>> login(String email, String password)async{
     Map<String, dynamic> respuesta = await _usuarioProvider.login(email, password);
     if(respuesta['status']=='ok'){
-
       token = respuesta['token'];
       await cargarUsuario(token);
       return{
@@ -29,8 +29,13 @@ class UsuarioBloc{
   }
 
   Future<void> cargarUsuario(String pToken)async{
-    Map<String, dynamic> user = await _usuarioProvider.getUserByToken(pToken);
-    usuario = UsuarioModel.fromJsonMap(user);
+    Map<String, dynamic> response = await _usuarioProvider.getUserByToken(pToken);
+    if(response['status'] == 'ok'){
+      usuario = UsuarioModel.fromJsonMap(response['user']);
+      String mobileToken = await PushNotificationsProvider.getMobileToken();
+      _usuarioProvider.actualizarMobileToken(token, mobileToken, usuario.id);
+    }
+    return response;
   }
 
   Future<Map<String, dynamic>> register(String name, String email, String phone, String password, String passwordConfirmation)async{

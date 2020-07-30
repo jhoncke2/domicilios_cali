@@ -24,6 +24,7 @@ class UsuarioModel{
   String email;
   String avatar;
   String phone;
+  String mobileToken;
   bool phoneVerify;
   bool hasStore;
 
@@ -33,6 +34,7 @@ class UsuarioModel{
     this.email,
     this.avatar,
     this.phone,
+    this.mobileToken,
     this.phoneVerify,
     this.hasStore
   });
@@ -44,6 +46,7 @@ class UsuarioModel{
     email         = json['email'];
     _formatAvatar(json['avatar']);
     phone         = json['phone'].toString();
+    mobileToken   = json['mobile_token'];
     phoneVerify   = (json['phone_verify']==1)? true : false;
     hasStore      = (json['has_store']);
   }
