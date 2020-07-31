@@ -9,6 +9,7 @@ import 'package:domicilios_cali/src/widgets/productos/productos_widget.dart';
 import 'package:flutter/material.dart';
 //importaciones locales
 import 'package:domicilios_cali/src/utils/menu_categorias.dart';
+import 'package:domicilios_cali/src/utils/generic_utils.dart' as utils;
 
 class HomePage extends StatefulWidget with MenuCategorias{
   static final String route = 'home';
@@ -17,18 +18,24 @@ class HomePage extends StatefulWidget with MenuCategorias{
 }
 
 class _HomePageState extends State<HomePage> with MenuCategorias{
+  bool recienIniciada = true;
   BuildContext context;
   Size size;
   String token;
   UsuarioBloc usuarioBloc;
   LugaresBloc lugaresBloc;
   ProductosBloc productosBloc;
+
   /*
   No entiendo por qué no se quieren subir los cambios
   */
   @override
   Widget build(BuildContext appContext) {
     context = appContext;
+    if(!Provider.pushNotificationsProvider(context).yaInicio)
+      Provider.pushNotificationsProvider(context).initNotificationsReceiver();
+    Provider.pushNotificationsProvider(context).context = appContext;
+    
     size = MediaQuery.of(context).size;
     token = Provider.usuarioBloc(context).token;
     usuarioBloc = Provider.usuarioBloc(context);
@@ -44,6 +51,10 @@ class _HomePageState extends State<HomePage> with MenuCategorias{
         child: _crearElementos(),
       ),
     );
+  }
+
+  void inicializarPushNotificationsProvider()async{
+
   }
 
   Widget _crearElementos(){

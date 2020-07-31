@@ -8,8 +8,10 @@ import 'package:rxdart/rxdart.dart';
 class TiendaBloc{
   final _tiendaProvider = new TiendaProvider();
   final _tiendaController = new BehaviorSubject<TiendaModel>();
+  final _ventasController = new BehaviorSubject<List<Map<String, dynamic>>>();
 
   Stream<TiendaModel> get tiendaStream => _tiendaController.stream;
+  Stream<List<Map<String, dynamic>>> get ventasStream => _ventasController.stream;
 
   TiendaModel tienda;
   LugarModel direccionTienda;

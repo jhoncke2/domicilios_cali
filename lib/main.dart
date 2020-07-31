@@ -11,6 +11,7 @@ import 'package:domicilios_cali/src/pages/pasos_recuperar_password_page.dart';
 import 'package:domicilios_cali/src/pages/perfil_page.dart';
 import 'package:domicilios_cali/src/pages/producto_create_page.dart';
 import 'package:domicilios_cali/src/pages/splash_screen_page.dart';
+import 'package:domicilios_cali/src/pages/ventas_page.dart';
 import 'package:domicilios_cali/src/providers/push_notifications_provider.dart';
 import 'package:flutter/material.dart';
 //importaciones locales
@@ -32,15 +33,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
   @override
   void initState() { 
     super.initState();
-    _instanciarReaccionAPushNotifications();
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext appContext){
     /**
      * Esta es la forma como Flutter recomienda que manipulemos la información
      * y/o el estado de la misma.
@@ -53,12 +52,12 @@ class _MyAppState extends State<MyApp> {
         title: 'Domicilios',
         initialRoute: HomePage.route,
         routes:{
+          HomePage.route:(BuildContext context)=>HomePage(),
           SplashScreenPage.route:(BuildContext context)=>SplashScreenPage(),
           LoginPage.route:(BuildContext context)=>LoginPage(),
           RegisterPage.route:(BuildContext context)=>RegisterPage(),
           PasosRecuperarPasswordPage.route:(BuildContext context)=>PasosRecuperarPasswordPage(),
           PasosConfirmacionCelularPage.route:(BuildContext context)=>PasosConfirmacionCelularPage(),
-          HomePage.route:(BuildContext context)=>HomePage(),
           PedidosPage.route:(BuildContext context)=>PedidosPage(),
           CuentaPage.route:(BuildContext context)=>CuentaPage(),
           PerfilPage.route:(BuildContext context)=>PerfilPage(),
@@ -67,6 +66,7 @@ class _MyAppState extends State<MyApp> {
           ProductosCatalogoPage.route:(BuildContext context)=>ProductosCatalogoPage(),
           ProductoDetailPage.route:(BuildContext context)=>ProductoDetailPage(),
           ProductosTiendaPage.route:(BuildContext context)=>ProductosTiendaPage(),
+          VentasPage.route:(BuildContext context)=>VentasPage(),
           FavoritosPage.route:(BuildContext context)=>FavoritosPage(),
           CarritoPage.route:(BuildContext context)=>CarritoPage(),
           MapaPage.route:(BuildContext context)=>MapaPage(),
@@ -101,15 +101,7 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
       ),
     );
-  }
 
-  void _instanciarReaccionAPushNotifications()async{
-    final pushNotificationsProvider = new PushNotificationsProvider();
-    pushNotificationsProvider.initNotificationsReceiver();
-    pushNotificationsProvider.pushMessagesStream.listen((Map<String, dynamic> data){
-      print('Recibiendo data de push notification en el main:');
-      print(data);
-    });
   }
 }
 

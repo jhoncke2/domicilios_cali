@@ -7,6 +7,7 @@ import 'package:domicilios_cali/src/pages/favoritos_page.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
 import 'package:domicilios_cali/src/pages/perfil_page.dart';
 import 'package:domicilios_cali/src/pages/productos_tienda_page.dart';
+import 'package:domicilios_cali/src/pages/ventas_page.dart';
 import 'package:flutter/material.dart';
 class BottomBarWidget extends StatefulWidget {
   @override
@@ -139,6 +140,7 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
       case 'solicitud_de_pedidos':
         break;
       case 'ventas':
+        Navigator.of(context).pushNamed(VentasPage.route);
         break;
       case 'domiciliarios':
         break;

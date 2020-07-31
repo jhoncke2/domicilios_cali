@@ -103,3 +103,4 @@ Future<File> _procesarImagen(BuildContext context, ImageSource imageSource)async
     File imagen = File(pickedFile.path);
     return imagen;    
 }
+
