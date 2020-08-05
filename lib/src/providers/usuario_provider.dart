@@ -25,7 +25,6 @@ class UsuarioProvider{
     };
   }
 
-
   Future<Map<String, dynamic>> login( String email, String password)async{
     final loginUrl = '$_apiUrl/login';
     
@@ -39,6 +38,32 @@ class UsuarioProvider{
       );
       Map<String, dynamic> decodedResp = json.decode(respuesta.body);
       return decodedResp;
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> updateMobileToken(String token, int userId, String mobileToken)async{
+    try{
+      final response = await http.post(
+        '$_apiUrl/mobile_token',
+        headers: {
+          'Authorization':'Bearer $token',
+          'Content-Type':'Application/json'
+        },
+        body: json.encode({
+          'user_id':userId,
+          'mobile_token':mobileToken
+        })
+      );
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      return {
+        'status':'ok',
+        'response':decodedResponse
+      };
     }catch(err){
       return {
         'status':'err',
@@ -63,12 +88,9 @@ class UsuarioProvider{
         'message':err
       };
     }
-    
-    
   }
 
-  Future<Map<String, dynamic>> getUserByToken(String token)async{
-    
+  Future<Map<String, dynamic>> getUserByToken(String token)async{  
     try{
       final respuesta = await http.get(
         '$_apiUrl/seeUserAuth',
@@ -88,8 +110,6 @@ class UsuarioProvider{
         'message':err
       };
     }
-    
-    
   }
 
   Future<Map<String, dynamic>> cambiarNombreYAvatar(String token, int userId, String name, File avatar)async{
@@ -200,12 +220,13 @@ class UsuarioProvider{
       final response = await http.post(
         '$_apiUrl/mobile_token',
         headers: {
-          'Authorization':'Bearer $loginToken'
+          'Authorization':'Bearer $loginToken',
+          'Content-Type':'Application/json'
         },
-        body: {
+        body: json.encode({
           'user_id': userId,
           'mobile_token':mobileToken
-        }
+        })
       );
       Map<String, dynamic> decodedResponse = json.decode(response.body);
       return {

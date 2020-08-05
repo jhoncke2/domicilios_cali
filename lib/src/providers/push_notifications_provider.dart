@@ -1,4 +1,6 @@
 import 'package:domicilios_cali/src/pages/login_page.dart';
+import 'package:domicilios_cali/src/pages/pedidos_page.dart';
+import 'package:domicilios_cali/src/pages/solicitud_de_pedidos_page.dart';
 import 'package:domicilios_cali/src/pages/ventas_page.dart';
 import 'package:flutter/material.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
@@ -9,6 +11,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:convert';
 
 class PushNotificationsProvider{
   static bool onPushNotification = false;
@@ -20,7 +23,9 @@ class PushNotificationsProvider{
     'tienda_confirmar_pedido', 
     'tienda_denegar_pedido',
     'tienda_delegar_pedido_a_domiciliario',
-    'tienda_crear_domiciliario'
+    'tienda_crear_domiciliario',
+    'domiciliario_aceptar_pedido',
+    'domiciliario_denegar_pedido'
   ];
 
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -51,7 +56,6 @@ class PushNotificationsProvider{
   }
 
   initNotificationsReceiver()async{
-    print(yaInicio);
     //para obtener permisos del usuario
     yaInicio = true;
     _firebaseMessaging.requestNotificationPermissions();
@@ -128,7 +132,8 @@ class PushNotificationsProvider{
         'priority':'high',
         'to':receiverMobileToken
       };
-      
+      data['id']='1';
+      data['status']='done';
       data['click_action'] = 'FLUTTER_NOTIFICATION_CLICK';
       data['notification_type'] = notificationType;
       body['data'] = data;
@@ -141,7 +146,7 @@ class PushNotificationsProvider{
           break;
         case 'tienda_confirmar_pedido':
           notificationTitle = 'pedido aceptado';
-          notificationBody = '${data["tienda_name"]} ha aceptado tu pedido';
+          notificationBody = '${data["nombre_tienda"]} ha aceptado tu pedido';
           break;
         case 'tienda_denegar_pedido':
           notificationTitle = 'pedido denegado';
@@ -152,8 +157,8 @@ class PushNotificationsProvider{
           notificationBody = 'Tienes un nuevo pedido para entregar';
           break;
         case 'tienda_crear_domiciliario':
-          notificationTitle = 'Solicitud de domiciliario';
-          notificationBody = '${data["tienda_name"]} quiere que seas uno de sus domiciliarios';
+          notificationTitle = 'Solicitud de contrato';
+          notificationBody = '${data["nombre_tienda"]} quiere que seas su domiciliario. Si deseas aceptar, comunicate con él y envíale el código que te llegará a la bandeja de mensajes.';
           break;
       }
 
@@ -161,13 +166,20 @@ class PushNotificationsProvider{
         'title':notificationTitle,
         'body':notificationBody
       };
-      final response = http.post(
-      _firebaseServerUrl,
-      headers: {
-        'Authorization':'key=$_firebaseServerToken'
-      },
-      body: body
-    );
+      final response = await http.post(
+        _firebaseServerUrl,
+        headers: {
+          'Authorization':'key=$_firebaseServerToken',
+          'Content-Type':'Application/json'
+        },
+        body: json.encode(body)
+      );
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      return {
+        'status':'ok',
+        'response':decodedResponse
+      };
+
 
     }catch(err){
       return {
@@ -183,34 +195,113 @@ class PushNotificationsProvider{
     String receiverChannel = notification['receiver_channel'];
     switch(data['notification_type']){
       case 'cliente_enviar_pedido':
-        if(Provider.usuarioBloc(_context).usuario != null){
-          if(Provider.usuarioBloc(_context).usuario.hasStore){
-            if(receiverChannel == 'on_message')
-              _crearDialog(
-                _context,
-                'te ha llegado un nuevo pedido',
-                //en realidad debe ser PedidosActualesPage.route
-                VentasPage.route
-              );
-            else if(receiverChannel == 'on_resume')
-              Navigator.of(_context).pushNamed(PerfilPage.route);
-            
-          }
-        }else{
-          Navigator.of(_context).pushNamed(LoginPage.route);
-        }
+        _reaccionarAClienteEnviarPedido(receiverChannel);
         break; 
       case 'tienda_confirmar_pedido':
+        _reaccionarATiendaAceptarPedido(receiverChannel, data['nombre_tienda'], data['tiempo_maximo_entrega']);
         break;
       case 'tienda_denegar_pedido':
+        _reaccionarATiendaDenegarPedido(receiverChannel, data['nombre_tienda'], data['razon_tienda']);
         break;
       case 'tienda_delegar_pedido_a_domiciliario':
+        _reaccionarATiendaDelegarPedidoADomiciliario(receiverChannel, data['nombre_tienda']);
         break;
-      case 'tienda_crear_domiciliario':
+      case 'domiciliario_aceptar_pedido':
+        break;
+      case 'domiciliario_denegar_pedido':
         break; 
+      case 'tienda_crear_domiciliario':
+        _reaccionarATiendaCrearDomiciliario(receiverChannel, notification['nombre_tienda']);
+        break;
+      case 'domiciliario_unirse_a_tienda':
+        break;
     }
     print('Recibiendo data de push notification en el main:');
     print(data);
+  }
+
+  void _reaccionarAClienteEnviarPedido(String receiverChannel){
+    if(Provider.usuarioBloc(_context).usuario != null){
+      if(Provider.usuarioBloc(_context).usuario.hasStore){
+        if(receiverChannel == 'on_message')
+          _crearDialog(
+            _context,
+            'te ha llegado un nuevo pedido',
+            //en realidad debe ser PedidosActualesPage.route
+            SolicitudDePedidosPage.route
+          );
+        else if(receiverChannel == 'on_resume')
+          Navigator.of(_context).pushNamed(SolicitudDePedidosPage
+          .route);
+        
+      }
+    }else{
+      Navigator.of(_context).pushNamed(LoginPage.route);
+    }
+  }
+
+  void _reaccionarATiendaAceptarPedido(String receiverChannel, String nombreTienda, int tiempoMaximoEntrega){
+    if(Provider.usuarioBloc(_context).usuario != null){
+      if(receiverChannel == 'on_message'){
+        _crearDialog(
+          _context,
+          '$nombreTienda ha aceptado tu pedido. Este llegará en máximo $tiempoMaximoEntrega minutos',
+          PedidosPage.route
+        );
+      }else if(receiverChannel == 'on_resume'){
+        print('on resume');
+      }
+    }
+  }
+
+  void _reaccionarATiendaDenegarPedido(String receiverChannel, String nombreTienda, String razon){
+    if(Provider.usuarioBloc(_context).usuario != null){
+      if(receiverChannel == 'on_message'){
+        _crearDialog(
+          _context,
+          '$nombreTienda ha denegado tu pedido debido a lo siguiente: \n$razon',
+          PedidosPage.route
+        );
+      }else if(receiverChannel == 'on_resume'){
+        print('on resume');
+      }
+    }
+  }
+
+  void _reaccionarATiendaDelegarPedidoADomiciliario(String receiverChannel, String nombreTienda){
+    if(Provider.usuarioBloc(_context).usuario != null){
+      if(receiverChannel == 'on_message'){
+        _crearDialog(
+          _context,
+          '$nombreTienda te ha designado un nuevo domicilio',
+          PedidosPage.route
+        );
+      }else if(receiverChannel == 'on_resume'){
+        _crearDialog(
+          _context,
+          '$nombreTienda te ha designado un nuevo domicilio',
+          PedidosPage.route
+        );
+      }
+    }
+  }
+
+  void _reaccionarATiendaCrearDomiciliario(String receiverChannel, String nombreTienda){
+    if(Provider.usuarioBloc(_context).usuario != null){
+      if(receiverChannel == 'on_message'){
+        _crearDialog(
+          _context,
+         '$nombreTienda quiere hacerte su domiciliario. Si deseas aceptar, comunicate con él y envíale el código que te llegará a la bandeja de mensajes.',
+          null
+        );
+      }else if(receiverChannel == 'on_resume'){
+        _crearDialog(
+          _context,
+         '$nombreTienda quiere hacerte su domiciliario. Si deseas aceptar, comunicate con él y envíale el código que te llegará a la bandeja de mensajes.',
+          null
+        );
+      }
+    }
   }
 
   void _crearDialog(BuildContext context, String mensaje, String pageRoute){
@@ -236,7 +327,8 @@ class PushNotificationsProvider{
             ),
           ),
           onTap: (){
-            Navigator.of(context).pushNamed(pageRoute);
+            if(pageRoute != null)
+              Navigator.of(context).pushNamed(pageRoute);
           },
         );
       },

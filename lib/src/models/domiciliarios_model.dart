@@ -29,10 +29,9 @@ class DomiciliarioModel{
   int id;
   String nombre;
   String email;
-  String numeroCelular;
+  int numeroCelular;
   String tipoVehiculo;
-  String placaVehiculo;
-  File foto;
+  String placa;
   File cedulaCara1;
   File cedulaCara2;
   String cedulaCaraUrl1;
@@ -45,37 +44,31 @@ class DomiciliarioModel{
     this.email,
     this.numeroCelular,
     this.tipoVehiculo,
-    this.placaVehiculo,
+    this.placa,
     this.cedulaCara1,
     this.cedulaCara2,
-    this.foto
+    this.fotoUrl
   });
 
   DomiciliarioModel.fromJsonMap(Map<String, dynamic> jsonObject){
     id = jsonObject['id'];
-    nombre = jsonObject['nombre'];
+    nombre = jsonObject['name'];
     email = jsonObject['email'];
-    numeroCelular = jsonObject['numero_celular'];
+    numeroCelular = jsonObject['phone'];
     tipoVehiculo = jsonObject['tipo_vehiculo'];
-    placaVehiculo = jsonObject['placa_vehiculo'];
-    fotoUrl = jsonObject['foto_url'];
-    cedulaCaraUrl1 = jsonObject['cedula_cara_url_1'];
-    cedulaCaraUrl2 = jsonObject['cedula_cara_url_2'];
+    placa = jsonObject['placa'];
+    fotoUrl = jsonObject['photo'];
+    cedulaCaraUrl1 = jsonObject['cc_frontal'];
+    cedulaCaraUrl2 = jsonObject['cc_atras'];
   }
 
-  Map<String, dynamic> toJson(){
-    Map<String, dynamic> jsonObject = {};
-    
-    if(id!=null)
-      jsonObject['id'] = id;
-    jsonObject['nombre'] = nombre;
-    jsonObject['email'] = email;
-    jsonObject['numero_celular'] = numeroCelular;
+  Map<String, String> toJson(){
+    Map<String, String> jsonObject = {};
+    //jsonObject['nombre'] = nombre;
+    //jsonObject['email'] = email;
+    jsonObject['phone'] = numeroCelular.toString();
     jsonObject['tipo_vehiculo'] = tipoVehiculo;
-    jsonObject['placa_vehiculo'] = placaVehiculo;
-    jsonObject['foto_url'] = fotoUrl;
-    jsonObject['cedula_cara_url_1'] = cedulaCaraUrl1;
-    jsonObject['cedula_cara_url_2'] = cedulaCaraUrl2;
+    jsonObject['placa'] = placa;
     return jsonObject;
   }
 

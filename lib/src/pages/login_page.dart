@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:domicilios_cali/src/bloc/productos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/tienda_bloc.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
@@ -7,6 +6,7 @@ import 'package:domicilios_cali/src/pages/home_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_confirmacion_celular_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_recuperar_password_page.dart';
 import 'package:domicilios_cali/src/pages/register_page.dart';
+import 'package:domicilios_cali/src/providers/push_notifications_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //clases locales
@@ -274,9 +274,18 @@ class _LoginPageState extends State<LoginPage> {
     Map<String, dynamic> respuesta = await usuarioBloc.login(_emailValue, _passwordValue);
     TiendaBloc tiendaBloc = Provider.tiendaBloc(context);
     if(usuarioBloc.usuario.phoneVerify){
-      await tiendaBloc.cargarTienda(usuarioBloc.token);
-      Provider.navigationBloc(context).reiniciarIndex();
-      Navigator.pushReplacementNamed(context, HomePage.route, arguments: respuesta['user']);
+      
+      String newMobileToken = await PushNotificationsProvider.getMobileToken();
+      if(newMobileToken != usuarioBloc.usuario.mobileToken){
+        Map<String, dynamic> mobileResponse = await usuarioBloc.updateMobileToken(usuarioBloc.token, newMobileToken, usuarioBloc.usuario.id);
+        if(mobileResponse['status'] == 'ok'){
+          usuarioBloc.usuario.mobileToken = newMobileToken;
+          await tiendaBloc.cargarTienda(usuarioBloc.token);
+          Provider.navigationBloc(context).reiniciarIndex();
+          Navigator.pushReplacementNamed(context, HomePage.route, arguments: respuesta['user']);
+        }
+      }
+      
     }
       
     else

@@ -3,6 +3,7 @@ import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/pages/direccion_create_page.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
+import 'package:domicilios_cali/src/providers/push_notifications_provider.dart';
 import 'package:flutter/material.dart';
 class PasosConfirmacionCelularPage extends StatefulWidget {
   static final route = 'pasosConfirmacionCelular';
@@ -140,7 +141,7 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
         borderRadius: BorderRadius.circular(size.width * 0.05)
       ),
       //color: Colors.grey.withOpacity(0.5),
-      color: Theme.of(context).primaryColor.withOpacity(0.75),
+      color: Theme.of(context).primaryColor,
       child: Text(
         'Enviar',
         style: TextStyle(
@@ -155,8 +156,13 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
   void _verificarCodigo(ConfirmationBloc confirmationBloc, UsuarioBloc usuarioBloc)async{
     Map<String, dynamic> resultado = await confirmationBloc.enviarCodigoConfirmarPhone(usuarioBloc.token, usuarioBloc.usuario.id, _codigoValue);
     if(resultado['status'] == 'ok'){
-      Provider.navigationBloc(context).reiniciarIndex();
-      Navigator.of(context).pushReplacementNamed(DireccionCreatePage.route, arguments: 'cliente_nuevo');
+      String newMobileToken = await PushNotificationsProvider.getMobileToken();
+      Map<String, dynamic> mobileResponse = await usuarioBloc.updateMobileToken(usuarioBloc.token, newMobileToken, usuarioBloc.usuario.id);
+      if(mobileResponse['status'] == 'ok'){
+        usuarioBloc.usuario.mobileToken = newMobileToken;
+        Provider.navigationBloc(context).reiniciarIndex();
+        Navigator.pushReplacementNamed(context, HomePage.route, arguments: 'cliente_nuevo');
+      }
     }
       
   }
@@ -168,7 +174,7 @@ class _PasosConfirmacionCelularPageState extends State<PasosConfirmacionCelularP
         borderRadius: BorderRadius.circular(size.width * 0.05)
       ),
       //color: Colors.grey.withOpacity(0.5),
-      color: Theme.of(context).primaryColor.withOpacity(0.75),
+      color: Theme.of(context).primaryColor,
       child: Text(
         'Reenviar código',
         style: TextStyle(

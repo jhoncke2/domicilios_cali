@@ -1,5 +1,4 @@
 import 'package:domicilios_cali/src/models/horarios_model.dart';
-import 'package:mime_type/mime_type.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
@@ -99,18 +98,39 @@ class TiendaProvider{
     } 
   }
 
+  Future<Map<String, dynamic>> cargarTiendaPublic(String token, int tiendaId)async{
+    try{
+      final response = await http.get(
+        '$_apiRoute/tiendas/$tiendaId',
+        headers: {
+          'Authorization':'Bearer $token'
+        }
+      );
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      return {
+        'status':'ok',
+        'tienda':decodedResponse['data']
+      };
+    }
+    catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+  }
+
   Future<Map<String, dynamic>> crearHorario(String token, HorarioModel horarioModel)async{
 
     Map<String, dynamic> body = horarioModel.toJson(); 
-    final response = await http.post(
-      '$_apiRoute/horario/store',
-      headers: {
-        'Authorization':'Bearer $token'
-      },
-      body: body
-    );
-    
     try{
+      final response = await http.post(
+        '$_apiRoute/horario/store',
+        headers: {
+          'Authorization':'Bearer $token'
+        },
+        body: body
+      );
       Map<String, dynamic> decodedResponse = json.decode(response.body);
       if(decodedResponse['tienda']!=null){
         return {

@@ -28,21 +28,26 @@ class _PerfilPageState extends State<PerfilPage> {
 
   GoogleMapController _mapController;
   List<String> _listviewHoraItems = [];
+  bool recienIniciado;
 
   
   @override
   void initState() {
     super.initState();
+    recienIniciado = true;
   }
 
   @override
   Widget build(BuildContext context) {
-    
     UsuarioBloc usuarioBloc = Provider.usuarioBloc(context);
     String token = usuarioBloc.token;
     LugaresBloc lugaresBloc = Provider.lugaresBloc(context);
     TiendaBloc tiendaBloc = Provider.tiendaBloc(context);
-    //tiendaBloc.cargarTienda(token);
+    if(recienIniciado){
+      tiendaBloc.cargarTienda(token);
+      recienIniciado = false;
+    }
+    
     //lugaresBloc.cargarLugares(usuarioBloc.token);
     Size size = MediaQuery.of(context).size;
     if(_listviewHoraItems.length == 0)
@@ -204,7 +209,6 @@ class _PerfilPageState extends State<PerfilPage> {
   }
 
   Widget _crearAvatar(BuildContext context, Size size, UsuarioBloc usuarioBloc, String avatarUrl){
-
     return Container(
       padding: EdgeInsets.symmetric(horizontal:size.width * 0.22),
       width: size.width * 0.25,
@@ -302,24 +306,6 @@ class _PerfilPageState extends State<PerfilPage> {
             },
           ),
         ),
-
-        /*
-        Container(
-          width: size.width * 0.8,
-          padding: EdgeInsets.symmetric(vertical: size.height * 0.005, horizontal: size.width * 0.035),
-          decoration: BoxDecoration(
-            color: Colors.grey.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(size.width * 0.085)
-          ),
-          child: Text(
-            dato,
-            style: TextStyle(
-              color: Colors.black.withOpacity(0.55),
-              fontSize: size.width * 0.041,
-            ),
-          ),
-        ),
-        */
       ],
     );
   }
@@ -1017,11 +1003,8 @@ class _PerfilPageState extends State<PerfilPage> {
     }
     else{
       if(_nombre != null || _avatar != null)
-      _actualizarNombreYAvatar(usuarioBloc, token);
+        _actualizarNombreYAvatar(usuarioBloc, token);
     }
-      
-
-
   }
 
   void _crearTienda(UsuarioBloc usuarioBloc, LugaresBloc lugaresBloc, TiendaBloc tiendaBloc, String token)async{

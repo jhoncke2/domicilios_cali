@@ -1,7 +1,9 @@
 import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/pages/confirmar_codigo_domiciliario_page.dart';
 import 'package:domicilios_cali/src/pages/cuenta_page.dart';
 import 'package:domicilios_cali/src/pages/direccion_create_mapa_page.dart';
 import 'package:domicilios_cali/src/pages/direccion_create_page.dart';
+import 'package:domicilios_cali/src/pages/domiciliario_create_page.dart';
 import 'package:domicilios_cali/src/pages/favoritos_page.dart';
 import 'package:domicilios_cali/src/pages/pedidos_page.dart';
 import 'package:domicilios_cali/src/pages/mapa_page.dart';
@@ -10,6 +12,7 @@ import 'package:domicilios_cali/src/pages/pasos_crear_tienda_page.dart';
 import 'package:domicilios_cali/src/pages/pasos_recuperar_password_page.dart';
 import 'package:domicilios_cali/src/pages/perfil_page.dart';
 import 'package:domicilios_cali/src/pages/producto_create_page.dart';
+import 'package:domicilios_cali/src/pages/solicitud_de_pedidos_page.dart';
 import 'package:domicilios_cali/src/pages/splash_screen_page.dart';
 import 'package:domicilios_cali/src/pages/ventas_page.dart';
 import 'package:domicilios_cali/src/providers/push_notifications_provider.dart';
@@ -50,7 +53,7 @@ class _MyAppState extends State<MyApp> {
     return Provider(
       child: MaterialApp(
         title: 'Domicilios',
-        initialRoute: HomePage.route,
+        initialRoute: ConfirmarCodigoDomiciliarioPage.route,
         routes:{
           HomePage.route:(BuildContext context)=>HomePage(),
           SplashScreenPage.route:(BuildContext context)=>SplashScreenPage(),
@@ -66,7 +69,10 @@ class _MyAppState extends State<MyApp> {
           ProductosCatalogoPage.route:(BuildContext context)=>ProductosCatalogoPage(),
           ProductoDetailPage.route:(BuildContext context)=>ProductoDetailPage(),
           ProductosTiendaPage.route:(BuildContext context)=>ProductosTiendaPage(),
+          SolicitudDePedidosPage.route:(BuildContext context)=>SolicitudDePedidosPage(),
           VentasPage.route:(BuildContext context)=>VentasPage(),
+          DomiciliarioCreatePage.route:(BuildContext context)=>DomiciliarioCreatePage(),
+          ConfirmarCodigoDomiciliarioPage.route:(BuildContext context)=>ConfirmarCodigoDomiciliarioPage(),
           FavoritosPage.route:(BuildContext context)=>FavoritosPage(),
           CarritoPage.route:(BuildContext context)=>CarritoPage(),
           MapaPage.route:(BuildContext context)=>MapaPage(),

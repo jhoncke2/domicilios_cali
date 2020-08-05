@@ -9,7 +9,6 @@ import 'package:domicilios_cali/src/widgets/productos/productos_widget.dart';
 import 'package:flutter/material.dart';
 //importaciones locales
 import 'package:domicilios_cali/src/utils/menu_categorias.dart';
-import 'package:domicilios_cali/src/utils/generic_utils.dart' as utils;
 
 class HomePage extends StatefulWidget with MenuCategorias{
   static final String route = 'home';
@@ -31,6 +30,8 @@ class _HomePageState extends State<HomePage> with MenuCategorias{
   */
   @override
   Widget build(BuildContext appContext) {
+    print('codigo icono:');
+    print(Icons.fastfood.codePoint);
     context = appContext;
     if(!Provider.pushNotificationsProvider(context).yaInicio)
       Provider.pushNotificationsProvider(context).initNotificationsReceiver();

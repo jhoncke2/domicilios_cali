@@ -53,6 +53,7 @@ class ProductoModel{
   String description;
   int tiempoDeEntrega;
   double calificacion;
+  int tiendaId;
 
   TiendaModel store;
   Map<String, dynamic> category;
@@ -61,7 +62,6 @@ class ProductoModel{
 
   //por desechar
   String imagenUrl;
-  int tiendaId;
   String categoria;
 
   //por agregar
@@ -76,6 +76,7 @@ class ProductoModel{
     this.description,
     this.calificacion,
     this.tiempoDeEntrega,
+    this.tiendaId,
 
     this.store,
     this.category,
@@ -83,7 +84,6 @@ class ProductoModel{
     this.photos,
 
     this.imagenUrl,
-    this.tiendaId,
     this.categoria,
   });
 
@@ -94,14 +94,17 @@ class ProductoModel{
     tipo            = json['tipo'];
     description     = json['description'];
     calificacion    = (json['calificacion'])??1.0;
-    tiempoDeEntrega = int.parse(json['tiempo_de_entrega']);
-    store           = TiendaModel.fromJsonMap(json['store']);
     category        = json['category'];
+    tiempoDeEntrega = int.parse(json['tiempo_de_entrega']);
+    if(json['tienda_id'] != null)
+      tiendaId = json['tienda_id'];
+    if(json['store']!= null)
+      store           = TiendaModel.fromJsonMap(json['store']);  
     if(json['horario'] != null)
       horario = json['horario'];
     //para evitar problema de compatibilidad entre List<dynamic>(lista vacia) y List<Map<String, dynamic>>
     photos = [];
-    List<Map<String, dynamic>> photosMap          = (json['photos'] as List).cast<Map<String, dynamic>>().toList();
+    List<Map<String, dynamic>> photosMap = (json['photos'] as List).cast<Map<String, dynamic>>().toList();
     
     photosMap.forEach((Map<String, dynamic> photo){
       photos.add(

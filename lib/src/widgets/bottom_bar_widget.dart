@@ -3,10 +3,12 @@ import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/bloc/tienda_bloc.dart';
 import 'package:domicilios_cali/src/bloc/usuario_bloc.dart';
 import 'package:domicilios_cali/src/pages/direccion_create_page.dart';
+import 'package:domicilios_cali/src/pages/domiciliario_create_page.dart';
 import 'package:domicilios_cali/src/pages/favoritos_page.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
 import 'package:domicilios_cali/src/pages/perfil_page.dart';
 import 'package:domicilios_cali/src/pages/productos_tienda_page.dart';
+import 'package:domicilios_cali/src/pages/solicitud_de_pedidos_page.dart';
 import 'package:domicilios_cali/src/pages/ventas_page.dart';
 import 'package:flutter/material.dart';
 class BottomBarWidget extends StatefulWidget {
@@ -138,11 +140,14 @@ class _BottomBarWidgetState extends State<BottomBarWidget> {
         Navigator.of(context).pushNamed(ProductosTiendaPage.route);
         break;
       case 'solicitud_de_pedidos':
+        Navigator.of(context).pushNamed(SolicitudDePedidosPage.route);
         break;
       case 'ventas':
         Navigator.of(context).pushNamed(VentasPage.route);
         break;
       case 'domiciliarios':
+        Navigator.of(context).pushNamed(DomiciliarioCreatePage.route);
+        
         break;
       case 'salir':
         _logOut(usuarioBloc, navigationBloc, token);

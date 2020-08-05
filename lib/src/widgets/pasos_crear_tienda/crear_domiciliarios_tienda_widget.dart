@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:domicilios_cali/src/models/domiciliarios_model.dart';
 import 'package:flutter/material.dart';
-import 'package:domicilios_cali/src/utils/generic_utils.dart' as utils;
 class CrearDomiciliariosTiendaWidget extends StatefulWidget {
 
   @override
@@ -17,7 +16,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
   @override
   void initState(){ 
     super.initState();
-    _agregarDomiciliario();
+    //_agregarDomiciliario();
   }
 
   @override
@@ -134,7 +133,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
       SizedBox(
         height: size.height * 0.02,
       ),
-      _crearFotoInput(size, domiciliario),
+      //_crearFotoInput(size, domiciliario),
       SizedBox(
         height: size.height * 0.015,
       ),
@@ -213,7 +212,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
     return Container(
       height: size.height * 0.072,
       child: TextFormField(
-        initialValue: domiciliario.numeroCelular,
+        initialValue: domiciliario.numeroCelular.toString(),
         decoration: InputDecoration(
           suffixText: '(+57)',
           border: OutlineInputBorder(
@@ -228,7 +227,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
 
         ),
         onChanged: (String newValue){
-          domiciliario.numeroCelular = newValue;
+          domiciliario.numeroCelular = int.parse(newValue);
           print('origin value:');
           print(domiciliario.nombre);
           
@@ -241,7 +240,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
     return Container(
       height: size.height * 0.072,
       child: TextFormField(
-        initialValue: domiciliario.placaVehiculo,
+        initialValue: domiciliario.placa,
         decoration: InputDecoration(
           hintText: 'Placa',
           border: OutlineInputBorder(
@@ -256,7 +255,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
 
         ),
         onChanged: (String newValue){
-          domiciliario.placaVehiculo = newValue;
+          domiciliario.placa = newValue;
           print('origin value:');
           print(domiciliario.nombre);
           
@@ -265,6 +264,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
     );
   }
 
+  /*
   Widget _crearFotoInput(Size size, DomiciliarioModel domiciliario){
     return Container(
       height: size.height * 0.1,
@@ -276,7 +276,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(size.width * 0.028)
         ),
-        child: ((domiciliario.foto == null)?
+        child: ((domiciliario.photo == null)?
         Text(
           'Subir foto',
           style: TextStyle(
@@ -309,6 +309,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
       });
     }
   }
+  */
 
   Widget _crearSelectTipoVehiculo(Size size, DomiciliarioModel domiciliario){
     
@@ -396,11 +397,12 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
             fontSize: size.width * 0.06,
           ),
         ),
-        onPressed: (_verificarCondicionesAgregarDomiciliario())? _agregarDomiciliario : null,
+        onPressed: //(_verificarCondicionesAgregarDomiciliario())? _agregarDomiciliario : null,
+          (){}
       ),
     );
   }
-
+  /*
   bool _verificarCondicionesAgregarDomiciliario(){
 
     for(int i = 0; i < _domiciliarios.length; i++){
@@ -439,6 +441,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
       
     });
   }
+  */
 
   void _eliminarDomiciliario(DomiciliarioModel domiciliario){
     print('domiciliario: ${domiciliario.toJson()}');

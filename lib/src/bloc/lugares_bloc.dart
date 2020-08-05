@@ -38,6 +38,10 @@ class LugaresBloc{
     return response;
   }
 
+  LugarModel get actualElegido{
+    return _elegidoController.value;
+  }
+
   Future<void> editarLugar(LugarModel lugar, String token)async{
     await _lugaresProvider.editarLugar(lugar, token);
   }

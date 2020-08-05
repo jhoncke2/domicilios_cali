@@ -28,25 +28,35 @@ class UsuarioBloc{
     return respuesta;
   }
 
+  Future<Map<String, dynamic>> updateMobileToken(String loginToken, String mobileToken, int userId)async{
+    Map<String, dynamic> response = await _usuarioProvider.actualizarMobileToken(loginToken, mobileToken, userId);
+    return response;
+  }
+
   Future<void> cargarUsuario(String pToken)async{
     Map<String, dynamic> response = await _usuarioProvider.getUserByToken(pToken);
     if(response['status'] == 'ok'){
-      usuario = UsuarioModel.fromJsonMap(response['user']);
-      String mobileToken = await PushNotificationsProvider.getMobileToken();
-      _usuarioProvider.actualizarMobileToken(token, mobileToken, usuario.id);
+      try{
+        usuario = UsuarioModel.fromJsonMap(response['user']);
+        String mobileToken = await PushNotificationsProvider.getMobileToken();
+        _usuarioProvider.actualizarMobileToken(token, mobileToken, usuario.id);
+      }catch(err){
+        print('ha ocurrido un error:');
+        print(err);
+      }     
     }
     return response;
   }
 
   Future<Map<String, dynamic>> register(String name, String email, String phone, String password, String passwordConfirmation)async{
-    Map<String, dynamic> respuestaRegister = await _usuarioProvider.register(name, email, phone, password, passwordConfirmation);
+    Map<String, dynamic> registerResponse = await _usuarioProvider.register(name, email, phone, password, passwordConfirmation);
     
-    if(respuestaRegister['status'] == 'ok'){
-      token = respuestaRegister['token'];
-      Map<String, dynamic> user = await _usuarioProvider.getUserByToken(respuestaRegister['token']);
-      usuario = UsuarioModel.fromJsonMap(user);
+    if(registerResponse['status'] == 'ok'){
+      token = registerResponse['token'];
+      Map<String, dynamic> userResponse = await _usuarioProvider.getUserByToken(registerResponse['token']);
+      usuario = UsuarioModel.fromJsonMap(userResponse['user']);
     }
-    return respuestaRegister;
+    return registerResponse;
   }
   
   Future<void> logOut(String token)async{

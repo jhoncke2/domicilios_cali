@@ -171,7 +171,8 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
           },
         ),     
         Text(
-          _producto.store.userName,
+          //_producto.store.userName,
+          'no disponible',
           style: TextStyle(
             color: Colors.black.withOpacity(0.9),
             fontWeight: FontWeight.bold,
@@ -643,6 +644,7 @@ class _ProductoDetailPageState extends State<ProductoDetailPage> {
   }
 
   void _guardarDatos()async{
+    print(_producto);
     await pedidosBloc.agregarProductoAPedido({
       'cantidad':_cantidadUnidades,
       'precio':_producto.precio,

@@ -3,6 +3,7 @@ import 'package:domicilios_cali/src/bloc/pedidos_bloc.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
 import 'package:domicilios_cali/src/models/productos_model.dart';
 import 'package:domicilios_cali/src/pages/home_page.dart';
+import 'package:domicilios_cali/src/providers/push_notifications_provider.dart';
 import 'package:domicilios_cali/src/widgets/bottom_bar_widget.dart';
 import 'package:domicilios_cali/src/widgets/header_widget.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +20,12 @@ class _PedidosPageState extends State<PedidosPage> {
   NavigationBloc navigationBloc;
   String token;
 
+  List<Map<String, dynamic>> _informacionTiendaPorPedido;
+
   @override
   void initState() { 
     super.initState();
+    _informacionTiendaPorPedido = [];
   }
 
   @override
@@ -125,7 +129,7 @@ class _PedidosPageState extends State<PedidosPage> {
       setState(() {
         
       });
-      pedidosBloc.cargarPedidosAnteriores(token);
+      pedidosBloc.cargarPedidosAnterioresPorClienteOTienda(token, 'cliente', null);
     }
   }
 
@@ -141,7 +145,7 @@ class _PedidosPageState extends State<PedidosPage> {
 
   StreamBuilder<List<Map<String, dynamic>>> _crearStreamBuilderIndex0(){
     return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: pedidosBloc.pedidoActualStream,
+      stream: pedidosBloc.pedidoActualClienteStream,
       builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> anterioresSnapshot) {
         print(anterioresSnapshot.connectionState);
         if(anterioresSnapshot.connectionState == ConnectionState.active){
@@ -180,7 +184,7 @@ class _PedidosPageState extends State<PedidosPage> {
 
   StreamBuilder<List<Map<String, dynamic>>> _crearStreamBuilderIndex1(){
     return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: pedidosBloc.pedidosAnterioresStream,
+      stream: pedidosBloc.pedidosHistorialClienteStream,
       builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
         if(snapshot.connectionState == ConnectionState.active){
           if(snapshot.hasData){
@@ -209,19 +213,21 @@ class _PedidosPageState extends State<PedidosPage> {
   List<Widget> _crearItemsListViewPedidoActual(List<Map<String, dynamic>> pedidoActualProductosMap){
     return pedidoActualProductosMap.map((Map<String, dynamic> pedidoProducto){
       return ListTile(
-        title: _crearProductoPedido(pedidoProducto['data_product'], pedidoProducto['cantidad'], pedidoProducto['precio']),
+        title: _crearProductoPedido(pedidoProducto['data_product'], pedidoProducto['cantidad'], pedidoProducto['precio'], 0),
       );
     }).toList();
   }
 
   List<Widget> _crearItemsListViewPedidosAnteriores(List<Map<String, dynamic>> pedidos){
     return pedidos.map((Map<String, dynamic> pedido){
-      List<Widget> pedidoActualItems;
+      List<Widget> pedidoActualItems = [];
       int costoTotal = 0;
-      pedidoActualItems = ((pedido['products'] as List).cast<Map<String, dynamic>>()).map((Map<String, dynamic> productoMap){
-        costoTotal += productoMap['cantidad'] * productoMap['precio'];
-        return _crearProductoPedido((productoMap['data_product'] as ProductoModel), productoMap['cantidad'], productoMap['precio']);
-      }).toList();
+      List<Map<String, dynamic>> productosPedido = ((pedido['products'] as List).cast<Map<String, dynamic>>());
+      for(int i = 0; i < productosPedido.length; i++){
+        Map<String, dynamic> productoActual = productosPedido[i];
+        costoTotal += productoActual['cantidad'] * productoActual['precio'];
+        pedidoActualItems.add(_crearProductoPedido((productoActual['data_product'] as ProductoModel), productoActual['cantidad'], productoActual['precio'], i));
+      }
       pedidoActualItems.add(
         Text(
           'Costo total: $costoTotal',
@@ -250,15 +256,7 @@ class _PedidosPageState extends State<PedidosPage> {
     return valorTotal;
   }
 
-  Stream _crearStreamSegunItems(){
-    if(pedidosBloc.indexNavegacionPedidosPage == 0){
-      return pedidosBloc.pedidoActualStream;
-    }else{
-      return pedidosBloc.pedidosAnterioresStream;
-    }
-  }
-
-  Widget _crearProductoPedido( ProductoModel producto, int cantidad, int precio){
+  Widget _crearProductoPedido( ProductoModel producto, int cantidad, int precio, int pedidoIndex){
     return Container(
       child: Row(
         children: <Widget>[
@@ -289,7 +287,7 @@ class _PedidosPageState extends State<PedidosPage> {
               ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: size.width  * 0.27),
                 child: Text(
-                  '${producto.store.userName}',
+                  'no figura',
                   style: TextStyle(
                     fontSize: size.width * 0.032,
                     fontWeight: FontWeight.normal,
@@ -313,7 +311,7 @@ class _PedidosPageState extends State<PedidosPage> {
                 ),
               ),
               Text(
-                'Pagado en ${producto.store.tipoDePago?? "efectivo"}',
+                'no figura',
                 style: TextStyle(
                   fontSize: size.width * 0.039,
                   color: Colors.black.withOpacity(0.8)
@@ -364,7 +362,7 @@ class _PedidosPageState extends State<PedidosPage> {
                 ),
               ),
               onPressed: (){
-
+                _generarPedido();
               },
             ),
           )
@@ -374,5 +372,17 @@ class _PedidosPageState extends State<PedidosPage> {
     return Column(
       children: elementosBottom,
     );
+  }
+
+  Future<void> _generarPedido()async{
+    try{
+      //List<Map<String, dynamic>> pedidoActual =  ((await pedidosBloc.pedidoActualClienteStream.v).cast<List<Map<String, dynamic>>>()).last;
+      Map<String, dynamic> crearCarritoResponse = await pedidosBloc.generarPedido(token, Provider.lugaresBloc(context).actualElegido.id);
+      final pushNotificationsProvider = Provider.pushNotificationsProvider(context);
+      pushNotificationsProvider.sendPushNotification(crearCarritoResponse['tienda_mobile_token'], PushNotificationsProvider.notificationTypes[0], {});
+    }catch(err){
+      print(err);
+    }
+    
   }
 }

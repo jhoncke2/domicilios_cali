@@ -54,6 +54,8 @@ class UsuarioModel{
   void _formatAvatar(String serverUrl){
     String urlBase = 'https://codecloud.xyz/';
     //serverUrl = serverUrl.replaceFirst('public', '');
+    if(serverUrl == null)
+      return;
     avatar = urlBase + serverUrl;
 
   }

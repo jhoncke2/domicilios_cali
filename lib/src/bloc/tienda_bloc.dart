@@ -9,9 +9,12 @@ class TiendaBloc{
   final _tiendaProvider = new TiendaProvider();
   final _tiendaController = new BehaviorSubject<TiendaModel>();
   final _ventasController = new BehaviorSubject<List<Map<String, dynamic>>>();
+  //las tiendas de los correspondientes pedidos del cliente
+  final _tiendasPedidosController = new BehaviorSubject<Map<String, dynamic>>();
 
   Stream<TiendaModel> get tiendaStream => _tiendaController.stream;
   Stream<List<Map<String, dynamic>>> get ventasStream => _ventasController.stream;
+  Stream<Map<String, dynamic>> get tiendasPedidosStream => _tiendasPedidosController.stream;
 
   TiendaModel tienda;
   LugarModel direccionTienda;
@@ -42,6 +45,15 @@ class TiendaBloc{
     return response;
   }
 
+  Future<Map<String, dynamic>> cargarTiendaPublic(String token, int tiendaId)async{
+    Map<String, dynamic> response = await _tiendaProvider.cargarTiendaPublic(token, tiendaId);
+    if(response['status'] == 'ok'){
+      _tiendasPedidosController.sink.add(response['tienda']);
+    }else
+      _tiendasPedidosController.sink.add({});
+    return response;
+  }
+
   Future<Map<String, dynamic>> crearHorario(String token){
     Future<Map<String, dynamic>> response = _tiendaProvider.crearHorario(token, horarioTienda);
     return response;
@@ -55,5 +67,6 @@ class TiendaBloc{
 
   void dispose(){
     _tiendaController.close();
+    _tiendasPedidosController.close();
   }
 }
