@@ -64,6 +64,19 @@ class ConfirmationBloc{
   }
 
 
+  //*********************************** 
+  //  Confirmar domiciliario
+  //**********************************
+  Future<Map<String, dynamic>> enviarCodigoValidarDomiciliario(String token, int domiciliarioId, String code)async{
+    final respuesta = await _confirmationProvider.enviarCodigoValidarDomiciliario(token, domiciliarioId, code);
+    return respuesta;
+  }
+
+  Future<Map<String, dynamic>> resetCodeDomiciliario(String token, int domiciliarioId)async{
+    final respuesta = await _confirmationProvider.resetCodeDomiciliario(token, domiciliarioId);
+    return respuesta;
+  }
+
   void dispose(){
     _pasoPasswordSuperadoController.close();
   }

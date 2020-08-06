@@ -356,7 +356,10 @@ class _DomiciliarioCreatePageState extends State<DomiciliarioCreatePage> {
           'nombre_tienda':Provider.usuarioBloc(context).usuario.name,
         }
       );
-      Navigator.of(context).pushNamed(ConfirmarCodigoDomiciliarioPage.route);
+      Navigator.of(context).pushNamed(ConfirmarCodigoDomiciliarioPage.route, arguments: {
+        'id':domiciliarioCreateResponse['domiciliario']['id'],
+        'mobile_token':domiciliarioCreateResponse['domiciliario']['data_domiciliario']['mobile_token']
+      });
     }
   }
 }

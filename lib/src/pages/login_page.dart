@@ -284,6 +284,10 @@ class _LoginPageState extends State<LoginPage> {
           Provider.navigationBloc(context).reiniciarIndex();
           Navigator.pushReplacementNamed(context, HomePage.route, arguments: respuesta['user']);
         }
+      }else{
+        await tiendaBloc.cargarTienda(usuarioBloc.token);
+        Provider.navigationBloc(context).reiniciarIndex();
+        Navigator.pushReplacementNamed(context, HomePage.route, arguments: respuesta['user']);
       }
       
     }

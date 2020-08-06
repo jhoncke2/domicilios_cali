@@ -13,7 +13,7 @@ class DomiciliariosProvider{
           'Authorization':'Bearer $token'
         },
       );
-      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      List<Map<String, dynamic>> decodedResponse = (json.decode(response.body) as List).cast<Map<String, dynamic>>();
       return {
         'status':'ok',
         'domiciliarios':decodedResponse

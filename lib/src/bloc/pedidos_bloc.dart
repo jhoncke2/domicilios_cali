@@ -77,7 +77,6 @@ class PedidosBloc{
         print(crearCarritoResponse);
         return crearCarritoResponse;
       }
-      print(pedidoActual);
     }catch(err){
       print(err);
       return {
@@ -117,6 +116,11 @@ class PedidosBloc{
       }
     }
     return pedidosResponse;
+  }
+
+  Future<Map<String, dynamic>> updatePedido(String token, Map<String, dynamic> data)async{
+    Map<String, dynamic> response = await _pedidosProvider.updatePedido(token, data);
+    return response;
   }
 
   void _procesarPedidosTienda(List<Map<String, dynamic>> pedidos){

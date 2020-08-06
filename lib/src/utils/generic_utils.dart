@@ -94,6 +94,38 @@ Future<void> tomarFotoDialog(BuildContext context, Size size, Map<String, File> 
   );
 }
 
+void showBottomSheetByScaffoldState(GlobalKey<ScaffoldState> scaffoldKey, Size size, String mensaje){
+    PersistentBottomSheetController bottomSheetController;
+    bottomSheetController =  scaffoldKey.currentState.showBottomSheet(
+      (BuildContext context){
+        Future.delayed(
+          const Duration(milliseconds: 3000),
+          (){
+            bottomSheetController.close();
+          }
+        );
+        return Card(
+          color: Colors.white.withOpacity(0.98),
+          elevation: size.width * 0.01,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+            height: size.height * 0.15,
+            width: size.width,
+            alignment: Alignment.center,
+            child: Text(
+              mensaje,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: size.width * 0.045
+              ),
+            ),
+          ),
+        );
+      }
+    );
+  }
+
 
 
 Future<File> _procesarImagen(BuildContext context, ImageSource imageSource)async{

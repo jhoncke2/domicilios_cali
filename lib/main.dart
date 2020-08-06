@@ -4,6 +4,8 @@ import 'package:domicilios_cali/src/pages/cuenta_page.dart';
 import 'package:domicilios_cali/src/pages/direccion_create_mapa_page.dart';
 import 'package:domicilios_cali/src/pages/direccion_create_page.dart';
 import 'package:domicilios_cali/src/pages/domiciliario_create_page.dart';
+import 'package:domicilios_cali/src/pages/domiciliarios_elegir_page.dart';
+import 'package:domicilios_cali/src/pages/domiciliarios_page.dart';
 import 'package:domicilios_cali/src/pages/favoritos_page.dart';
 import 'package:domicilios_cali/src/pages/pedidos_page.dart';
 import 'package:domicilios_cali/src/pages/mapa_page.dart';
@@ -53,7 +55,7 @@ class _MyAppState extends State<MyApp> {
     return Provider(
       child: MaterialApp(
         title: 'Domicilios',
-        initialRoute: ConfirmarCodigoDomiciliarioPage.route,
+        initialRoute: HomePage.route,
         routes:{
           HomePage.route:(BuildContext context)=>HomePage(),
           SplashScreenPage.route:(BuildContext context)=>SplashScreenPage(),
@@ -71,8 +73,10 @@ class _MyAppState extends State<MyApp> {
           ProductosTiendaPage.route:(BuildContext context)=>ProductosTiendaPage(),
           SolicitudDePedidosPage.route:(BuildContext context)=>SolicitudDePedidosPage(),
           VentasPage.route:(BuildContext context)=>VentasPage(),
+          DomiciliariosPage.route:(BuildContext context)=>DomiciliariosPage(),
           DomiciliarioCreatePage.route:(BuildContext context)=>DomiciliarioCreatePage(),
           ConfirmarCodigoDomiciliarioPage.route:(BuildContext context)=>ConfirmarCodigoDomiciliarioPage(),
+          DomiciliariosElegirPage.route:(BuildContext context)=>DomiciliariosElegirPage(),
           FavoritosPage.route:(BuildContext context)=>FavoritosPage(),
           CarritoPage.route:(BuildContext context)=>CarritoPage(),
           MapaPage.route:(BuildContext context)=>MapaPage(),

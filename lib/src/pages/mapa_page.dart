@@ -85,7 +85,7 @@ class MapaPage extends StatelessWidget {
           lugar.latitud = newPosition.latitude;
           lugar.longitud = newPosition.longitude;
           lugaresBloc.editarLugar(lugar, usuarioBloc.token);
-          print('dragged to: ${newPosition}');
+          print('dragged to: $newPosition');
         }
       ),
     };

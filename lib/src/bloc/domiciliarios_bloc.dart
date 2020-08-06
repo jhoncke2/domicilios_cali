@@ -18,9 +18,14 @@ class DomiciliariosBloc{
   Future<Map<String, dynamic>> cargarDomiciliarios(String token)async{
     Map<String, dynamic> domiciliariosResponse = await _domiciliariosProvider.cargarDomiciliarios(token);
     if(domiciliariosResponse['status'] == 'ok'){
-      List<DomiciliarioModel> domiciliariosList = domiciliariosResponse['domiciliarios'].map((Map<String, dynamic> domiciliarioMap){
-        return DomiciliarioModel.fromJsonMap(domiciliarioMap['original']);
-      }).toList();
+      List<DomiciliarioModel> domiciliariosList = (domiciliariosResponse['domiciliarios'].map((Map<String, dynamic> domiciliarioMap){
+        Map<String, dynamic> domiciliario = domiciliarioMap['original']['data_domiciliario'];
+        domiciliario['id'] = domiciliarioMap['original']['id'];
+        domiciliario['placa'] = domiciliarioMap['original']['placa'];
+        domiciliario['tipo_vehiculo'] = domiciliarioMap['original']['tipo_vehiculo'];
+        domiciliario['activo'] = domiciliarioMap['original']['activo'];
+        return DomiciliarioModel.fromJsonMap(domiciliario);
+      }).toList()).cast<DomiciliarioModel>();
       _domiciliariosController.sink.add(domiciliariosList);
     }else{
       print('ocurrió uin error cargando: ${domiciliariosResponse['message']}');

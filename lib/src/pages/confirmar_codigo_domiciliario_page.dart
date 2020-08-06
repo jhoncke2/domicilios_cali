@@ -1,4 +1,9 @@
+import 'package:domicilios_cali/src/bloc/confirmation_bloc.dart';
+import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/pages/domiciliarios_page.dart';
+import 'package:domicilios_cali/src/providers/push_notifications_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:domicilios_cali/src/utils/generic_utils.dart' as utils;
 class ConfirmarCodigoDomiciliarioPage extends StatefulWidget {
   static final route = 'confirmar_codigo_domiciliario';
   @override
@@ -8,13 +13,31 @@ class ConfirmarCodigoDomiciliarioPage extends StatefulWidget {
 class _ConfirmarCodigoDomiciliarioPageState extends State<ConfirmarCodigoDomiciliarioPage> {
   BuildContext context;
   Size size;
-
+  ConfirmationBloc confirmationBloc;
+  int _domiciliarioId;
+  String _domiciliarioMobileToken;
   String _codigoValue;
+
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  PersistentBottomSheetController _bottomSheetController;
+
+  
   @override
   Widget build(BuildContext appContext) {
     context = appContext;
+    confirmationBloc = Provider.confirmationBloc(context);
     size = MediaQuery.of(context).size;
+    if(_domiciliarioId == null || _domiciliarioMobileToken == null){
+      Map<String, dynamic> domiciliarioInformation = ModalRoute.of(context).settings.arguments;
+      if(domiciliarioInformation != null){
+        _domiciliarioId = domiciliarioInformation['id'];
+        _domiciliarioMobileToken = domiciliarioInformation['mobile_token'];
+      }
+      
+    }
+      
     return Scaffold(
+      key: _scaffoldKey,
       body: _crearElementos(),
     );
   }
@@ -87,7 +110,7 @@ class _ConfirmarCodigoDomiciliarioPageState extends State<ConfirmarCodigoDomicil
         ),
       ),
       onPressed: (){
-        
+        _confirmarCode();
       },
     );
   }
@@ -100,6 +123,7 @@ class _ConfirmarCodigoDomiciliarioPageState extends State<ConfirmarCodigoDomicil
       ),
       //color: Colors.grey.withOpacity(0.5),
       color: Theme.of(context).primaryColor,
+
       child: Text(
         'Reenviar código',
         style: TextStyle(
@@ -108,8 +132,40 @@ class _ConfirmarCodigoDomiciliarioPageState extends State<ConfirmarCodigoDomicil
         ),
       ),
       onPressed: (){
-        //confirmationBloc.resetCode(usuarioBloc.token, 'phone', usuarioBloc.usuario.id.toString());
+        _resetCode();
       },
     );
+  }
+
+  void _confirmarCode()async{
+    Map<String, dynamic> confirmarCodeResponse = await confirmationBloc.enviarCodigoValidarDomiciliario(Provider.usuarioBloc(context).token, _domiciliarioId, _codigoValue);
+    if(confirmarCodeResponse['status'] == 'ok'){
+      Map<String, dynamic> pushResponse = await Provider.pushNotificationsProvider(context)
+      .sendPushNotification(
+        _domiciliarioMobileToken, 
+        PushNotificationsProvider.notificationTypes[6], 
+        {
+          'nombre_tienda':Provider.usuarioBloc(context).usuario.name
+        }
+      );
+      Navigator.of(context).pushNamed(DomiciliariosPage.route, arguments: 'codigo_confirmado');
+    }
+  }
+
+  void _resetCode()async{
+    Map<String, dynamic> confirmarCodeResponse = await confirmationBloc.resetCodeDomiciliario(Provider.usuarioBloc(context).token, _domiciliarioId);
+    if(confirmarCodeResponse['status'] == 'ok'){
+      Map<String, dynamic> pushResponse = await Provider.pushNotificationsProvider(context)
+      .sendPushNotification(
+        _domiciliarioMobileToken, 
+        PushNotificationsProvider.notificationTypes[5], 
+        {
+          'nombre_tienda':Provider.usuarioBloc(context).usuario.name
+        },       
+      );
+       utils.showBottomSheetByScaffoldState(_scaffoldKey, size, 'Un nuevo código de confirmación ha sido enviado al domiciliario. Comunicate con él');
+      
+    }
+    
   }
 }

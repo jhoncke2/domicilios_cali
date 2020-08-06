@@ -156,7 +156,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
     return Container(
       height: size.height * 0.072,
       child: TextFormField(
-        initialValue: domiciliario.nombre,
+        initialValue: domiciliario.name,
         decoration: InputDecoration(
           hintText: 'Nombre',
           border: OutlineInputBorder(
@@ -171,9 +171,9 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
 
         ),
         onChanged: (String newValue){
-          domiciliario.nombre = newValue;
+          domiciliario.name = newValue;
           print('origin value:');
-          print(domiciliario.nombre);
+          print(domiciliario.name);
           
         },
       ),
@@ -201,7 +201,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
         onChanged: (String newValue){
           domiciliario.email = newValue;
           print('origin value:');
-          print(domiciliario.nombre);
+          print(domiciliario.name);
           
         },
       ),
@@ -229,7 +229,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
         onChanged: (String newValue){
           domiciliario.numeroCelular = int.parse(newValue);
           print('origin value:');
-          print(domiciliario.nombre);
+          print(domiciliario.name);
           
         },
       ),
@@ -257,7 +257,7 @@ class _CrearDomiciliariosTiendaWidgetState extends State<CrearDomiciliariosTiend
         onChanged: (String newValue){
           domiciliario.placa = newValue;
           print('origin value:');
-          print(domiciliario.nombre);
+          print(domiciliario.name);
           
         },
       ),

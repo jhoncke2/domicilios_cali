@@ -27,7 +27,7 @@ class DomiciliariosModel {
 
 class DomiciliarioModel{
   int id;
-  String nombre;
+  String name;
   String email;
   int numeroCelular;
   String tipoVehiculo;
@@ -36,30 +36,36 @@ class DomiciliarioModel{
   File cedulaCara2;
   String cedulaCaraUrl1;
   String cedulaCaraUrl2;
-  String fotoUrl;
+  String photoUrl;
+  String mobileToken;
+  bool activo;
 
   DomiciliarioModel({
     this.id,
-    this.nombre,
+    this.name,
     this.email,
     this.numeroCelular,
     this.tipoVehiculo,
     this.placa,
     this.cedulaCara1,
     this.cedulaCara2,
-    this.fotoUrl
+    this.photoUrl,
+    this.mobileToken,
+    this.activo
   });
 
   DomiciliarioModel.fromJsonMap(Map<String, dynamic> jsonObject){
     id = jsonObject['id'];
-    nombre = jsonObject['name'];
+    name = jsonObject['name'];
     email = jsonObject['email'];
     numeroCelular = jsonObject['phone'];
     tipoVehiculo = jsonObject['tipo_vehiculo'];
     placa = jsonObject['placa'];
-    fotoUrl = jsonObject['photo'];
+    _formatAvatar(jsonObject['avatar']);
     cedulaCaraUrl1 = jsonObject['cc_frontal'];
     cedulaCaraUrl2 = jsonObject['cc_atras'];
+    mobileToken = jsonObject['mobile_token'];
+    activo = (jsonObject['activo'] == 0)? false : true;
   }
 
   Map<String, String> toJson(){
@@ -70,6 +76,10 @@ class DomiciliarioModel{
     jsonObject['tipo_vehiculo'] = tipoVehiculo;
     jsonObject['placa'] = placa;
     return jsonObject;
+  }
+
+  void _formatAvatar(String avatar){
+    this.photoUrl = 'https://codecloud.xyz/$avatar';
   }
 
 }

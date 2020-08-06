@@ -119,4 +119,62 @@ class ConfirmationProvider{
       };
     }
   }
+
+  //*********************************** 
+  //  Confirmar domiciliario
+  //**********************************
+  Future<Map<String, dynamic>> enviarCodigoValidarDomiciliario(String token, int domiciliarioId, String code)async{
+    final conrifmarPhoneUrl = '$_apiUrl/domiciliario-validate-code';
+    
+    try{
+      final answer = await http.post(
+        conrifmarPhoneUrl,
+        headers: {
+          'Authorization':'Bearer $token',
+          'Content-Type':'Application/json'
+        },
+        body:json.encode({
+          'domiciliario_id':domiciliarioId,
+          'code': code
+        })
+      );
+      Map<String, dynamic> decodedResponse = json.decode(answer.body);
+      return {
+        'status':'ok',
+        'data':decodedResponse
+      };
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> resetCodeDomiciliario(String token, int domiciliarioId)async{
+    final conrifmarPhoneUrl = '$_apiUrl/domiciliario-code-reset';
+    
+    try{
+      final answer = await http.post(
+        conrifmarPhoneUrl,
+        headers: {
+          'Authorization':'Bearer $token',
+          'Content-Type':'Application/json'
+        },
+        body:json.encode({
+          'domiciliario_id':domiciliarioId,
+        })
+      );
+      Map<String, dynamic> decodedResponse = json.decode(answer.body);
+      return {
+        'status':'ok',
+        'data':decodedResponse
+      };
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+  }
 }

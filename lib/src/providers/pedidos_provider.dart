@@ -1,6 +1,14 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 class PedidosProvider{
+  static final estadosPedidos = [
+    'generado',
+    'aceptado',
+    'rechazado',
+    'entregado',
+    'devolucion'
+  ];
+
   final _apiUrl = 'https://codecloud.xyz/api';
 
   Future<Map<String, dynamic>> crearCarritoDeCompras(String token, int tiendaId, int direccionId)async{
@@ -92,6 +100,37 @@ class PedidosProvider{
       return {
         'status':'ok',
         'pedidos': decodedResponse['data']
+      };
+    }catch(err){
+      return {
+        'status':'err',
+        'message':err
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> updatePedido(String token, Map<String, dynamic> data)async{
+    Map<String, dynamic> body = {};
+    if(data['accion'] == 'aceptar'){
+      body['domiciliario_id'] = data['domiciliario_id'];
+      body['estado'] = estadosPedidos[1];
+    } 
+    else
+      body['estado'] = estadosPedidos[2];
+    try{
+      final response = await http.put(
+        '$_apiUrl/shoppingcart/${data['shopping_cart_id']}',
+        headers: {
+          'Authorization':'Bearer $token',
+          'Content-Type':'Application/json'
+        },
+        body: json.encode(body)
+      );
+
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      return {
+        'status':'ok',
+        'data':decodedResponse
       };
     }catch(err){
       return {
