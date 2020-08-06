@@ -203,7 +203,7 @@ class VentasPage extends StatelessWidget {
             height: size.height * 0.008,
           ),
           Text(
-            'Forma de pago:\n${pedido['products'][0]['data_product'].store.tipoDePago??"no se registró"}',
+            'Forma de pago: efectivo',
             style: TextStyle(
               color: Colors.black,
               fontSize: size.width * 0.04,

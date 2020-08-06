@@ -39,7 +39,7 @@ class _CategoriasScrollviewWidgetState extends State<CategoriasScrollviewWidget>
     }
       
     return Container(
-      height: size.height * 0.14,
+      height: size.height * 0.15,
        child: Column(
          crossAxisAlignment: CrossAxisAlignment.start,
          children: <Widget>[

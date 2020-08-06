@@ -76,9 +76,9 @@ class _ProductosWidgetState extends State<ProductosWidget> {
             child: GridView.count(
                 padding: EdgeInsets.symmetric(vertical: size.height * 0.035),
                 crossAxisCount: 3,
-                mainAxisSpacing: size.width * 0.028,
+                mainAxisSpacing: size.width * 0.023,
                 crossAxisSpacing: size.height * 0.03,
-                childAspectRatio: 0.58,
+                childAspectRatio: 0.53,
                 children: snapshot.data.map((ProductoModel producto) => ProductoCardWidget(producto: producto,)).toList(),
             ),
           );

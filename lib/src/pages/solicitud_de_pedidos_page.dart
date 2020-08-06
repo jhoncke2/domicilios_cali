@@ -180,7 +180,6 @@ class SolicitudDePedidosPage extends StatelessWidget {
         ),
       ),
       onTap: (){
-        //_mostrarDomiciliariosList('${pedido['direccion']['ciudad']}, ${pedido['direccion']['direccion']}');
         Navigator.of(context).pushNamed(DomiciliariosElegirPage.route, arguments: pedido);
       },
     );

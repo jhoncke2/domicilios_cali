@@ -162,7 +162,8 @@ class DomiciliariosElegirPage extends StatelessWidget {
             'nombre_cliente':pedido['cliente']['name'],
             'tienda_mobile_token': Provider.usuarioBloc(context).usuario.mobileToken,
             'nombre_tienda':Provider.usuarioBloc(context).usuario.name,
-            'direccion_domicilio':'${pedido['direccion']['ciudad']}, ${pedido['direccion']['direccion']}'
+            'direccion_domicilio':'${pedido['direccion']['ciudad']}, ${pedido['direccion']['direccion']}',
+            'domiciliario_id':domiciliario.id
           }    
         );
         Navigator.of(context).pushNamed(SolicitudDePedidosPage.route);

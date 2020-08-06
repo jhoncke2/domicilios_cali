@@ -78,7 +78,7 @@ class _PedidosPageState extends State<PedidosPage> {
               'Pedido \nactual',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: size.width * 0.055,
+                fontSize: size.width * 0.052,
                 color: (pedidosBloc.indexNavegacionPedidosPage == 0)? Colors.black : Colors.grey,
                 fontWeight: FontWeight.bold,
               ),
@@ -109,7 +109,7 @@ class _PedidosPageState extends State<PedidosPage> {
               'Pedidos \nanteriores',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: size.width * 0.055,
+                fontSize: size.width * 0.052,
                 color: (pedidosBloc.indexNavegacionPedidosPage == 1)? Colors.black : Colors.grey,
                 fontWeight: FontWeight.bold
               ),
@@ -135,7 +135,7 @@ class _PedidosPageState extends State<PedidosPage> {
 
   Widget _crearListViewPedidos( ){
     return Container(
-      height: size.height * ((pedidosBloc.indexNavegacionPedidosPage == 0)? 0.53 : 0.66),
+      height: size.height * ((pedidosBloc.indexNavegacionPedidosPage == 0)? 0.52 : 0.63),
       child: ((pedidosBloc.indexNavegacionPedidosPage == 0)?
         _crearStreamBuilderIndex0()
       : _crearStreamBuilderIndex1()
@@ -153,7 +153,7 @@ class _PedidosPageState extends State<PedidosPage> {
             return Column(
               children: <Widget>[
                 Container(
-                  height: size.height * ((pedidosBloc.indexNavegacionPedidosPage == 0)? 0.47 : 0.65),
+                  height: size.height * ((pedidosBloc.indexNavegacionPedidosPage == 0)? 0.45 : 0.63),
                   child: ListView(
                     padding: EdgeInsets.only(top:size.height * 0.045, bottom: size.height * 0.02),
                     children: _crearItemsListViewPedidoActual(anterioresSnapshot.data)
@@ -191,7 +191,7 @@ class _PedidosPageState extends State<PedidosPage> {
             return Column(
               children: <Widget>[
                 Container(
-                  height: size.height * ((pedidosBloc.indexNavegacionPedidosPage == 0)? 0.47 : 0.65),
+                  height: size.height * ((pedidosBloc.indexNavegacionPedidosPage == 0)? 0.45 : 0.63),
                   child: ListView(
                     padding: EdgeInsets.only(top:size.height * 0.045, bottom: size.height * 0.02),
                     children: _crearItemsListViewPedidosAnteriores(snapshot.data)
@@ -379,7 +379,13 @@ class _PedidosPageState extends State<PedidosPage> {
       //List<Map<String, dynamic>> pedidoActual =  ((await pedidosBloc.pedidoActualClienteStream.v).cast<List<Map<String, dynamic>>>()).last;
       Map<String, dynamic> crearCarritoResponse = await pedidosBloc.generarPedido(token, Provider.lugaresBloc(context).actualElegido.id);
       final pushNotificationsProvider = Provider.pushNotificationsProvider(context);
-      pushNotificationsProvider.sendPushNotification(crearCarritoResponse['tienda_mobile_token'], PushNotificationsProvider.notificationTypes[0], {});
+        pushNotificationsProvider.sendPushNotification(crearCarritoResponse['tienda_mobile_token'], PushNotificationsProvider.notificationTypes[0], {});
+      if(crearCarritoResponse['status'] == 'ok'){
+
+        
+        //pedidosBloc.pedidoActualClienteStream.
+      }
+      
     }catch(err){
       print(err);
     }

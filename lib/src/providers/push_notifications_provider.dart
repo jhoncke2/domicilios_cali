@@ -4,6 +4,7 @@ import 'package:domicilios_cali/src/pages/pedidos_page.dart';
 import 'package:domicilios_cali/src/pages/solicitud_de_pedidos_page.dart';
 import 'package:flutter/material.dart';
 import 'package:domicilios_cali/src/bloc/provider.dart';
+import 'package:domicilios_cali/src/models/usuarios_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import 'dart:io';
@@ -216,7 +217,7 @@ class PushNotificationsProvider{
         _reaccionarAClienteEnviarPedido(receiverChannel);
         break; 
       case 'tienda_confirmar_pedido':
-        _reaccionarATiendaAceptarPedido(receiverChannel, data['nombre_tienda'], data['tiempo_maximo_entrega']);
+        _reaccionarATiendaAceptarPedido(receiverChannel, data['nombre_tienda'], int.parse(data['tiempo_maximo_entrega']));
         break;
       case 'tienda_denegar_pedido':
         _reaccionarATiendaDenegarPedido(receiverChannel, data['nombre_tienda'], data['razon_tienda']);
@@ -229,7 +230,7 @@ class PushNotificationsProvider{
         _reaccionarATiendaResetearCodigoDomiciliario(receiverChannel, data['nombre_tienda']);
         break;
       case 'tienda_delegar_pedido_a_domiciliario':
-        _reaccionarATiendaDelegarPedidoADomiciliario(receiverChannel, data['pedido_id'], data['cliente_mobile_token'], data['tienda_mobile_token'], data['nombre_tienda'], data['direccion_domicilio']);
+        _reaccionarATiendaDelegarPedidoADomiciliario(receiverChannel, int.parse(data['pedido_id']), data['cliente_mobile_token'], data['tienda_mobile_token'], data['nombre_tienda'], data['direccion_domicilio'], data['domiciliario_id']);
         break; 
       case 'tienda_validar_domiciliario':
         _reaccionarATiendaValidarFormulario(receiverChannel, data['nombre_tienda']);
@@ -329,7 +330,9 @@ class PushNotificationsProvider{
     }
   }
 
-  void _reaccionarATiendaDelegarPedidoADomiciliario(String receiverChannel, int pedidoId, String clienteMobileToken, String tiendaMobileToken, String nombreTienda, String direccion){
+  void _reaccionarATiendaDelegarPedidoADomiciliario(String receiverChannel, int pedidoId, String clienteMobileToken, String tiendaMobileToken, String nombreTienda, String direccion, int domiciliarioId){
+    UsuarioModel usuario = Provider.usuarioBloc(_context).usuario;
+    print(usuario);
     if(Provider.usuarioBloc(_context).usuario != null){
       if(receiverChannel == 'on_message'){
         _crearDialogAceptarCancelar(
@@ -337,6 +340,7 @@ class PushNotificationsProvider{
           pedidoId,
           clienteMobileToken,
           tiendaMobileToken,
+          domiciliarioId,
           '$nombreTienda te ha designado un nuevo domicilio para entregar en $direccion',
           null
         );
@@ -346,6 +350,7 @@ class PushNotificationsProvider{
           pedidoId,
           clienteMobileToken,
           tiendaMobileToken,
+          domiciliarioId,
           '$nombreTienda te ha designado un nuevo domicilio para entregar en $direccion',
           null
         );
@@ -442,7 +447,7 @@ class PushNotificationsProvider{
   }
 
 
-  void _crearDialogAceptarCancelar(BuildContext context, int pedidoId, String clienteMobileToken, String tiendaMobileToken, String mensaje, String pageRoute){
+  void _crearDialogAceptarCancelar(BuildContext context, int pedidoId, String clienteMobileToken, String tiendaMobileToken, int domiciliarioId, String mensaje, String pageRoute){
     Size  size = MediaQuery.of(context).size;
     showModalBottomSheet(
       context: context,
@@ -450,9 +455,11 @@ class PushNotificationsProvider{
         return GestureDetector(
           child: Container(
             margin: EdgeInsets.all(0.0),
+            padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
             height: size.height * 0.2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
                   mensaje,
@@ -510,7 +517,7 @@ class PushNotificationsProvider{
                           tiendaMobileToken,
                           {
                             'accion':'aceptar',
-                            'domiciliario_id': Provider.usuarioBloc(context).usuario.id,
+                            'domiciliario_id': domiciliarioId,
                             'shopping_cart_id': pedidoId
                           }
                         );
@@ -553,6 +560,7 @@ class PushNotificationsProvider{
         return GestureDetector(
           child: Container(
             margin: EdgeInsets.all(0.0),
+            padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
             height: size.height * 0.2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -568,9 +576,9 @@ class PushNotificationsProvider{
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     FlatButton(
-                      padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                      padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(size.width * 0.045)
+                        borderRadius: BorderRadius.circular(size.width * 0.043)
                       ),
                       color: Colors.grey.withOpacity(0.9),
                       child: Text(
@@ -585,9 +593,9 @@ class PushNotificationsProvider{
                       },
                     ),
                     FlatButton(
-                      padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                      padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(size.width * 0.045)
+                        borderRadius: BorderRadius.circular(size.width * 0.0415)
                       ),
                       color: Theme.of(context).primaryColor,
                       child: Text(
@@ -683,8 +691,8 @@ class PushNotificationsProvider{
         clienteMobileToken, 
         notificationTypes[2], 
         {
-          'domiciliario_name':Provider.usuarioBloc(_context).usuario.name,
-          'justificacion':justificacion
+          'nombre_tienda':Provider.usuarioBloc(_context).usuario.name,
+          'razon_tienda':justificacion
         }
       );
     }

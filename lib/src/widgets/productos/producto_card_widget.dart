@@ -59,7 +59,7 @@ class ProductoCardWidget extends StatelessWidget {
               child: Text(
                 '${producto.category['name']}',
                 style: TextStyle(
-                  fontSize: size.width * 0.033,
+                  fontSize: size.width * 0.032,
                   fontWeight: FontWeight.normal,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -74,7 +74,7 @@ class ProductoCardWidget extends StatelessWidget {
                 child: Badge(
                   padding: EdgeInsets.symmetric(
                     vertical: size.height * 0.003,
-                    horizontal: size.width * 0.015
+                    horizontal: size.width * 0.014
                   ),
                   shape: BadgeShape.square,
                   badgeColor: Colors.grey,
