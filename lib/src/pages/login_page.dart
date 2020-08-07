@@ -107,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _crearImgLogo(Size size){
     return Center(
       child: Image.asset(
-        'assets/iconos/logo_porta_01.png',
+        'assets/iconos/logo_tienda.png',
         fit: BoxFit.fill,
         width: size.width * 0.65,
         height: size.height * 0.165,
